@@ -13,8 +13,8 @@ import { isBrowser } from '@shared/utils/platform.util';
 const DRAG_CLICK_THRESHOLD = 6;
 
 /**
- * Turns an overflowing element into a premium carousel: mouse drag, wheel
- * translation, and arrow navigation on top of native scroll-snap.
+ * Turns an overflowing element into a premium carousel: mouse drag and arrow
+ * navigation on top of native scroll-snap.
  *
  * Native scrolling does the heavy lifting — touch momentum, snapping, keyboard
  * panning and accessibility all come from the platform — so this only adds what
@@ -34,7 +34,6 @@ const DRAG_CLICK_THRESHOLD = 6;
   host: {
     '[class.is-dragging]': 'isDragging()',
     '(scroll)': 'onScroll()',
-    '(wheel)': 'onWheel($event)',
     '(pointerdown)': 'onPointerDown($event)',
     '(pointermove)': 'onPointerMove($event)',
     '(pointerup)': 'onPointerUp($event)',
@@ -180,36 +179,18 @@ export class SnapCarouselDirective {
 
   // ---------------------------------------------------------------------------
   // Wheel
+  //
+  // Deliberately not handled.
+  //
+  // This used to translate a vertical wheel into horizontal travel, which meant
+  // that scrolling the page with the cursor anywhere over a carousel stopped the
+  // page and panned the track instead. It handed the gesture back at either end,
+  // but that only helps once the track is already parked at an extreme — the
+  // ordinary case was the page freezing mid-scroll, which is what a reader
+  // experiences as the site fighting them.
+  //
+  // What the platform already provides is enough: a vertical wheel scrolls the
+  // page, a trackpad's horizontal swipe pans the track, and Shift + wheel pans
+  // it on a mouse. The arrow buttons cover everyone else.
   // ---------------------------------------------------------------------------
-
-  /**
-   * Translates a vertical wheel into horizontal travel, handing the gesture
-   * back to the page at either end so the section never traps the scroll.
-   */
-  protected onWheel(event: WheelEvent): void {
-    const maxScroll = this.track.scrollWidth - this.track.clientWidth;
-
-    if (maxScroll <= 1) {
-      return;
-    }
-
-    // A trackpad's horizontal swipe already scrolls the track natively.
-    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
-      return;
-    }
-
-    const atStart = this.track.scrollLeft <= 1 && event.deltaY < 0;
-    const atEnd = this.track.scrollLeft >= maxScroll - 1 && event.deltaY > 0;
-
-    if (atStart || atEnd) {
-      return;
-    }
-
-    event.preventDefault();
-    // Keeps the event from reaching Lenis on the window, which would otherwise
-    // scroll the page at the same time.
-    event.stopPropagation();
-
-    this.track.scrollLeft += event.deltaY;
-  }
 }

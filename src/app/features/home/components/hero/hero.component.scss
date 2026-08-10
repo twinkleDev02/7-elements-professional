@@ -36,23 +36,6 @@
   // produces the overlap without any absolute positioning.
   --hero-media-cut: clamp(2.5rem, 5vw, 4.5rem);
 
-  // Focal point of the scroll zoom, in the media layer's own coordinates.
-  //
-  // The hero art is a single flattened composite with no alpha, so the product
-  // cannot be lifted onto its own plane. Scaling the image from this origin
-  // instead pushes the bottle cluster toward the frame as the scale climbs,
-  // which is what reads as the product coming forward.
-  //
-  // Nudge these two numbers to re-aim the zoom — nothing in the TypeScript
-  // needs to change.
-  --hero-zoom-origin-x: 72%;
-  --hero-zoom-origin-y: 66%;
-
-  // Opacity of the copy's legibility scrim. Driven by the scroll timeline so
-  // the veil leaves with the text it exists to support — a pseudo-element
-  // cannot be tweened directly, but the variable it reads can.
-  --hero-scrim-opacity: 1;
-
   position: relative;
   display: flex;
   flex-direction: column;
@@ -72,7 +55,8 @@
   @include up('lg') {
     // A comfortable banner height. It no longer has to track the image's 3:2
     // ratio, because the artwork is fitted with `contain` rather than `cover`
-    // (see `.hero__image`) — so the height is free to be whatever reads best.
+    // (see `.hero__media::before`) — so the height is free to be whatever
+    // reads best.
     min-block-size: clamp(36rem, 84vh, 48rem);
     justify-content: center;
   }
@@ -87,54 +71,31 @@
   z-index: 0;
   overflow: hidden;
   // Reserves the space before the image decodes, so the copy below never jumps.
-  //
-  // Close to the artwork's own 2.26:1 rather than the old 4:3. `cover` crops
-  // whatever the box does not match, and at 4:3 that meant throwing away 40%
-  // of the width — the model and half the product line-up went with it.
   aspect-ratio: 16 / 10;
-  will-change: transform;
 
   @include up('lg') {
     position: absolute;
     inset-block: 0 var(--hero-media-cut);
     inset-inline: 0;
     aspect-ratio: auto;
-    // Grows downward rather than from the middle, so the scroll timeline's
-    // scale fills the strip the credentials bar vacates when it fades. Without
-    // this there is a bare band of gradient across the bottom of the frame for
-    // the whole reveal.
-    transform-origin: center top;
   }
 }
 
-.hero__figure {
+/// The artwork.
+///
+/// On its own layer rather than on `.hero__media` itself, because the feather
+/// below is a mask — and a mask on the parent would clip the legibility scrim
+/// and the glow with it. The scrim is strongest at exactly the edge the mask
+/// erases, so the copy would lose the ground it sits on.
+///
+/// Below `lg` this sits above the copy in flow, cropped `cover` at close to the
+/// asset's own 2.26:1; the old 4:3 box threw away about 40% of the width, and
+/// the model went with it.
+.hero__media::before {
+  content: '';
   position: absolute;
-  // Slack on every side so the pointer parallax never drags an edge into view
-  // while the image is cropped with `cover`.
-  inset: -3%;
-  will-change: transform;
-
-  @include up('lg') {
-    // With `contain` the artwork already sits inside a larger transparent box,
-    // so the parallax has room to move without exposing an edge — and the
-    // overhang would push the fitted image under the container's clip,
-    // shearing the products off its trailing edge.
-    inset: 0;
-  }
-}
-
-.hero__image {
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: cover;
-  // The scroll timeline scales this element; the origin decides what the zoom
-  // closes in on. See `--hero-zoom-origin-*` above.
-  transform-origin: var(--hero-zoom-origin-x) var(--hero-zoom-origin-y);
-  // Below `lg` the crop is horizontal and the full height is shown, so only
-  // the x value matters. Pulled back from 70% to keep the model in frame
-  // alongside the bottles.
-  object-position: 62% center;
-  will-change: transform, opacity;
+  inset: 0;
+  background: url('/assets/images/brand/Hero_section_img.png') 62% center / cover no-repeat;
 
   @include up('lg') {
     // `contain`, not `cover`. The asset is a finished composite — model, ring
@@ -142,10 +103,10 @@
     // the bottles. Fitted whole and anchored to the trailing edge, it is always
     // fully visible at any window size, and the copy sits on the blush field it
     // leaves to its left.
-    object-fit: contain;
-    object-position: right bottom;
+    background-size: contain;
+    background-position: right bottom;
 
-    // The asset carries its own baked-in background. Feathering its leading
+    // The asset carries its own baked-in background. Feathering the leading
     // edge dissolves the seam where that meets the section's gradient.
     mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
@@ -187,7 +148,6 @@
     content: '';
     position: absolute;
     inset: 0;
-    opacity: var(--hero-scrim-opacity);
     background: linear-gradient(
       100deg,
       rgb(253 247 244 / 96%) 0%,
@@ -287,50 +247,6 @@
   color: var(--hero-muted);
   font-size: clamp(0.95rem, 1.15vw, 1.0625rem);
   line-height: leading('relaxed');
-  will-change: transform, opacity;
-}
-
-// -----------------------------------------------------------------------------
-// Stage 05 tagline
-//
-// Out of flow and invisible at rest, so it cannot shift the hero's resting
-// composition by a pixel. The scroll timeline is the only thing that reveals
-// it. Desktop only — below `lg` the hero is not pinned, so there is no stage
-// for it to appear in.
-// -----------------------------------------------------------------------------
-
-.hero__tagline {
-  display: none;
-
-  @include up('lg') {
-    position: absolute;
-    inset-block-start: 50%;
-    // Pulled in from the edge: at the tighter value "TRANSFORM." ran almost
-    // into the viewport edge at 1440.
-    inset-inline-end: clamp(4rem, 10vw, 11rem);
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1em;
-    margin: 0;
-    translate: 0 -50%;
-    // Resting state. The timeline animates toward opacity 1 / y 0.
-    opacity: 0;
-    // Decorative and never interactive, even mid-reveal.
-    pointer-events: none;
-    color: var(--hero-accent);
-    font-family: var(--hero-font-display);
-    font-size: clamp(1.5rem, 2.6vw, 2.25rem);
-    line-height: leading('tight');
-    letter-spacing: tracking('tight');
-    text-transform: uppercase;
-  }
-}
-
-.hero__tagline-word {
-  display: block;
-  // GSAP reads this as `yPercent: 45` and animates it to 0.
-  transform: translateY(45%);
   will-change: transform, opacity;
 }
 
@@ -565,8 +481,6 @@
 
 @include down('lg') {
   .hero__media,
-  .hero__figure,
-  .hero__image,
   .hero__content,
   .hero__title-line,
   .hero__subtitle,
@@ -580,8 +494,6 @@
 
 @include reduced-motion {
   .hero__media,
-  .hero__figure,
-  .hero__image,
   .hero__glow,
   .hero__content,
   .hero__title-line,

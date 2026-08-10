@@ -1,20 +1,11 @@
 <section class="hero" aria-labelledby="hero-title">
   <!--
-    Decorative layer. The image carries no information the copy does not, so it
-    is given an empty alt and hidden from assistive tech rather than described.
+    Decorative layer. The artwork is this element's CSS background — it carries
+    no information the copy does not — so nothing here needs describing, and the
+    layer exists only to hold the glow and the legibility scrim.
   -->
   <div class="hero__media" aria-hidden="true">
     <span class="hero__glow"></span>
-
-    <div class="hero__figure">
-      <img
-        class="hero__image"
-        src="assets/images/brand/Hero_section_img.png"
-        alt=""
-        fetchpriority="high"
-        decoding="async"
-      />
-    </div>
   </div>
 
   <div class="hero__inner">
@@ -107,21 +98,6 @@
       </ul>
     </div>
   </div>
-
-  <!--
-    Stage 05 tagline. Absolutely positioned and `opacity: 0` at rest, so it
-    takes no space and cannot alter the resting composition — only the scroll
-    timeline reveals it.
-
-    `aria-hidden` and non-interactive on purpose: this mirrors the Collections
-    section's heading rather than introducing new copy, and the real, readable
-    heading lives there. Announcing it twice would be noise.
-  -->
-  <p class="hero__tagline" aria-hidden="true">
-    <span class="hero__tagline-word">Care.</span>
-    <span class="hero__tagline-word">Nourish.</span>
-    <span class="hero__tagline-word">Transform.</span>
-  </p>
 
   <!--
     Credentials bar. Sits in normal flow and straddles the lower edge of the
