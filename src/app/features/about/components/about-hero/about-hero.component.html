@@ -1,0 +1,43 @@
+<section class="about-hero" aria-labelledby="about-hero-title">
+  <div class="about-hero__media" aria-hidden="true">
+    <div class="about-hero__figure">
+      <!--
+        TODO: verify this render matches the reference's podium-and-peony frame.
+        Swap the path in ABOUT_HERO (about.data.ts) if a dedicated About hero
+        asset is produced.
+      -->
+      <img
+        class="about-hero__image"
+        [src]="content.image"
+        [alt]="content.imageAlt"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+  </div>
+
+  <div class="about-hero__inner">
+    <div class="about-hero__content">
+      <p class="about-hero__eyebrow">{{ content.eyebrow }}</p>
+
+      <h1 class="about-hero__title" id="about-hero-title">
+        @for (line of content.titleLines; track line) {
+          <span class="about-hero__title-mask">
+            <span class="about-hero__title-line">{{ line }}</span>
+          </span>
+        }
+      </h1>
+
+      <p class="about-hero__tagline">{{ content.tagline }}</p>
+
+      <p class="about-hero__body">{{ content.body }}</p>
+
+      <a class="about-hero__cta" [routerLink]="ctaLink">
+        <span>{{ content.ctaLabel }}</span>
+        <svg class="about-hero__cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 12h15M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

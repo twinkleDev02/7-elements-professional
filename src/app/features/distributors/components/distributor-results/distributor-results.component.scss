@@ -1,0 +1,129 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Distributor results
+// =============================================================================
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.distributor-results__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: space('2xs');
+  margin-block-end: clamp(0.875rem, 2vw, 1.25rem);
+  will-change: transform;
+}
+
+.distributor-results__count {
+  color: var(--color-text);
+  font-size: clamp(0.82rem, 1vw, 0.9375rem);
+  font-weight: weight('semibold');
+}
+
+// -----------------------------------------------------------------------------
+// View switch
+// -----------------------------------------------------------------------------
+
+.distributor-results__views {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: radius('sm');
+  background-color: var(--color-surface);
+}
+
+.distributor-results__view {
+  min-block-size: 2rem;
+  padding-inline: clamp(0.5rem, 1.2vw, 0.875rem);
+  border: 0;
+  border-radius: radius('sm');
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: clamp(0.6rem, 0.78vw, 0.6875rem);
+  font-weight: weight('semibold');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @include transition((background-color, color));
+  @include focus-ring(-2px);
+
+  &:hover:not(.is-active) {
+    color: var(--color-primary);
+  }
+
+  &.is-active {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// List
+// -----------------------------------------------------------------------------
+
+.distributor-results__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.75rem, 1.6vw, 1.125rem);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include up('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up('xl') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/// List view: one full-width row per distributor at every size.
+.distributor-results__list--rows {
+  grid-template-columns: minmax(0, 1fr);
+
+  @include up('sm') {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @include up('xl') {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.distributor-results__item {
+  min-inline-size: 0;
+}
+
+// -----------------------------------------------------------------------------
+// Map and empty states
+// -----------------------------------------------------------------------------
+
+.distributor-results__map {
+  aspect-ratio: 16 / 9;
+  min-block-size: clamp(14rem, 30vw, 24rem);
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface-tint);
+}
+
+.distributor-results__empty {
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+  color: var(--color-text-muted);
+  font-size: clamp(0.85rem, 1.05vw, 0.95rem);
+  text-align: center;
+}
+
+@include reduced-motion {
+  .distributor-results__head {
+    will-change: auto;
+  }
+}

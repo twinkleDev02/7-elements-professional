@@ -1,0 +1,49 @@
+<app-distributor-hero
+  [script]="hero.script"
+  [titleLines]="hero.titleLines"
+  [body]="hero.body"
+  [primaryCta]="hero.primaryCta"
+  [secondaryCta]="hero.secondaryCta"
+  [badgeValue]="hero.badgeValue"
+  [badgeLabel]="hero.badgeLabel"
+  (primaryAction)="onFindDistributor()"
+  (secondaryAction)="onBecomeDistributor()"
+/>
+
+<div id="distributor-search">
+  <app-distributor-search
+    [states]="filter().states"
+    (search)="onSearch($event)"
+    (reset)="onSearchReset()"
+  />
+</div>
+
+<section class="find-distributor__catalogue" aria-label="Distributor directory">
+  <div class="find-distributor__inner">
+    <app-distributor-filter
+      class="find-distributor__sidebar"
+      [selectedStates]="filter().states"
+      [selectedCategories]="filter().categories"
+      [selectedServices]="filter().services"
+      (facetChange)="onFacetChange($event)"
+      (clearAll)="onClearFacets()"
+    />
+
+    <div class="find-distributor__results">
+      <app-distributor-results
+        [distributors]="visible()"
+        [totalCount]="matches().length"
+        [view]="view()"
+        (viewChange)="onViewChange($event)"
+        (viewDetails)="onViewDetails($event)"
+        (directions)="onDirections($event)"
+      />
+
+      <app-distributor-pagination
+        [currentPage]="page()"
+        [totalPages]="totalPages()"
+        (pageChange)="onPageChange($event)"
+      />
+    </div>
+  </div>
+</section>

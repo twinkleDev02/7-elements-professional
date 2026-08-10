@@ -1,0 +1,126 @@
+// =============================================================================
+// Reset — flattens browser defaults without imposing any brand styling.
+//
+// Opinionated where the default is actively unhelpful (box-sizing, margins,
+// replaced-element display), silent everywhere else. Nothing here sets a
+// colour or a font — that is `_typography.scss` and the theme layer.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// Remove the default margin everywhere; spacing is opted into, never inherited.
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+html {
+  // Lenis drives smooth scrolling; native smooth behaviour would fight it.
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+  // Keeps the page from shifting horizontally when a scrollbar appears.
+  scrollbar-gutter: stable;
+}
+
+body {
+  min-height: 100dvh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Replaced elements behave far more predictably as blocks.
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+// Form controls do not inherit typography by default.
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+textarea:not([rows]) {
+  min-height: 10rem;
+}
+
+// Anchors are styled per context; the default underline is reinstated on
+// prose links in `_typography.scss`.
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+// Anything targeted by a #fragment should not land under the sticky navbar.
+:target {
+  scroll-margin-block-start: space('3xl');
+}
+
+// A visible focus indicator is a baseline requirement. Restyle it if the design
+// calls for it — never remove it.
+:focus-visible {
+  outline: border-width('thin') solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+// Honour the OS-level motion preference globally. Individual components should
+// still use the `reduced-motion` mixin rather than relying on this alone.
+@include reduced-motion {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

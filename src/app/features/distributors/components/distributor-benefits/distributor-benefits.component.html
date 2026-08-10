@@ -1,0 +1,24 @@
+<div class="distributor-benefits" [class.distributor-benefits--panel]="variant() === 'panel'">
+  @if (title(); as heading) {
+    <h2 class="distributor-benefits__title">{{ heading }}</h2>
+  }
+
+  <ul class="distributor-benefits__list" role="list">
+    @for (benefit of benefits(); track benefit.id) {
+      <li class="distributor-benefits__item">
+        <span class="distributor-benefits__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            @for (path of benefit.iconPaths; track $index) {
+              <path [attr.d]="path" />
+            }
+          </svg>
+        </span>
+
+        <span class="distributor-benefits__text">
+          <span class="distributor-benefits__item-title">{{ benefit.title }}</span>
+          <span class="distributor-benefits__item-subtitle">{{ benefit.subtitle }}</span>
+        </span>
+      </li>
+    }
+  </ul>
+</div>

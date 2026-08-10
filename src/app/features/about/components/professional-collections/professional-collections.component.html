@@ -1,0 +1,45 @@
+<section class="professional-collections" aria-labelledby="professional-collections-title">
+  <div class="professional-collections__inner">
+    <p
+      class="professional-collections__eyebrow professional-collections__reveal"
+      id="professional-collections-title"
+    >
+      {{ eyebrow() }}
+    </p>
+
+    <ul
+      class="professional-collections__track"
+      appSnapCarousel
+      role="list"
+      tabindex="0"
+      aria-label="Professional collections"
+    >
+      @for (collection of collections(); track collection.id) {
+        <li class="professional-collections__card">
+          <a
+            class="professional-collections__card-link"
+            [routerLink]="collectionLink(collection)"
+          >
+            <span class="professional-collections__card-media">
+              <img
+                class="professional-collections__card-image"
+                [src]="collection.image"
+                [alt]="collection.imageAlt"
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
+
+            <span class="professional-collections__card-body">
+              <span class="professional-collections__card-title">{{ collection.title }}</span>
+
+              @for (benefit of collection.benefits; track benefit) {
+                <span class="professional-collections__card-benefit">{{ benefit }}</span>
+              }
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

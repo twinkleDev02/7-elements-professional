@@ -1,0 +1,96 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Office and map
+//
+// The map frame keeps its dimensions whether or not a source is supplied, so
+// the surrounding layout is already final.
+// =============================================================================
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.office-map {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.8vw, 1.25rem);
+  block-size: 100%;
+}
+
+.office-map__panel {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface-tint);
+  will-change: transform;
+}
+
+.office-map__eyebrow {
+  margin-block-end: 0.4rem;
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.office-map__title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: weight('regular');
+  line-height: leading('snug');
+  letter-spacing: tracking('tight');
+  text-wrap: balance;
+}
+
+.office-map__body {
+  margin-block-start: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  line-height: leading('relaxed');
+}
+
+.office-map__address {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-block-start: 0.875rem;
+  color: var(--color-text);
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  font-style: normal;
+  line-height: leading('snug');
+}
+
+// -----------------------------------------------------------------------------
+// Map frame
+// -----------------------------------------------------------------------------
+
+.office-map__frame {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+  // Holds the reference's proportions even while empty, so nothing below it
+  // shifts once a map is supplied.
+  aspect-ratio: 16 / 10;
+  min-block-size: clamp(12rem, 24vw, 18rem);
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface-tint);
+  will-change: transform;
+}
+
+.office-map__embed {
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+
+@include reduced-motion {
+  .office-map__panel,
+  .office-map__frame {
+    will-change: auto;
+  }
+}

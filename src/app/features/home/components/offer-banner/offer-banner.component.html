@@ -1,0 +1,27 @@
+<section class="offer-banner" aria-labelledby="offer-banner-title">
+  <!--
+    The artwork carries the banner's whole field, not just the products: the
+    orange ground, the palm shadow and the ring light are all in the file. It is
+    decorative — every word a shopper needs is in the copy beside it.
+  -->
+  <img
+    class="offer-banner__image"
+    src="assets/images/brand/offerimg.png"
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    decoding="async"
+  />
+
+  <div class="offer-banner__content">
+    <p class="offer-banner__heading offer-banner__reveal" id="offer-banner-title">
+      {{ heading() }}
+    </p>
+
+    <p class="offer-banner__subheading offer-banner__reveal">{{ subheading() }}</p>
+
+    <a class="offer-banner__cta offer-banner__reveal" [routerLink]="ctaLink()">
+      {{ ctaLabel() }}
+    </a>
+  </div>
+</section>

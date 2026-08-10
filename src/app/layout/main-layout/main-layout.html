@@ -1,0 +1,15 @@
+<app-navbar />
+
+<!-- Target of the navbar's skip link; keep the id in sync if it is renamed. -->
+<main id="main-content" class="layout__main" tabindex="-1">
+  <router-outlet />
+</main>
+
+<app-footer />
+
+@if (isLoading()) {
+  <!-- TODO: replace with the designed progress indicator. -->
+  <div class="layout__loader" role="status" aria-live="polite">
+    <span class="layout__loader-label">Loading</span>
+  </div>
+}

@@ -1,0 +1,136 @@
+// =============================================================================
+// Functions — typed accessors for the scales in `_variables.scss`.
+//
+// Always go through these rather than reading a map directly: a typo becomes a
+// build error naming the file to fix, instead of a silently missing declaration.
+//
+// Emits no CSS.
+// =============================================================================
+
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use 'variables' as *;
+
+// -----------------------------------------------------------------------------
+// Internals
+// -----------------------------------------------------------------------------
+
+/// Looks a key up in a scale, failing loudly with the file to edit.
+@function scale-get($map, $key, $source) {
+  @if not map.has-key($map, $key) {
+    @error 'Unknown key `#{$key}`. Add it to `#{$source}` in styles/_variables.scss. ' +
+           'Available: #{map.keys($map)}.';
+  }
+
+  @return map.get($map, $key);
+}
+
+/// Removes the unit from a number: `strip-unit(1.5rem)` → `1.5`.
+@function strip-unit($value) {
+  @if meta.type-of($value) != 'number' {
+    @error '`strip-unit()` expects a number, got `#{meta.type-of($value)}`.';
+  }
+
+  @return math.div($value, ($value * 0 + 1));
+}
+
+// -----------------------------------------------------------------------------
+// Scale accessors
+// -----------------------------------------------------------------------------
+
+/// Breakpoint in px: `bp('md')` → `768px`.
+@function bp($name) {
+  @return scale-get($breakpoints, $name, '$breakpoints');
+}
+
+/// Spacing step: `space('lg')` → `2rem`.
+@function space($name) {
+  @return scale-get($spacing, $name, '$spacing');
+}
+
+/// Container width: `container-width('narrow')` → `768px`.
+@function container-width($name: 'default') {
+  @return scale-get($container-widths, $name, '$container-widths');
+}
+
+/// Corner radius: `radius('pill')` → `999px`.
+@function radius($name) {
+  @return scale-get($radii, $name, '$radii');
+}
+
+/// Border width: `border-width('hairline')` → `1px`.
+@function border-width($name) {
+  @return scale-get($border-widths, $name, '$border-widths');
+}
+
+/// Font weight: `weight('medium')` → `500`.
+@function weight($name) {
+  @return scale-get($font-weights, $name, '$font-weights');
+}
+
+/// Line height: `leading('tight')` → `1.15`.
+@function leading($name) {
+  @return scale-get($line-heights, $name, '$line-heights');
+}
+
+/// Letter spacing: `tracking('widest')` → `0.18em`.
+@function tracking($name) {
+  @return scale-get($letter-spacings, $name, '$letter-spacings');
+}
+
+/// Transition duration: `duration('fast')` → `300ms`.
+@function duration($name) {
+  @return scale-get($durations, $name, '$durations');
+}
+
+/// Timing function: `ease('luxe')` → `cubic-bezier(…)`.
+@function ease($name) {
+  @return scale-get($easings, $name, '$easings');
+}
+
+/// Stacking order: `layer('navbar')` → `200`.
+@function layer($name) {
+  @return scale-get($z-layers, $name, '$z-layers');
+}
+
+// -----------------------------------------------------------------------------
+// Fluid sizing
+// -----------------------------------------------------------------------------
+
+/// Interpolates linearly between two rem lengths across the viewport range,
+/// producing a `clamp()` that never falls below `$min` or above `$max`.
+///
+/// All four arguments must be in rem so the result respects the root font size.
+@function fluid($min, $max, $min-viewport: $fluid-min-viewport, $max-viewport: $fluid-max-viewport) {
+  $min-value: strip-unit($min);
+  $max-value: strip-unit($max);
+  $min-vw: strip-unit($min-viewport);
+  $max-vw: strip-unit($max-viewport);
+
+  @if $min-vw == $max-vw {
+    @error '`fluid()` needs a non-zero viewport range.';
+  }
+
+  @if $min-value == $max-value {
+    @return $min;
+  }
+
+  $slope: math.div($max-value - $min-value, $max-vw - $min-vw);
+  $intercept: $min-value - ($slope * $min-vw);
+
+  @return clamp(#{$min}, #{$intercept}rem + #{$slope * 100}vw, #{$max});
+}
+
+/// Fluid font size from the type scale: `font-size('4xl')` → `clamp(…)`.
+@function font-size($name) {
+  $pair: scale-get($font-sizes, $name, '$font-sizes');
+
+  @if meta.type-of($pair) != 'list' {
+    // A single value opts a step out of fluid scaling.
+    @return $pair;
+  }
+
+  @return fluid(list.nth($pair, 1), list.nth($pair, 2));
+}

@@ -1,0 +1,164 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Certifications
+//
+// Six trust marks on the left, the French formulation note on the right,
+// separated by a hairline once they sit side by side.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.certifications {
+  padding-block: clamp(1rem, 2.5vw, 1.75rem);
+  background-color: var(--color-surface);
+}
+
+.certifications__panel {
+  @include container('wide');
+
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: center;
+  padding-block: clamp(1.25rem, 3vw, 1.75rem);
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface);
+
+  @include up('lg') {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+}
+
+.certifications__eyebrow {
+  margin-block-end: clamp(0.75rem, 1.6vw, 1.125rem);
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.certifications__badges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.875rem, 2vw, 1.25rem) 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include up('md') {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.certifications__badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding-inline: 0.25rem;
+  text-align: center;
+  will-change: transform;
+}
+
+.certifications__badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(2.25rem, 3.2vw, 2.75rem);
+  block-size: clamp(2.25rem, 3.2vw, 2.75rem);
+  margin-block-end: 0.2rem;
+  border: border-width('thin') solid var(--color-border-strong);
+  border-radius: radius('circle');
+  color: var(--color-primary);
+
+  @include transition((transform, background-color, color));
+
+  .certifications__badge:hover & {
+    transform: scale(1.08);
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+
+  svg {
+    inline-size: 46%;
+    block-size: 46%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.certifications__badge-title,
+.certifications__badge-subtitle {
+  color: var(--color-text);
+  font-size: clamp(0.65rem, 0.85vw, 0.75rem);
+  font-weight: weight('medium');
+  line-height: leading('snug');
+}
+
+// -----------------------------------------------------------------------------
+// French formulation
+// -----------------------------------------------------------------------------
+
+.certifications__french {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 1.6vw, 1.125rem);
+  padding: clamp(0.875rem, 2vw, 1.25rem);
+  border-radius: clamp(0.375rem, 0.8vw, 0.625rem);
+  background-color: var(--color-surface-tint);
+
+  @include up('lg') {
+    border-inline-start: border-width('hairline') solid var(--color-border);
+    border-radius: 0;
+    background-color: transparent;
+  }
+}
+
+/// The tricolore as three flat bands — cheaper and sharper than an image.
+.certifications__flag {
+  inline-size: clamp(2.25rem, 3.2vw, 2.75rem);
+  block-size: clamp(2.25rem, 3.2vw, 2.75rem);
+  flex: 0 0 auto;
+  border-radius: radius('circle');
+  background: linear-gradient(
+    90deg,
+    #002395 0% 33.33%,
+    #fff 33.33% 66.66%,
+    #ed2939 66.66% 100%
+  );
+  box-shadow: 0 2px 8px rgb(43 23 20 / 16%);
+}
+
+.certifications__french-title {
+  margin-block-end: 0.25rem;
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.certifications__french-body {
+  color: var(--color-text-muted);
+  font-size: clamp(0.75rem, 0.95vw, 0.85rem);
+  line-height: leading('relaxed');
+}
+
+@include reduced-motion {
+  .certifications__badge {
+    will-change: auto;
+  }
+
+  .certifications__badge:hover .certifications__badge-icon {
+    transform: none;
+  }
+}

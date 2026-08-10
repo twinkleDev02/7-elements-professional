@@ -1,0 +1,34 @@
+<aside class="distributor-support" aria-labelledby="distributor-support-title">
+  <h2 class="distributor-support__title distributor-support__reveal" id="distributor-support-title">
+    {{ content().title }}
+  </h2>
+
+  <p class="distributor-support__body distributor-support__reveal">{{ content().body }}</p>
+
+  <ul class="distributor-support__channels" role="list">
+    <li class="distributor-support__reveal">
+      <a class="distributor-support__channel" [href]="'tel:' + content().phone">
+        <span class="distributor-support__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path
+              d="M7.2 3.5 9 3.9l1.2 3.4-1.9 1.5a11.5 11.5 0 0 0 5.9 5.9l1.5-1.9 3.4 1.2.4 1.8a2 2 0 0 1-2 2.3A15.6 15.6 0 0 1 4.9 5.5a2 2 0 0 1 2.3-2z"
+            />
+          </svg>
+        </span>
+        {{ content().phone }}
+      </a>
+    </li>
+
+    <li class="distributor-support__reveal">
+      <a class="distributor-support__channel" [href]="'mailto:' + content().email">
+        <span class="distributor-support__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M3.5 6h17v12h-17z" />
+            <path d="M3.5 6.5l8.5 6 8.5-6" />
+          </svg>
+        </span>
+        {{ content().email }}
+      </a>
+    </li>
+  </ul>
+</aside>

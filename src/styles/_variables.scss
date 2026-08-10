@@ -1,0 +1,182 @@
+// =============================================================================
+// Variables — the single source of truth for every design decision.
+//
+// Sass variables (this file) hold values needed at *compile* time: scales,
+// breakpoints, maps to loop over. Anything that must change at *runtime* —
+// colour, font family, shadow — is a CSS custom property and lives in
+// `themes/`, so a theme can be swapped without a rebuild.
+//
+// Emits no CSS. Safe to `@use` from anywhere.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Breakpoints
+// -----------------------------------------------------------------------------
+
+$breakpoints: (
+  'xs': 0,
+  'sm': 480px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  'xxl': 1536px,
+) !default;
+
+// -----------------------------------------------------------------------------
+// Containers
+// -----------------------------------------------------------------------------
+
+$container-widths: (
+  'narrow': 768px,
+  'default': 1280px,
+  'wide': 1440px,
+  'full': 100%,
+) !default;
+
+/// Side gutter, interpolated fluidly between these bounds. Generous inline
+/// padding is a large part of what makes a layout read as premium.
+///
+/// Fluid rather than stepped at breakpoints for two reasons: the gutter grows
+/// continuously instead of jumping, and the `container()` mixin stays free of
+/// nested media queries — so callers can add declarations after including it
+/// without tripping Sass's `mixed-decls` rule.
+$container-gutter-min: 1.25rem !default;
+$container-gutter-max: 3rem !default;
+
+// -----------------------------------------------------------------------------
+// Spacing scale
+//
+// A single rhythm for margin, padding and gap. Never hard-code a length —
+// add a step here if none fits, so the vertical rhythm stays consistent.
+// -----------------------------------------------------------------------------
+
+$spacing: (
+  '0': 0,
+  '3xs': 0.25rem,
+  '2xs': 0.5rem,
+  'xs': 0.75rem,
+  'sm': 1rem,
+  'md': 1.5rem,
+  'lg': 2rem,
+  'xl': 3rem,
+  '2xl': 4rem,
+  '3xl': 6rem,
+  '4xl': 8rem,
+  '5xl': 12rem,
+) !default;
+
+// -----------------------------------------------------------------------------
+// Type scale
+//
+// Each step is a `(min, max)` pair. `font-size()` turns the pair into a fluid
+// `clamp()` so type scales with the viewport instead of stepping at
+// breakpoints. Both values are in rem so the visitor's browser font-size
+// preference is still honoured.
+// -----------------------------------------------------------------------------
+
+$font-sizes: (
+  '3xs': (0.6875rem, 0.75rem),
+  '2xs': (0.75rem, 0.8125rem),
+  'xs': (0.8125rem, 0.875rem),
+  'sm': (0.875rem, 0.9375rem),
+  'base': (1rem, 1.0625rem),
+  'md': (1.0625rem, 1.125rem),
+  'lg': (1.125rem, 1.375rem),
+  'xl': (1.375rem, 1.75rem),
+  '2xl': (1.75rem, 2.25rem),
+  '3xl': (2.125rem, 3rem),
+  '4xl': (2.5rem, 4rem),
+  '5xl': (3rem, 5.5rem),
+  '6xl': (3.5rem, 7rem),
+) !default;
+
+/// Viewport range the fluid type scale interpolates across.
+$fluid-min-viewport: 30rem !default; // 480px
+$fluid-max-viewport: 90rem !default; // 1440px
+
+$font-weights: (
+  'light': 300,
+  'regular': 400,
+  'medium': 500,
+  'semibold': 600,
+  'bold': 700,
+) !default;
+
+$line-heights: (
+  'none': 1,
+  'tight': 1.15,
+  'snug': 1.3,
+  'normal': 1.6,
+  'relaxed': 1.75,
+) !default;
+
+/// Display type is set tighter than body copy; small caps-style labels wider.
+$letter-spacings: (
+  'tighter': -0.03em,
+  'tight': -0.015em,
+  'normal': 0,
+  'wide': 0.04em,
+  'widest': 0.18em,
+) !default;
+
+// -----------------------------------------------------------------------------
+// Radii and borders
+// -----------------------------------------------------------------------------
+
+$radii: (
+  'none': 0,
+  'sm': 2px,
+  'md': 4px,
+  'lg': 8px,
+  'xl': 16px,
+  'pill': 999px,
+  'circle': 50%,
+) !default;
+
+$border-widths: (
+  'hairline': 1px,
+  'thin': 2px,
+  'thick': 3px,
+) !default;
+
+// -----------------------------------------------------------------------------
+// Motion
+//
+// Mirrors `shared/animations/animation.tokens.ts`, which holds the same
+// vocabulary in seconds for GSAP. Keep the two in step — CSS handles state
+// transitions, GSAP handles choreography.
+// -----------------------------------------------------------------------------
+
+$durations: (
+  'instant': 150ms,
+  'fast': 300ms,
+  'base': 600ms,
+  'slow': 900ms,
+  'cinematic': 1400ms,
+) !default;
+
+$easings: (
+  'luxe': cubic-bezier(0.22, 1, 0.36, 1),
+  'entrance': cubic-bezier(0.16, 1, 0.3, 1),
+  'exit': cubic-bezier(0.7, 0, 0.84, 0),
+  'standard': cubic-bezier(0.4, 0, 0.2, 1),
+) !default;
+
+// -----------------------------------------------------------------------------
+// Stacking order
+//
+// Single source of truth for z-index. Never hard-code one in a component —
+// add a layer here so the whole app stays orderable at a glance.
+// -----------------------------------------------------------------------------
+
+$z-layers: (
+  'below': -1,
+  'base': 0,
+  'raised': 10,
+  'sticky': 100,
+  'navbar': 200,
+  'drawer': 300,
+  'overlay': 400,
+  'modal': 500,
+  'toast': 600,
+) !default;

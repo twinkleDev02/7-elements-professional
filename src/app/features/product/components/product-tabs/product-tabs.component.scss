@@ -1,0 +1,258 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Product tabs
+//
+// Tabs are equal-width by design, which lets one sliding underline track the
+// selection with a single transform instead of measuring each tab.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.product-tabs {
+  padding-block: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.product-tabs__panel {
+  @include container('wide');
+
+  overflow: hidden;
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface);
+}
+
+// -----------------------------------------------------------------------------
+// Strip
+// -----------------------------------------------------------------------------
+
+.product-tabs__strip {
+  position: relative;
+  display: flex;
+  border-block-end: border-width('hairline') solid var(--color-border);
+  background-color: var(--color-surface-tint);
+}
+
+.product-tabs__tab {
+  // Equal shares, so the underline's 1/n width lands exactly.
+  flex: 1 1 0;
+  min-inline-size: 0;
+  min-block-size: clamp(2.75rem, 4vw, 3.25rem);
+  padding-inline: 0.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: clamp(0.68rem, 0.9vw, 0.8125rem);
+  font-weight: weight('semibold');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @include transition(color);
+  @include focus-ring(-3px);
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  &.is-active {
+    color: var(--color-primary);
+  }
+}
+
+.product-tabs__underline {
+  position: absolute;
+  inset-block-end: -1px;
+  inset-inline-start: 0;
+  block-size: 2px;
+  background-color: var(--color-primary);
+  // Transform only, so the slide runs on the compositor.
+  will-change: transform;
+
+  @include transition(transform, $speed: 'fast');
+}
+
+// -----------------------------------------------------------------------------
+// Content
+// -----------------------------------------------------------------------------
+
+.product-tabs__content {
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+/// Each pane is a fresh element, so the entrance replays on every switch.
+.product-tabs__pane {
+  animation: fade-in-up duration('fast') ease('entrance') both;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.product-tabs__paragraph {
+  max-inline-size: 60ch;
+  color: var(--color-text-muted);
+  font-size: clamp(0.82rem, 1vw, 0.9rem);
+  line-height: leading('relaxed');
+
+  & + & {
+    margin-block-start: 0.75rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// How to use
+// -----------------------------------------------------------------------------
+
+.product-tabs__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-inline-size: 60ch;
+  padding: 0;
+  margin: 0;
+  // Numbering is drawn by the counter below, not by the list marker.
+  list-style: none;
+  counter-reset: step;
+}
+
+.product-tabs__step {
+  position: relative;
+  padding-inline-start: 2.25rem;
+  color: var(--color-text-muted);
+  font-size: clamp(0.82rem, 1vw, 0.9rem);
+  line-height: leading('relaxed');
+  counter-increment: step;
+
+  &::before {
+    content: counter(step);
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border-radius: radius('circle');
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    font-size: font-size('3xs');
+    font-weight: weight('semibold');
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Ingredients
+// -----------------------------------------------------------------------------
+
+.product-tabs__ingredients {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem 1.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include up('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.product-tabs__ingredient {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: clamp(0.8rem, 0.98vw, 0.875rem);
+
+  &::before {
+    content: '';
+    inline-size: 0.35rem;
+    block-size: 0.35rem;
+    flex: 0 0 auto;
+    rotate: 45deg;
+    background-color: var(--color-primary);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// FAQ
+// -----------------------------------------------------------------------------
+
+.product-tabs__faqs {
+  display: flex;
+  flex-direction: column;
+  max-inline-size: 60ch;
+}
+
+.product-tabs__faq {
+  border-block-end: border-width('hairline') solid var(--color-border);
+
+  &:first-of-type {
+    border-block-start: border-width('hairline') solid var(--color-border);
+  }
+}
+
+.product-tabs__faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.875rem;
+  color: var(--color-text);
+  font-size: clamp(0.8rem, 0.98vw, 0.9rem);
+  font-weight: weight('semibold');
+  cursor: pointer;
+  list-style: none;
+
+  @include transition(color);
+  @include focus-ring(-2px);
+
+  // Hides the default disclosure triangle in both engines.
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  svg {
+    inline-size: 1.1rem;
+    block-size: 1.1rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    @include transition(transform);
+  }
+
+  [open] > &  svg {
+    transform: rotate(180deg);
+  }
+}
+
+.product-tabs__faq-answer {
+  padding-block-end: 0.875rem;
+  color: var(--color-text-muted);
+  font-size: clamp(0.8rem, 0.98vw, 0.875rem);
+  line-height: leading('relaxed');
+}
+
+@include reduced-motion {
+  .product-tabs__pane {
+    animation: none;
+  }
+
+  .product-tabs__underline {
+    will-change: auto;
+    transition: none;
+  }
+}

@@ -1,0 +1,33 @@
+<!--
+  A progress bar, not a tab strip: it reports where the visitor is, it is not a
+  set of controls. `aria-valuenow` carries the same information non-visually.
+-->
+<ol
+  class="distributor-progress"
+  role="progressbar"
+  aria-label="Registration progress"
+  [attr.aria-valuemin]="1"
+  [attr.aria-valuemax]="steps().length"
+  [attr.aria-valuenow]="activeIndex() + 1"
+  [attr.aria-valuetext]="steps()[activeIndex()]?.label"
+>
+  @for (step of steps(); track step.id; let i = $index) {
+    <li
+      class="distributor-progress__step"
+      [class.is-active]="isActive(i)"
+      [class.is-complete]="isComplete(i)"
+    >
+      <span class="distributor-progress__marker" aria-hidden="true">
+        @if (isComplete(i)) {
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M6 12.5l4 4 8-9" />
+          </svg>
+        } @else {
+          {{ i + 1 }}
+        }
+      </span>
+
+      <span class="distributor-progress__label">{{ step.label }}</span>
+    </li>
+  }
+</ol>

@@ -1,0 +1,180 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Professional trust banner
+//
+// The product photograph as the whole field, held under a red scrim so the
+// copy and the four-point grid stay legible across it.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.trust-banner {
+  padding-block: clamp(1.25rem, 3vw, 2rem);
+}
+
+.trust-banner__panel {
+  @include container('wide');
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  // Stays as the base layer: it shows through the scrim's lighter end, and it
+  // is what the panel falls back to if the photograph never loads.
+  background: linear-gradient(
+    100deg,
+    var(--color-primary-deep, #7d1d1f) 0%,
+    var(--color-primary) 58%,
+    var(--color-primary-hover) 100%
+  );
+  color: var(--color-primary-contrast);
+}
+
+/// The photograph, anchored right so the product line-up survives the crop —
+/// it is far wider than this panel, so the horizontal crop bites first.
+.trust-banner__panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: url('/assets/images/brand/offerimg.png') 100% center / cover no-repeat;
+}
+
+/// Red scrim over the photograph. Deepest at the leading edge, where the copy
+/// sits, and lighter over the product cluster so it still reads as a picture
+/// rather than a flat wash.
+.trust-banner__panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    rgb(125 29 31 / 94%) 0%,
+    rgb(125 29 31 / 86%) 40%,
+    rgb(125 29 31 / 62%) 100%
+  );
+}
+
+.trust-banner__content {
+  position: relative;
+  max-inline-size: 44rem;
+}
+
+.trust-banner__eyebrow {
+  margin-block-end: 0.4rem;
+  color: rgb(255 255 255 / 84%);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.trust-banner__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+  font-weight: weight('regular');
+  line-height: leading('tight');
+  letter-spacing: tracking('tight');
+}
+
+.trust-banner__title-line {
+  display: block;
+}
+
+.trust-banner__body {
+  max-inline-size: 30rem;
+  margin-block: 0.5rem clamp(1.125rem, 2.4vw, 1.625rem);
+  color: rgb(255 255 255 / 86%);
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  line-height: leading('relaxed');
+}
+
+// -----------------------------------------------------------------------------
+// Points
+// -----------------------------------------------------------------------------
+
+.trust-banner__points {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.75rem, 1.8vw, 1.125rem);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include up('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up('xl') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.trust-banner__point {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-inline-size: 0;
+  will-change: transform;
+}
+
+.trust-banner__point-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(2rem, 2.8vw, 2.375rem);
+  block-size: clamp(2rem, 2.8vw, 2.375rem);
+  flex: 0 0 auto;
+  border: border-width('hairline') solid rgb(255 255 255 / 42%);
+  border-radius: radius('circle');
+
+  @include transition(transform);
+
+  .trust-banner__point:hover & {
+    transform: rotate(-8deg) scale(1.06);
+  }
+
+  svg {
+    inline-size: 48%;
+    block-size: 48%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.trust-banner__point-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-inline-size: 0;
+}
+
+.trust-banner__point-title {
+  font-size: clamp(0.72rem, 0.9vw, 0.8125rem);
+  font-weight: weight('semibold');
+  line-height: leading('snug');
+}
+
+.trust-banner__point-subtitle {
+  color: rgb(255 255 255 / 78%);
+  font-size: clamp(0.65rem, 0.82vw, 0.75rem);
+  line-height: leading('snug');
+}
+
+@include reduced-motion {
+  .trust-banner__point {
+    will-change: auto;
+  }
+
+  .trust-banner__point:hover .trust-banner__point-icon {
+    transform: none;
+  }
+}

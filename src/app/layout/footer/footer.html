@@ -1,0 +1,109 @@
+<footer class="footer">
+  <div class="footer__assurances-band">
+    <ul class="footer__assurances" role="list" appRevealOnScroll rootMargin="0px 0px -8% 0px">
+      @for (assurance of assurances(); track assurance.id) {
+        <li class="footer__assurance">
+          <span class="footer__assurance-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              @for (path of assurance.iconPaths; track $index) {
+                <path [attr.d]="path" />
+              }
+            </svg>
+          </span>
+
+          <span class="footer__assurance-text">
+            <span class="footer__assurance-title">{{ assurance.title }}</span>
+            <span class="footer__assurance-subtitle">{{ assurance.subtitle }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <div class="footer__main-band">
+    <div class="footer__main" appRevealOnScroll rootMargin="0px 0px -6% 0px">
+      <div class="footer__brand-col footer__col">
+        <!--
+          Wordmark set in type, matching the navbar: no logo asset exists yet,
+          and text stays crisp at any density.
+        -->
+        <a class="footer__brand" [routerLink]="homeLink" [attr.aria-label]="brand + ', home'">
+          <span class="footer__brand-mark" aria-hidden="true">7</span>
+          <span class="footer__brand-text">
+            <span class="footer__brand-name">Elements</span>
+            <span class="footer__brand-sub">Professional</span>
+          </span>
+        </a>
+
+        <p class="footer__blurb">{{ blurb() }}</p>
+
+        @if (socialLinks().length) {
+          <ul class="footer__social" role="list">
+            @for (social of socialLinks(); track social.id) {
+              <li>
+                <a
+                  class="footer__social-link"
+                  [href]="social.href"
+                  [attr.aria-label]="social.label"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    @for (path of social.iconPaths; track $index) {
+                      <path [attr.d]="path" />
+                    }
+                  </svg>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      @for (column of columns(); track column.id) {
+        <nav class="footer__col" [attr.aria-label]="column.title">
+          <h2 class="footer__col-title">{{ column.title }}</h2>
+
+          <ul class="footer__links" role="list">
+            @for (link of column.links; track link.path) {
+              <li>
+                <a class="footer__link" [routerLink]="link.path">{{ link.label }}</a>
+              </li>
+            }
+          </ul>
+        </nav>
+      }
+
+      <div class="footer__col footer__contact-col">
+        <h2 class="footer__col-title">Get In Touch</h2>
+
+        <ul class="footer__contact" role="list">
+          <li class="footer__contact-item">
+            <a class="footer__link" [href]="contact.phoneHref">{{ contact.phone }}</a>
+          </li>
+          <li class="footer__contact-item">
+            <a class="footer__link" [href]="contact.emailHref">{{ contact.email }}</a>
+          </li>
+          <li class="footer__contact-item footer__contact-item--muted">{{ contact.company }}</li>
+          <li class="footer__contact-item footer__contact-item--muted">{{ contact.hours }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__legal-band">
+    <div class="footer__legal" appRevealOnScroll>
+      <p class="footer__legal-item footer__copyright">
+        &copy; {{ currentYear }} {{ brand }}. All Rights Reserved.
+      </p>
+
+      <ul class="footer__legal-item footer__legal-links" role="list">
+        @for (link of legalLinks(); track link.path) {
+          <li>
+            <a class="footer__legal-link" [routerLink]="link.path">{{ link.label }}</a>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</footer>

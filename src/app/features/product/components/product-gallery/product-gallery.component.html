@@ -1,0 +1,94 @@
+<div class="product-gallery">
+  <div class="product-gallery__stage" #stage>
+    @if (active(); as item) {
+      @if (item.type === 'video') {
+        @if (isVideoPlaying()) {
+          <!--
+            Mounted only after the play button is pressed, so the file is never
+            fetched for someone who does not ask for it. Muted by default —
+            sound is the visitor's choice, never a surprise.
+          -->
+          <video
+            class="product-gallery__video"
+            [src]="item.src"
+            controls
+            autoplay
+            muted
+            playsinline
+            preload="metadata"
+          ></video>
+        } @else {
+          <button
+            class="product-gallery__video-poster"
+            type="button"
+            [attr.aria-label]="'Play video: ' + item.alt"
+            (click)="playVideo()"
+          >
+            <!--
+              TODO: no poster asset exists. `preload="metadata"` renders the
+              clip's own first frame rather than a stand-in from another
+              product. Add assets/images/brand/shampooing-poster.jpg (16:9).
+            -->
+            <video
+              class="product-gallery__video-preview"
+              [src]="item.src"
+              preload="metadata"
+              muted
+              playsinline
+              aria-hidden="true"
+            ></video>
+
+            <span class="product-gallery__play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M9 7.5l8 4.5-8 4.5z" />
+              </svg>
+            </span>
+          </button>
+        }
+      } @else {
+        <img
+          class="product-gallery__image"
+          [src]="item.src"
+          [alt]="item.alt"
+          fetchpriority="high"
+          decoding="async"
+        />
+      }
+    }
+  </div>
+
+  <!--
+    `init="false"`: params are assigned in TypeScript because breakpoint maps
+    cannot be written as HTML attributes.
+  -->
+  <swiper-container class="product-gallery__thumbs" #thumbs init="false">
+    @for (item of items(); track item.id; let i = $index) {
+      <swiper-slide>
+        <button
+          class="product-gallery__thumb"
+          type="button"
+          [class.is-active]="i === activeIndex()"
+          [attr.aria-label]="'View ' + item.alt"
+          [attr.aria-current]="i === activeIndex()"
+          (click)="select(i)"
+        >
+          @if (item.type === 'video') {
+            <span class="product-gallery__thumb-video" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M9 7.5l8 4.5-8 4.5z" />
+              </svg>
+            </span>
+          } @else {
+            <img
+              class="product-gallery__thumb-image"
+              [src]="item.src"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          }
+        </button>
+      </swiper-slide>
+    }
+  </swiper-container>
+</div>

@@ -1,0 +1,20 @@
+<section class="product-benefits" aria-label="Product benefits">
+  <ul class="product-benefits__panel" role="list">
+    @for (benefit of benefits(); track benefit.id) {
+      <li class="product-benefits__item">
+        <span class="product-benefits__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            @for (path of benefit.iconPaths; track $index) {
+              <path [attr.d]="path" />
+            }
+          </svg>
+        </span>
+
+        <span class="product-benefits__text">
+          <span class="product-benefits__title">{{ benefit.title }}</span>
+          <span class="product-benefits__subtitle">{{ benefit.subtitle }}</span>
+        </span>
+      </li>
+    }
+  </ul>
+</section>

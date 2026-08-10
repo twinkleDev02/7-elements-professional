@@ -1,0 +1,91 @@
+<a class="skip-link" href="#main-content">Skip to content</a>
+
+<header
+  class="navbar"
+  [class.is-condensed]="isCondensed()"
+  [class.is-entered]="hasEntered()"
+  [class.is-menu-open]="isMenuOpen()"
+  (keydown.escape)="onEscape()"
+>
+  <!--
+    One row: wordmark, navigation, drawer toggle. Below `lg` the navigation
+    wraps onto its own line and collapses into the drawer the toggle opens.
+  -->
+  <div class="navbar__bar">
+    <!--
+      Wordmark set in type rather than an image: no logo asset exists yet, and
+      text stays crisp at any density. Swap for an <img> when one lands.
+    -->
+    <a class="navbar__brand" [routerLink]="homeLink" aria-label="7 Elements Professional, home">
+      <span class="navbar__brand-mark" aria-hidden="true">7</span>
+      <span class="navbar__brand-text">
+        <span class="navbar__brand-name">Elements</span>
+        <span class="navbar__brand-sub">Professional</span>
+      </span>
+    </a>
+
+    <button
+      class="navbar__toggle"
+      type="button"
+      aria-controls="navbar-menu"
+      [attr.aria-expanded]="isMenuOpen()"
+      [attr.aria-label]="isMenuOpen() ? 'Close menu' : 'Open menu'"
+      (click)="toggleMenu()"
+    >
+      <span class="navbar__toggle-bars" aria-hidden="true"></span>
+    </button>
+
+    <div class="navbar__main" id="navbar-menu">
+      <nav class="navbar__main-inner" aria-label="Primary">
+        <ul class="navbar__links" role="list">
+          @for (link of links(); track link.label) {
+            <li class="navbar__item" [class.navbar__item--has-menu]="link.children">
+              <a
+                class="navbar__link"
+                [routerLink]="link.path"
+                routerLinkActive="is-active"
+                [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+                (click)="closeMenu()"
+              >
+                {{ link.label }}
+
+                @if (link.children) {
+                  <svg class="navbar__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 9.5l6 6 6-6" />
+                  </svg>
+                }
+              </a>
+
+              <!--
+                Always in the DOM, revealed by hover or focus rather than by a
+                toggle. That keeps the parent a plain link — one click, one page —
+                and the children reachable by keyboard, since focusing the parent
+                opens the menu before Tab arrives at them.
+              -->
+              @if (link.children) {
+                <ul class="navbar__submenu" role="list">
+                  @for (child of link.children; track child.path) {
+                    <li>
+                      <a class="navbar__submenu-link" [routerLink]="child.path" (click)="closeMenu()">
+                        {{ child.label }}
+                      </a>
+                    </li>
+                  }
+                </ul>
+              }
+            </li>
+          }
+        </ul>
+
+        <a class="navbar__quote" [routerLink]="quoteLink" (click)="closeMenu()">
+          {{ quoteLabel() }}
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Dismisses the drawer on tap; the header itself stays above it. -->
+@if (isMenuOpen()) {
+  <div class="navbar__scrim" aria-hidden="true" (click)="closeMenu()"></div>
+}

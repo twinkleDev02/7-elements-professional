@@ -1,0 +1,5 @@
+// Layout layer: structural primitives — containers, sections, grids.
+// Loaded after `base`, before `components`.
+
+@forward 'container';
+@forward 'grid';

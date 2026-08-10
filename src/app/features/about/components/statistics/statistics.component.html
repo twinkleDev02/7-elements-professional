@@ -1,0 +1,29 @@
+<section class="statistics" aria-label="7 Elements Professional by the numbers">
+  <ul class="statistics__panel" role="list">
+    @for (stat of stats(); track stat.id) {
+      <li class="statistics__item">
+        <span class="statistics__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            @for (path of stat.iconPaths; track $index) {
+              <path [attr.d]="path" />
+            }
+          </svg>
+        </span>
+
+        <span class="statistics__text">
+          <!--
+            `aria-hidden` on the ticking figure and a static value for screen
+            readers: an announced count-up would fire dozens of live updates.
+          -->
+          <span class="statistics__value" aria-hidden="true">
+            {{ counts()[stat.id] }}{{ stat.suffix }}
+          </span>
+          <span class="visually-hidden">{{ stat.value }}{{ stat.suffix }}</span>
+
+          <span class="statistics__label">{{ stat.label }}</span>
+          <span class="statistics__caption">{{ stat.caption }}</span>
+        </span>
+      </li>
+    }
+  </ul>
+</section>

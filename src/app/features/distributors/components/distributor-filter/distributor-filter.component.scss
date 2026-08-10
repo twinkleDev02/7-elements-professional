@@ -1,0 +1,219 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Distributor filter sidebar
+//
+// A persistent sidebar from `lg` up; a collapsible drawer below it, where a
+// full-height filter column would push the results off-screen.
+// =============================================================================
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.distributor-filter__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding-inline: 0.875rem;
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('sm');
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  cursor: pointer;
+
+  @include transition((background-color, border-color, color));
+  @include focus-ring;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  @include up('lg') {
+    display: none;
+  }
+
+  svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Body
+//
+// Collapsed to a zero-height grid row below `lg`; the `0fr → 1fr` transition
+// animates to the natural height without hard-coding a max-height.
+// -----------------------------------------------------------------------------
+
+.distributor-filter__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-block-start: 0.5rem;
+
+  @include transition(grid-template-rows, $speed: 'fast');
+
+  // Every direct child needs clipping for the collapsing row to work.
+  > * {
+    overflow: hidden;
+    min-block-size: 0;
+  }
+
+  .is-open & {
+    grid-template-rows: 1fr;
+  }
+
+  @include up('lg') {
+    display: block;
+    margin-block-start: 0;
+    padding: clamp(1rem, 2vw, 1.375rem);
+    border: border-width('hairline') solid var(--color-border);
+    border-radius: clamp(0.5rem, 1vw, 0.75rem);
+    background-color: var(--color-surface);
+
+    > * {
+      overflow: visible;
+    }
+  }
+}
+
+.distributor-filter__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: space('2xs');
+  padding-block-end: 0.75rem;
+  border-block-end: border-width('hairline') solid var(--color-border);
+}
+
+.distributor-filter__title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.3vw, 1.125rem);
+  font-weight: weight('medium');
+  letter-spacing: tracking('wide');
+}
+
+.distributor-filter__clear {
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  cursor: pointer;
+
+  @include transition(color);
+  @include focus-ring;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Groups
+// -----------------------------------------------------------------------------
+
+.distributor-filter__group {
+  border-block-end: border-width('hairline') solid var(--color-border);
+}
+
+.distributor-filter__group-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+  color: var(--color-text);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+
+  @include transition(color);
+  @include focus-ring(-2px);
+
+  // Hides the default disclosure triangle in both engines.
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    @include transition(transform);
+  }
+
+  [open] > & svg {
+    transform: rotate(180deg);
+  }
+}
+
+.distributor-filter__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0 0 0.875rem;
+  margin: 0;
+  list-style: none;
+}
+
+.distributor-filter__option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: clamp(0.75rem, 0.92vw, 0.8125rem);
+  cursor: pointer;
+
+  @include transition(color);
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+/// Native control, styled with `accent-color`: keeps the platform's keyboard
+/// and screen-reader behaviour, which is worth more than a custom box.
+.distributor-filter__checkbox {
+  inline-size: 1rem;
+  block-size: 1rem;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+
+  @include focus-ring;
+}
+
+@include reduced-motion {
+  .distributor-filter__body {
+    transition: none;
+  }
+}

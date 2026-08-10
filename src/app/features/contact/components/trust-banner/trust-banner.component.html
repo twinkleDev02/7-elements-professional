@@ -1,0 +1,34 @@
+<section class="trust-banner" aria-labelledby="trust-banner-title">
+  <div class="trust-banner__panel">
+    <div class="trust-banner__content">
+      <p class="trust-banner__eyebrow trust-banner__reveal">{{ content().eyebrow }}</p>
+
+      <h2 class="trust-banner__title trust-banner__reveal" id="trust-banner-title">
+        @for (line of content().titleLines; track line) {
+          <span class="trust-banner__title-line">{{ line }}</span>
+        }
+      </h2>
+
+      <p class="trust-banner__body trust-banner__reveal">{{ content().body }}</p>
+
+      <ul class="trust-banner__points" role="list">
+        @for (point of points(); track point.id) {
+          <li class="trust-banner__point">
+            <span class="trust-banner__point-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                @for (path of point.iconPaths; track $index) {
+                  <path [attr.d]="path" />
+                }
+              </svg>
+            </span>
+
+            <span class="trust-banner__point-text">
+              <span class="trust-banner__point-title">{{ point.title }}</span>
+              <span class="trust-banner__point-subtitle">{{ point.subtitle }}</span>
+            </span>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

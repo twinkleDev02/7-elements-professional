@@ -1,0 +1,27 @@
+<div class="product-filter">
+  <!--
+    A single-select filter is a radio group, not a list of buttons: `aria-pressed`
+    on each pill would announce six independent toggles instead of one choice.
+  -->
+  <div class="product-filter__pills" role="radiogroup" aria-label="Filter products by range">
+    @for (category of categories(); track category.id) {
+      <button
+        class="product-filter__pill"
+        type="button"
+        role="radio"
+        [class.is-active]="activeCategory() === category.id"
+        [attr.aria-checked]="activeCategory() === category.id"
+        (click)="categoryChange.emit(category.id)"
+      >
+        {{ category.label }}
+      </button>
+    }
+  </div>
+
+  <button class="product-filter__advanced" type="button" (click)="filterOpen.emit()">
+    <svg class="product-filter__advanced-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M4 7h16M7 12h10M10 17h4" />
+    </svg>
+    <span>{{ filterLabel() }}</span>
+  </button>
+</div>

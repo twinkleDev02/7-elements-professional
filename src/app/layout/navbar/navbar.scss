@@ -1,0 +1,452 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Header
+//
+// A single row: wordmark, primary navigation, quote button. Below `lg` the
+// navigation wraps onto its own line and collapses into a drawer.
+// =============================================================================
+
+:host {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: layer('navbar');
+  display: block;
+}
+
+.navbar {
+  background-color: var(--color-bg);
+
+  // One-time entrance, in CSS rather than GSAP: the header renders on every
+  // route through `MainLayout`, and importing GSAP here would put the whole
+  // library in the initial bundle site-wide.
+  opacity: 0;
+  transform: translateY(-12px);
+  transition:
+    opacity duration('base') ease('entrance'),
+    transform duration('base') ease('entrance'),
+    box-shadow duration('fast') ease('standard');
+
+  &.is-entered {
+    opacity: 1;
+    transform: none;
+  }
+
+  &.is-condensed {
+    box-shadow: 0 6px 24px rgb(43 23 20 / 10%);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Bar
+// -----------------------------------------------------------------------------
+
+.navbar__bar {
+  @include container('wide');
+
+  display: flex;
+  // Wrapping is what gives the drawer its own line below `lg`: the nav is
+  // flexed to a full-width basis there, so it is pushed past the toggle.
+  flex-wrap: wrap;
+  align-items: center;
+  gap: space('sm');
+  padding-block: clamp(0.5rem, 1.4vw, 0.875rem);
+
+  @include transition(padding-block);
+
+  .is-condensed & {
+    padding-block: clamp(0.375rem, 1vw, 0.625rem);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Wordmark
+// -----------------------------------------------------------------------------
+
+.navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  // Takes the row's slack, so the toggle stays pinned to the trailing edge
+  // below `lg` and the navigation starts after the wordmark above it.
+  margin-inline-end: auto;
+
+  @include focus-ring;
+}
+
+.navbar__brand-mark {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: weight('semibold');
+  line-height: leading('none');
+}
+
+.navbar__brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.navbar__brand-name {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2vw, 1.5rem);
+  line-height: leading('none');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+}
+
+/// Rule-flanked subtitle, drawn with borders so it needs no extra elements.
+.navbar__brand-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-block-start: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: clamp(0.4rem, 0.7vw, 0.5rem);
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1 1 auto;
+    min-inline-size: 0.5rem;
+    block-size: 1px;
+    background-color: var(--color-border-strong);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Drawer toggle
+// -----------------------------------------------------------------------------
+
+.navbar__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: radius('circle');
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+
+  @include transition((background-color, color));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-surface-tint);
+    color: var(--color-primary);
+  }
+
+  @include up('lg') {
+    display: none;
+  }
+}
+
+/// Three bars from one element: the middle is the box, the outer two are
+/// pseudo-elements that rotate into a cross when the drawer opens.
+.navbar__toggle-bars {
+  position: relative;
+  display: block;
+  inline-size: 1.15rem;
+  block-size: 2px;
+  background-color: currentcolor;
+
+  @include transition((background-color, transform));
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    block-size: 2px;
+    background-color: currentcolor;
+
+    @include transition(transform);
+  }
+
+  &::before {
+    inset-block-start: -0.375rem;
+  }
+
+  &::after {
+    inset-block-start: 0.375rem;
+  }
+
+  .is-menu-open & {
+    // The middle bar disappears and the outer two cross.
+    background-color: transparent;
+
+    &::before {
+      transform: translateY(0.375rem) rotate(45deg);
+    }
+
+    &::after {
+      transform: translateY(-0.375rem) rotate(-45deg);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Primary navigation
+// -----------------------------------------------------------------------------
+
+.navbar__main {
+  // A full-width basis forces the wrap, so the drawer opens beneath the
+  // wordmark and toggle rather than squeezing in beside them.
+  flex: 1 0 100%;
+  border-block-start: border-width('hairline') solid var(--color-border);
+
+  // Collapsed by default below `lg`. The `0fr → 1fr` grid track animates to the
+  // drawer's natural height without hard-coding a max-height.
+  display: grid;
+  grid-template-rows: 0fr;
+
+  @include transition(grid-template-rows, $speed: 'fast');
+
+  .is-menu-open & {
+    grid-template-rows: 1fr;
+  }
+
+  @include up('lg') {
+    // Back on the wordmark's line, taking whatever width is left.
+    flex: 1 1 auto;
+    grid-template-rows: 1fr;
+    border-block-start: 0;
+  }
+}
+
+.navbar__main-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: space('2xs');
+  // Required for the collapsing grid row to clip its content.
+  min-block-size: 0;
+  overflow: hidden;
+
+  @include up('lg') {
+    flex-direction: row;
+    align-items: center;
+    gap: space('sm');
+    overflow: visible;
+  }
+}
+
+.navbar__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  padding-block: space('2xs');
+  list-style: none;
+
+  @include up('lg') {
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.75rem, 2.2vw, 1.75rem);
+    padding-block: 0;
+  }
+}
+
+.navbar__item {
+  position: relative;
+}
+
+.navbar__link {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  inline-size: 100%;
+  padding-block: 0.7rem;
+  color: var(--color-text);
+  font-size: font-size('3xs');
+  font-weight: weight('medium');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @include transition(color);
+  @include focus-ring;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  @include up('lg') {
+    inline-size: auto;
+    padding-block: clamp(0.6rem, 1.4vw, 0.9rem);
+  }
+}
+
+/// Active state: a rule under the label, drawn only where there is a row to
+/// draw it on.
+.navbar__link.is-active {
+  color: var(--color-primary);
+
+  @include up('lg') {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset-block-end: 0.35rem;
+      inset-inline: 0;
+      block-size: 2px;
+      background-color: var(--color-primary);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Submenu
+//
+// No open/closed state in TypeScript: the parent is a real link, so the menu
+// is revealed by hover and `:focus-within` instead of by a click that would
+// otherwise have to choose between navigating and opening.
+// -----------------------------------------------------------------------------
+
+.navbar__chevron {
+  inline-size: 0.8rem;
+  block-size: 0.8rem;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  @include transition(transform);
+
+  @include up('lg') {
+    .navbar__item--has-menu:hover &,
+    .navbar__item--has-menu:focus-within & {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.navbar__submenu {
+  // In the drawer there is nowhere to pop out to, so the children simply sit
+  // indented under their parent, open.
+  padding: 0 0 0.35rem 0.85rem;
+  margin: 0;
+  list-style: none;
+
+  @include up('lg') {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 50%;
+    z-index: layer('drawer');
+    min-inline-size: 13rem;
+    padding: 0.4rem 0;
+    border: border-width('hairline') solid var(--color-border);
+    border-radius: radius('md');
+    background-color: var(--color-surface);
+    box-shadow: 0 16px 40px rgb(43 23 20 / 14%);
+    opacity: 0;
+    visibility: hidden;
+    translate: -50% 0.35rem;
+
+    @include transition((opacity, translate, visibility));
+
+    .navbar__item--has-menu:hover &,
+    .navbar__item--has-menu:focus-within & {
+      opacity: 1;
+      visibility: visible;
+      translate: -50% 0;
+    }
+  }
+}
+
+.navbar__submenu-link {
+  display: block;
+  padding: 0.5rem 0 0.5rem 1rem;
+  color: var(--color-text-muted);
+  font-size: font-size('3xs');
+  letter-spacing: tracking('wide');
+  white-space: nowrap;
+
+  @include transition((color, background-color));
+  @include focus-ring;
+
+  &:hover {
+    color: var(--color-primary);
+    background-color: var(--color-surface-tint);
+  }
+
+  @include up('lg') {
+    padding-inline: 1rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Quote button
+// -----------------------------------------------------------------------------
+
+.navbar__quote {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-block-size: 2.5rem;
+  margin-block-end: space('2xs');
+  padding-inline: clamp(1rem, 2vw, 1.5rem);
+  border-radius: radius('md');
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  @include transition((background-color, transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgb(158 42 44 / 26%);
+  }
+
+  @include up('lg') {
+    min-block-size: 2.25rem;
+    margin-block-end: 0;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Drawer scrim
+// -----------------------------------------------------------------------------
+
+.navbar__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--color-overlay);
+
+  @include up('lg') {
+    display: none;
+  }
+}
+
+@include reduced-motion {
+  .navbar {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .navbar__quote:hover {
+    transform: none;
+  }
+}

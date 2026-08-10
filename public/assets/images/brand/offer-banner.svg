@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320" role="img" aria-label="Placeholder">
+  <!--
+    PLACEHOLDER — replace with the real product cluster cut-out.
+
+    Drop the final asset at: public/assets/images/brand/offer-banner.png
+    then update the `src` in offer-banner.component.html.
+
+    Reference shows: a group of product bottles on the right of the banner,
+    lit against a ring-light glow, ideally on a TRANSPARENT background so the
+    banner's red field shows through. Intrinsic size 900x320.
+  -->
+  <rect width="900" height="320" fill="#9e2a2c" />
+  <circle cx="620" cy="150" r="120" fill="none" stroke="#f7d9c8" stroke-opacity="0.55" stroke-width="3" />
+  <g fill="#f7d9c8" fill-opacity="0.5">
+    <rect x="540" y="120" width="52" height="140" rx="12" />
+    <rect x="606" y="96" width="60" height="164" rx="14" />
+    <rect x="680" y="136" width="46" height="124" rx="11" />
+  </g>
+  <text x="450" y="292" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#f7d9c8" fill-opacity="0.85">
+    Offer banner placeholder &#183; 900 &#215; 320 &#183; assets/images/brand/offer-banner.png
+  </text>
+</svg>

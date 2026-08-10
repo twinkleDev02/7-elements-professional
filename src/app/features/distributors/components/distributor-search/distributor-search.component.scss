@@ -1,0 +1,195 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Distributor search
+//
+// A raised panel that overlaps the hero's lower edge, as in the reference.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.distributor-search {
+  padding-block: clamp(1rem, 2.5vw, 1.5rem);
+  background-color: var(--color-bg);
+}
+
+.distributor-search__panel {
+  @include container('wide');
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.5rem, 1.2vw, 0.75rem);
+  align-items: center;
+  padding: clamp(0.875rem, 1.8vw, 1.125rem);
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface);
+  box-shadow: 0 12px 32px rgb(43 23 20 / 8%);
+  will-change: transform;
+
+  @include up('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up('lg') {
+    // City reads longer than a pincode, so it gets the wider share. The two sit
+    // adjacent with the actions closing the row — spreading them to the panel's
+    // full width instead left the bar looking empty.
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  }
+}
+
+.distributor-search__field {
+  position: relative;
+  min-inline-size: 0;
+  will-change: transform;
+}
+
+/// A select with `appearance: none` carries no hint that it opens a menu. The
+/// chevron is drawn on the wrapper rather than set as a background image so it
+/// takes its colour from the theme instead of a baked-in hex.
+.distributor-search__field--select::after {
+  content: '';
+  position: absolute;
+  inset-block-start: calc(50% - 0.35rem);
+  inset-inline-end: 1rem;
+  inline-size: 0.45rem;
+  block-size: 0.45rem;
+  border-inline-end: 1.5px solid var(--color-text-muted);
+  border-block-end: 1.5px solid var(--color-text-muted);
+  rotate: 45deg;
+  pointer-events: none;
+}
+
+.distributor-search__control {
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding-inline: 0.875rem;
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: radius('md');
+  // Tinted against the white panel: white-on-white left the fields reading as
+  // empty space rather than as controls. They lift to plain surface on focus.
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-size: clamp(0.78rem, 0.95vw, 0.875rem);
+
+  // Smooth border and glow on focus, rather than a hard outline swap.
+  @include transition((border-color, box-shadow, background-color));
+
+  &::placeholder {
+    color: var(--color-text-subtle);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-border-strong);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    background-color: var(--color-surface);
+    box-shadow: 0 0 0 3px rgb(158 42 44 / 14%);
+  }
+
+  &:disabled {
+    background-color: var(--color-surface-tint);
+    color: var(--color-text-subtle);
+    cursor: not-allowed;
+  }
+}
+
+select.distributor-search__control {
+  cursor: pointer;
+  appearance: none;
+  // Room for the chevron the design system supplies as a background image.
+  padding-inline-end: 2rem;
+}
+
+// -----------------------------------------------------------------------------
+// Actions
+// -----------------------------------------------------------------------------
+
+.distributor-search__actions {
+  display: flex;
+  gap: 0.5rem;
+
+  // Below the single-row layout the actions get their own full-width row,
+  // rather than sitting under one field with dead space beside them.
+  @include down('lg') {
+    grid-column: 1 / -1;
+  }
+}
+
+.distributor-search__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  flex: 1 1 auto;
+  min-block-size: 2.75rem;
+  padding-inline: clamp(1rem, 2vw, 1.5rem);
+  border: 0;
+  border-radius: radius('md');
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @include transition((background-color, transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgb(158 42 44 / 26%);
+  }
+
+  svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+}
+
+.distributor-search__reset {
+  flex: 0 0 auto;
+  min-block-size: 2.75rem;
+  padding-inline: clamp(0.75rem, 1.6vw, 1.125rem);
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('md');
+  background-color: transparent;
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  cursor: pointer;
+
+  @include transition((background-color, color, border-color));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-surface-tint);
+    border-color: var(--color-primary);
+  }
+}
+
+@include reduced-motion {
+  .distributor-search__panel,
+  .distributor-search__field {
+    will-change: auto;
+  }
+
+  .distributor-search__submit:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,31 @@
+<section class="contact-info-cards" aria-label="Ways to reach us">
+  <ul class="contact-info-cards__grid" role="list">
+    @for (channel of channels(); track channel.id) {
+      <li class="contact-info-cards__card">
+        <span class="contact-info-cards__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            @for (path of channel.iconPaths; track $index) {
+              <path [attr.d]="path" />
+            }
+          </svg>
+        </span>
+
+        <p class="contact-info-cards__label">{{ channel.label }}</p>
+
+        <!--
+          Only actionable channels become links; an address or an opening-hours
+          card is plain text, not a dead anchor.
+        -->
+        @if (channel.href; as href) {
+          <a class="contact-info-cards__value contact-info-cards__value--link" [href]="href">
+            {{ channel.value }}
+          </a>
+        } @else {
+          <p class="contact-info-cards__value">{{ channel.value }}</p>
+        }
+
+        <p class="contact-info-cards__caption">{{ channel.caption }}</p>
+      </li>
+    }
+  </ul>
+</section>

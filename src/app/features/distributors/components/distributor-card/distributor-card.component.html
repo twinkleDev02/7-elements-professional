@@ -1,0 +1,106 @@
+<article class="distributor-card" [class.distributor-card--list]="layout() === 'list'">
+  <p class="distributor-card__tier" [attr.data-tier]="distributor().tier">{{ tierLabel() }}</p>
+
+  <div class="distributor-card__identity">
+    <!--
+      No distributor logos exist in the assets, so the business initial stands
+      in. A real logo drops into this same box at the same size.
+      TODO: add assets/images/distributors/<id>.png and render it here.
+    -->
+    <span class="distributor-card__logo" aria-hidden="true">{{ initial() }}</span>
+
+    <h3 class="distributor-card__name">{{ distributor().name }}</h3>
+
+    <p class="distributor-card__location">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 21s6.5-5.6 6.5-10.2a6.5 6.5 0 0 0-13 0C5.5 15.4 12 21 12 21z" />
+        <path d="M12 8.2a2.6 2.6 0 1 1 0 5.2 2.6 2.6 0 0 1 0-5.2z" />
+      </svg>
+      {{ distributor().city }}, {{ distributor().coverage }}
+    </p>
+
+    <p class="distributor-card__rating">
+      <!--
+        Two stacked rows of five stars: the lower hollow, the upper solid and
+        clipped to the score, so a 4.8 renders exactly.
+      -->
+      <span class="distributor-card__stars" aria-hidden="true">
+        <span class="distributor-card__stars-row">
+          @for (slot of stars; track slot) {
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.9l6-.8z" />
+            </svg>
+          }
+        </span>
+
+        <span
+          class="distributor-card__stars-row distributor-card__stars-row--filled"
+          [style.width.%]="ratingWidth()"
+        >
+          @for (slot of stars; track slot) {
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.9l6-.8z" />
+            </svg>
+          }
+        </span>
+      </span>
+
+      <span class="distributor-card__rating-value" aria-hidden="true">
+        {{ distributor().rating }} ({{ distributor().reviewCount }})
+      </span>
+      <span class="visually-hidden">
+        Rated {{ distributor().rating }} out of 5 from {{ distributor().reviewCount }} reviews
+      </span>
+    </p>
+  </div>
+
+  <div class="distributor-card__contact">
+    <a class="distributor-card__contact-row" [href]="'tel:' + distributor().phone">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          d="M7.2 3.5 9 3.9l1.2 3.4-1.9 1.5a11.5 11.5 0 0 0 5.9 5.9l1.5-1.9 3.4 1.2.4 1.8a2 2 0 0 1-2 2.3A15.6 15.6 0 0 1 4.9 5.5a2 2 0 0 1 2.3-2z"
+        />
+      </svg>
+      {{ distributor().phone }}
+    </a>
+
+    <a class="distributor-card__contact-row" [href]="'mailto:' + distributor().email">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3.5 6h17v12h-17z" />
+        <path d="M3.5 6.5l8.5 6 8.5-6" />
+      </svg>
+      {{ distributor().email }}
+    </a>
+  </div>
+
+  <div class="distributor-card__products">
+    <p class="distributor-card__products-label">Products Available</p>
+    <ul class="distributor-card__chips" role="list">
+      @for (label of productLabels(); track label) {
+        <li class="distributor-card__chip">{{ label }}</li>
+      }
+    </ul>
+  </div>
+
+  <div class="distributor-card__actions">
+    <button
+      class="distributor-card__action distributor-card__action--primary"
+      type="button"
+      (click)="viewDetails.emit(distributor())"
+    >
+      View Details
+    </button>
+
+    <button
+      class="distributor-card__action distributor-card__action--ghost"
+      type="button"
+      [attr.aria-label]="'Directions to ' + distributor().name"
+      (click)="directions.emit(distributor())"
+    >
+      <span>Directions</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 12l16-7-5 7 5 7z" />
+      </svg>
+    </button>
+  </div>
+</article>

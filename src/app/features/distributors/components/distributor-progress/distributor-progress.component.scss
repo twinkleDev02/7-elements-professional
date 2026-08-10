@@ -1,0 +1,126 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Registration progress
+//
+// Horizontal with connecting rules from `sm` up; a compact vertical list below,
+// where four labels on one row would wrap into an unreadable block.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.distributor-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include up('sm') {
+    flex-direction: row;
+    gap: 0;
+  }
+}
+
+.distributor-progress__step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  will-change: transform;
+
+  @include up('sm') {
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 0.4rem;
+    text-align: center;
+  }
+
+  // Connecting rule, drawn from each step back to the previous one.
+  @include up('sm') {
+    & + &::before {
+      content: '';
+      position: absolute;
+      inset-block-start: clamp(0.9rem, 1.4vw, 1.0625rem);
+      inset-inline: -50% 50%;
+      block-size: 2px;
+      background-color: var(--color-border);
+
+      @include transition(background-color);
+    }
+
+    &.is-active::before,
+    &.is-complete::before {
+      background-color: var(--color-primary);
+    }
+  }
+}
+
+.distributor-progress__marker {
+  position: relative;
+  z-index: layer('raised');
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(1.75rem, 2.6vw, 2.125rem);
+  block-size: clamp(1.75rem, 2.6vw, 2.125rem);
+  flex: 0 0 auto;
+  border: border-width('thin') solid var(--color-border);
+  border-radius: radius('circle');
+  background-color: var(--color-surface);
+  color: var(--color-text-subtle);
+  font-size: clamp(0.68rem, 0.86vw, 0.75rem);
+  font-weight: weight('semibold');
+
+  @include transition((background-color, border-color, color, transform));
+
+  svg {
+    inline-size: 52%;
+    block-size: 52%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .is-active & {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    transform: scale(1.06);
+  }
+
+  .is-complete & {
+    border-color: var(--color-primary);
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+  }
+}
+
+.distributor-progress__label {
+  color: var(--color-text-muted);
+  font-size: clamp(0.65rem, 0.82vw, 0.75rem);
+  font-weight: weight('medium');
+  line-height: leading('snug');
+
+  @include transition(color);
+
+  .is-active &,
+  .is-complete & {
+    color: var(--color-text);
+  }
+}
+
+@include reduced-motion {
+  .distributor-progress__step {
+    will-change: auto;
+  }
+
+  .is-active .distributor-progress__marker {
+    transform: none;
+  }
+}

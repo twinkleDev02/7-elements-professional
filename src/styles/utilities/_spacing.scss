@@ -1,0 +1,108 @@
+// =============================================================================
+// Spacing utilities — generated from the `$spacing` scale.
+//
+// Escape hatch, not a methodology. Reach for a utility to nudge one instance;
+// if the same combination appears three times, it wants to be a component
+// class or a component stylesheet rule instead.
+//
+// Logical properties throughout (`block`/`inline`, not `top`/`left`), so the
+// layout stays correct if the site is ever translated into an RTL language.
+//
+// Cost: one rule per step per property. Trim `$spacing` in `_variables.scss`
+// if the generated CSS ever shows up as meaningful weight.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// -----------------------------------------------------------------------------
+// Margin
+// -----------------------------------------------------------------------------
+
+@each $name, $value in $spacing {
+  .m-#{$name} {
+    margin: $value;
+  }
+
+  .mt-#{$name} {
+    margin-block-start: $value;
+  }
+
+  .mb-#{$name} {
+    margin-block-end: $value;
+  }
+
+  .ms-#{$name} {
+    margin-inline-start: $value;
+  }
+
+  .me-#{$name} {
+    margin-inline-end: $value;
+  }
+
+  .mx-#{$name} {
+    margin-inline: $value;
+  }
+
+  .my-#{$name} {
+    margin-block: $value;
+  }
+}
+
+/// Centring shorthand — the one margin value that is not on the scale.
+.mx-auto {
+  margin-inline: auto;
+}
+
+// -----------------------------------------------------------------------------
+// Padding
+// -----------------------------------------------------------------------------
+
+@each $name, $value in $spacing {
+  .p-#{$name} {
+    padding: $value;
+  }
+
+  .pt-#{$name} {
+    padding-block-start: $value;
+  }
+
+  .pb-#{$name} {
+    padding-block-end: $value;
+  }
+
+  .ps-#{$name} {
+    padding-inline-start: $value;
+  }
+
+  .pe-#{$name} {
+    padding-inline-end: $value;
+  }
+
+  .px-#{$name} {
+    padding-inline: $value;
+  }
+
+  .py-#{$name} {
+    padding-block: $value;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Gap
+//
+// For flex and grid containers that are not already using `.stack`/`.cluster`.
+// -----------------------------------------------------------------------------
+
+@each $name, $value in $spacing {
+  .gap-#{$name} {
+    gap: $value;
+  }
+
+  .gap-x-#{$name} {
+    column-gap: $value;
+  }
+
+  .gap-y-#{$name} {
+    row-gap: $value;
+  }
+}

@@ -1,0 +1,25 @@
+<section class="promise" aria-labelledby="promise-title">
+  <div class="promise__inner">
+    <header class="promise__header">
+      <p class="promise__eyebrow promise__reveal">{{ content.eyebrow }}</p>
+      <h2 class="promise__title promise__reveal" id="promise-title">{{ content.title }}</h2>
+    </header>
+
+    <ul class="promise__items" role="list">
+      @for (item of items(); track item.id) {
+        <li class="promise__item">
+          <span class="promise__item-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              @for (path of item.iconPaths; track $index) {
+                <path [attr.d]="path" />
+              }
+            </svg>
+          </span>
+
+          <span class="promise__item-title">{{ item.title }}</span>
+          <span class="promise__item-subtitle">{{ item.subtitle }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

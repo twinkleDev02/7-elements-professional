@@ -1,0 +1,7 @@
+// Utilities layer: single-purpose overrides.
+//
+// Loaded LAST, so a utility wins against the component layer without needing
+// `!important` or an inflated selector.
+
+@forward 'spacing';
+@forward 'a11y';

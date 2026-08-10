@@ -1,0 +1,51 @@
+@if (product(); as detail) {
+  <nav class="product-detail__breadcrumb" aria-label="Breadcrumb">
+    <div class="product-detail__breadcrumb-inner">
+      <ol class="product-detail__crumbs" role="list">
+        <li><a class="product-detail__crumb-link" [routerLink]="homeLink">Home</a></li>
+        <li class="product-detail__crumb-sep" aria-hidden="true">&rsaquo;</li>
+        <li><a class="product-detail__crumb-link" [routerLink]="productsLink">Products</a></li>
+        <li class="product-detail__crumb-sep" aria-hidden="true">&rsaquo;</li>
+        <li>
+          <span class="product-detail__crumb-current" aria-current="page">{{ detail.name }}</span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <section class="product-detail__main" aria-label="Product">
+    <div class="product-detail__main-inner">
+      <app-product-gallery [items]="detail.gallery" [productName]="detail.name" />
+
+      <app-product-info
+        [product]="detail"
+        [trustBadges]="trustBadges"
+        (addToCart)="onAddToCart($event)"
+        (buyNow)="onBuyNow($event)"
+      />
+    </div>
+  </section>
+
+  <app-product-benefits [benefits]="detail.benefits" />
+
+  <app-product-tabs [product]="detail" />
+
+  <app-product-video [video]="detail.video" />
+
+  <app-related-products [products]="related()" />
+
+  <app-promo-banner />
+
+  <app-newsletter-band />
+} @else {
+  <!-- Unknown slug: a dead end is worse than an explicit way back. -->
+  <section class="product-detail__missing">
+    <div class="product-detail__missing-inner">
+      <h1 class="product-detail__missing-title">We could not find that product</h1>
+      <p class="product-detail__missing-body">
+        It may have been renamed or retired. Browse the full professional range instead.
+      </p>
+      <a class="product-detail__missing-cta" [routerLink]="productsLink">View All Products</a>
+    </div>
+  </section>
+}

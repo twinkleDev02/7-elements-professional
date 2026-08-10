@@ -1,0 +1,274 @@
+<div class="distributor-form">
+  <header class="distributor-form__header">
+    <h2 class="distributor-form__title">Distributor Registration Form</h2>
+    <span class="distributor-form__rule" aria-hidden="true"></span>
+  </header>
+
+  @if (isSuccess()) {
+    <p class="form-status form-status--success" role="status">
+      Thank you — your application is with us. Our partnerships team will be in touch.
+    </p>
+  } @else {
+    <form
+      class="distributor-form__form"
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      (input)="syncStep()"
+      (change)="syncStep()"
+      novalidate
+    >
+      <fieldset class="distributor-form__fieldset">
+        <legend class="visually-hidden">Personal details</legend>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-name">Full Name</label>
+            <input class="form-control" id="app-name" type="text" formControlName="fullName" autocomplete="name" required />
+            @if (invalid('fullName')) {
+              <p class="form-error" role="alert">Please enter your full name.</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-business">Business Name</label>
+            <input class="form-control" id="app-business" type="text" formControlName="businessName" autocomplete="organization" required />
+            @if (invalid('businessName')) {
+              <p class="form-error" role="alert">Please enter your business name.</p>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-mobile">Mobile Number</label>
+            <input class="form-control" id="app-mobile" type="tel" inputmode="numeric" maxlength="10" formControlName="mobile" autocomplete="tel-national" required />
+            @if (invalid('mobile')) {
+              <p class="form-error" role="alert">Enter a 10-digit mobile number starting 6–9.</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-email">Email Address</label>
+            <input class="form-control" id="app-email" type="email" inputmode="email" formControlName="email" autocomplete="email" required />
+            @if (invalid('email')) {
+              <p class="form-error" role="alert">Please enter a valid email address.</p>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="app-alternate">Alternate Number</label>
+            <input class="form-control" id="app-alternate" type="tel" inputmode="numeric" maxlength="10" formControlName="alternateNumber" />
+            @if (invalid('alternateNumber')) {
+              <p class="form-error" role="alert">Enter a 10-digit number starting 6–9, or leave blank.</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-dob">Date of Birth</label>
+            <input class="form-control" id="app-dob" type="date" formControlName="dateOfBirth" required />
+            @if (invalid('dateOfBirth')) {
+              <p class="form-error" role="alert">Please enter your date of birth.</p>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-state">State</label>
+            <select class="form-control" id="app-state" formControlName="state" required (change)="onStateChange($any($event.target).value)">
+              <option value="">Select State</option>
+              @for (option of states; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            @if (invalid('state')) {
+              <p class="form-error" role="alert">Please choose your state.</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-city">City</label>
+            <select class="form-control" id="app-city" formControlName="city" [disabled]="!cities().length" required>
+              <option value="">Select City</option>
+              @for (option of cities(); track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            @if (invalid('city')) {
+              <p class="form-error" role="alert">Please choose your city.</p>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-pincode">Pincode</label>
+            <input class="form-control" id="app-pincode" type="text" inputmode="numeric" maxlength="6" formControlName="pincode" autocomplete="postal-code" required />
+            @if (invalid('pincode')) {
+              <p class="form-error" role="alert">Enter a 6-digit pincode.</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-gender">Gender</label>
+            <select class="form-control" id="app-gender" formControlName="gender" required>
+              <option value="">Select Gender</option>
+              @for (option of genders; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            @if (invalid('gender')) {
+              <p class="form-error" role="alert">Please make a selection.</p>
+            }
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="distributor-form__fieldset">
+        <legend class="visually-hidden">Business details</legend>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-type">Business Type</label>
+            <select class="form-control" id="app-type" formControlName="businessType" required>
+              <option value="">Select Business Type</option>
+              @for (option of businessTypes; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            @if (invalid('businessType')) {
+              <p class="form-error" role="alert">Please choose a business type.</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label form-label--required" for="app-years">Years In Business</label>
+            <select class="form-control" id="app-years" formControlName="yearsInBusiness" required>
+              <option value="">Select Duration</option>
+              @for (option of yearsOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            @if (invalid('yearsInBusiness')) {
+              <p class="form-error" role="alert">Please make a selection.</p>
+            }
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label form-label--required" for="app-address">Full Address</label>
+          <textarea class="form-control" id="app-address" rows="3" formControlName="address" autocomplete="street-address" required></textarea>
+          @if (invalid('address')) {
+            <p class="form-error" role="alert">Please enter your full business address.</p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="app-gst">GST Number <span class="form-hint">(optional)</span></label>
+          <input class="form-control" id="app-gst" type="text" maxlength="15" formControlName="gstNumber" />
+          @if (invalid('gstNumber')) {
+            <p class="form-error" role="alert">That does not look like a valid 15-character GSTIN.</p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label form-label--required" for="app-reason">
+            Why do you want to become our distributor?
+          </label>
+          <textarea class="form-control" id="app-reason" rows="4" formControlName="reason" required></textarea>
+          @if (invalid('reason')) {
+            <p class="form-error" role="alert">Please tell us a little more — at least twenty characters.</p>
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="distributor-form__fieldset">
+        <legend class="form-legend">Upload Documents (GST Certificate, Business Licence, etc.)</legend>
+
+        <!--
+          The label is the drop zone: clicking it opens the picker natively, so
+          the control stays keyboard-reachable without a custom handler.
+        -->
+        <label
+          class="distributor-form__drop"
+          [class.is-dragging]="isDragging()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave()"
+          (drop)="onDrop($event)"
+        >
+          <input
+            class="visually-hidden"
+            type="file"
+            multiple
+            accept="application/pdf,image/jpeg,image/png"
+            (change)="onFileInput($event)"
+          />
+
+          <span class="distributor-form__drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M12 16V5" />
+              <path d="M8 8.5 12 4.5l4 4" />
+              <path d="M4.5 15.5v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3" />
+            </svg>
+          </span>
+
+          <span class="distributor-form__drop-title">Click to upload or drag and drop</span>
+          <span class="distributor-form__drop-hint">PDF, JPG, PNG · max 5 MB each · up to 5 files</span>
+        </label>
+
+        @if (fileError()) {
+          <p class="form-error" role="alert">{{ fileError() }}</p>
+        }
+
+        @if (files().length) {
+          <ul class="distributor-form__files" role="list">
+            @for (file of files(); track file.name) {
+              <li class="distributor-form__file">
+                <span class="distributor-form__file-name">{{ file.name }}</span>
+                <button
+                  class="distributor-form__file-remove"
+                  type="button"
+                  [attr.aria-label]="'Remove ' + file.name"
+                  (click)="removeFile(file.name)"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </fieldset>
+
+      <div class="form-check distributor-form__terms">
+        <input class="form-check__input" id="app-terms" type="checkbox" formControlName="acceptedTerms" required />
+        <label class="form-check__label" for="app-terms">
+          I agree to the
+          <a class="distributor-form__link" href="/terms-and-conditions">Terms &amp; Conditions</a>
+          and
+          <a class="distributor-form__link" href="/privacy-policy">Privacy Policy</a>.
+        </label>
+      </div>
+      @if (invalid('acceptedTerms')) {
+        <p class="form-error" role="alert">Please accept the terms to continue.</p>
+      }
+
+      <div class="form-actions">
+        <button
+          class="distributor-form__submit"
+          type="submit"
+          [disabled]="isSubmitting()"
+          [attr.aria-busy]="isSubmitting()"
+        >
+          <span>{{ isSubmitting() ? 'Submitting…' : 'Submit Application' }}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M4 12l16-7-5 7 5 7z" />
+          </svg>
+        </button>
+      </div>
+    </form>
+  }
+</div>

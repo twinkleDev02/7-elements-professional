@@ -1,0 +1,27 @@
+<section class="our-philosophy" aria-labelledby="our-philosophy-title">
+  <div class="our-philosophy__panel">
+    <div class="our-philosophy__intro">
+      <p class="our-philosophy__eyebrow our-philosophy__reveal" id="our-philosophy-title">
+        {{ content.eyebrow }}
+      </p>
+      <p class="our-philosophy__body our-philosophy__reveal">{{ content.body }}</p>
+    </div>
+
+    <ul class="our-philosophy__pillars" role="list">
+      @for (pillar of pillars(); track pillar.id) {
+        <li class="our-philosophy__pillar">
+          <span class="our-philosophy__pillar-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              @for (path of pillar.iconPaths; track $index) {
+                <path [attr.d]="path" />
+              }
+            </svg>
+          </span>
+
+          <span class="our-philosophy__pillar-title">{{ pillar.title }}</span>
+          <span class="our-philosophy__pillar-subtitle">{{ pillar.subtitle }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

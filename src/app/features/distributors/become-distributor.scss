@@ -1,0 +1,71 @@
+@use 'abstracts' as *;
+
+// Page shell. Section spacing belongs to each section's own stylesheet; only
+// the three-column registration band is composed here.
+
+:host {
+  display: block;
+  // Guards against any section's decorative overflow widening the document.
+  overflow-x: clip;
+  background-color: var(--color-bg);
+}
+
+.become-distributor__registration {
+  padding-block: clamp(1.5rem, 3.5vw, 2.75rem);
+}
+
+.become-distributor__inner {
+  @include container('wide');
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: start;
+
+  @include up('md') {
+    // Benefits rail beside the form; the aside drops below both.
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+  }
+
+  @include up('xl') {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.7fr) minmax(0, 0.85fr);
+  }
+}
+
+.become-distributor__benefits,
+.become-distributor__main,
+.become-distributor__aside {
+  display: block;
+  min-inline-size: 0;
+}
+
+.become-distributor__main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.2vw, 1.5rem);
+}
+
+.become-distributor__aside {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.8vw, 1.25rem);
+
+  @include up('md') {
+    // Spans both columns at tablet width, where a third would be cramped.
+    grid-column: 1 / -1;
+    flex-direction: row;
+
+    > * {
+      flex: 1 1 0;
+    }
+  }
+
+  @include up('xl') {
+    grid-column: auto;
+    flex-direction: column;
+
+    > * {
+      flex: 0 0 auto;
+    }
+  }
+}

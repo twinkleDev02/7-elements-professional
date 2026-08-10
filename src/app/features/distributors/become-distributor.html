@@ -1,0 +1,40 @@
+<app-distributor-hero
+  [script]="hero.script"
+  [titleLines]="hero.titleLines"
+  [body]="hero.body"
+/>
+
+<section class="become-distributor__registration" aria-label="Distributor registration">
+  <div class="become-distributor__inner">
+    <!-- Benefits column, matching the reference's left rail. -->
+    <app-distributor-benefits
+      class="become-distributor__benefits"
+      [benefits]="benefits"
+      title="Why Join Us"
+    />
+
+    <div class="become-distributor__main">
+      <app-distributor-progress
+        class="become-distributor__progress"
+        [activeIndex]="activeStep()"
+      />
+
+      <app-distributor-form
+        (stepChange)="onStepChange($event)"
+        (submitted)="onSubmitted($event)"
+      />
+    </div>
+
+    <div class="become-distributor__aside">
+      <app-distributor-benefits
+        [benefits]="partnerReasons"
+        title="Why Partner With Us?"
+        variant="panel"
+      />
+
+      <app-distributor-support />
+    </div>
+  </div>
+</section>
+
+<app-newsletter-band />

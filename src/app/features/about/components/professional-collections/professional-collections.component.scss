@@ -1,0 +1,173 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Professional collections
+//
+// One scroll-snap track at every size: a plain row once the six cards fit, a
+// touch carousel when they do not. No breakpoint fork, no second component.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.professional-collections {
+  --pc-columns: 1.35;
+  --pc-gap: clamp(0.5rem, 1.2vw, 0.875rem);
+
+  padding-block: clamp(1rem, 2.5vw, 1.75rem);
+  background-color: var(--color-surface);
+
+  @include up('sm') {
+    --pc-columns: 2.4;
+  }
+
+  @include up('md') {
+    --pc-columns: 3.4;
+  }
+
+  @include up('lg') {
+    --pc-columns: 4.5;
+  }
+
+  @include up('xl') {
+    --pc-columns: 6;
+  }
+}
+
+.professional-collections__inner {
+  @include container('wide');
+}
+
+.professional-collections__eyebrow {
+  margin-block-end: clamp(0.75rem, 1.8vw, 1.125rem);
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.professional-collections__track {
+  display: flex;
+  gap: var(--pc-gap);
+  padding: 0.5rem 0 1rem;
+  margin: 0;
+  list-style: none;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include focus-ring(4px);
+
+  @include up('lg') {
+    cursor: grab;
+  }
+
+  &.is-dragging {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+    cursor: grabbing;
+    user-select: none;
+  }
+}
+
+.professional-collections__card {
+  flex: 0 0 calc((100% - (var(--pc-columns) - 1) * var(--pc-gap)) / var(--pc-columns));
+  scroll-snap-align: start;
+  will-change: transform;
+}
+
+.professional-collections__card-link {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  overflow: hidden;
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.375rem, 0.8vw, 0.625rem);
+  background-color: var(--color-surface);
+
+  @include transition((transform, box-shadow, border-color));
+  @include focus-ring(3px);
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: var(--color-border-strong);
+    box-shadow:
+      0 16px 34px rgb(43 23 20 / 13%),
+      0 20px 54px rgb(158 42 44 / 11%);
+  }
+}
+
+.professional-collections__card-media {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-surface-tint);
+}
+
+.professional-collections__card-image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  will-change: transform;
+
+  @include transition(transform, $speed: 'base');
+
+  .professional-collections__card-link:hover & {
+    transform: scale(1.05);
+  }
+}
+
+.professional-collections__card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: clamp(0.625rem, 1.2vw, 0.875rem) clamp(0.375rem, 0.8vw, 0.625rem);
+  text-align: center;
+}
+
+.professional-collections__card-title {
+  margin-block-end: 0.25rem;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(0.75rem, 0.95vw, 0.875rem);
+  font-weight: weight('medium');
+  line-height: leading('snug');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.professional-collections__card-benefit {
+  color: var(--color-text-muted);
+  font-size: clamp(0.6rem, 0.78vw, 0.6875rem);
+  line-height: leading('snug');
+}
+
+@include reduced-motion {
+  .professional-collections__track {
+    scroll-behavior: auto;
+  }
+
+  .professional-collections__card,
+  .professional-collections__card-image {
+    will-change: auto;
+  }
+
+  .professional-collections__card-link:hover,
+  .professional-collections__card-link:hover .professional-collections__card-image {
+    transform: none;
+  }
+}

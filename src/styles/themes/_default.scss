@@ -1,0 +1,102 @@
+// =============================================================================
+// Default theme — the runtime token contract.
+//
+// Every colour, font and shadow used anywhere in the app resolves to one of the
+// custom properties below. Components never name a raw colour; they name a
+// role (`--color-surface`, `--color-text-muted`), which is what makes a theme
+// swappable at runtime and a rebrand a one-file change.
+//
+// !! PLACEHOLDER VALUES !!
+// The values here are a deliberately neutral greyscale so nothing reads as a
+// finished design. Replace them with the finalised brand palette and type —
+// the token *names* are the contract and should not need to change.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+:root {
+  // ---------------------------------------------------------------------------
+  // Typography
+  //
+  // TODO: add the licensed brand webfonts. The stacks below are the closest
+  // system fallbacks — swapping them is a one-line change per token.
+  // ---------------------------------------------------------------------------
+  --font-display: 'Playfair Display', 'Cormorant Garamond', georgia, 'Times New Roman', serif;
+  --font-body: 'Jost', 'Questrial', system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
+  --font-script: 'Great Vibes', 'Dancing Script', 'Segoe Script', cursive;
+  --font-mono: ui-monospace, 'SFMono-Regular', menlo, monospace;
+
+  // ---------------------------------------------------------------------------
+  // Surfaces
+  // ---------------------------------------------------------------------------
+  --color-bg: #fdf6f3;
+  --color-surface: #fff;
+  --color-surface-raised: #fff;
+  --color-surface-tint: #fbeae4;
+  --color-overlay: rgb(43 23 20 / 55%);
+
+  // ---------------------------------------------------------------------------
+  // Content
+  // ---------------------------------------------------------------------------
+  --color-text: #2b1714;
+  --color-text-muted: #7b625b;
+  --color-text-subtle: #a08c85;
+  --color-text-inverse: #fff;
+
+  // ---------------------------------------------------------------------------
+  // Brand
+  //
+  // The house red carries the calls to action; the gold is reserved for
+  // ratings, rules and small ornament, where it reads as trim rather than
+  // as a second competing primary.
+  // ---------------------------------------------------------------------------
+  --color-primary: #9e2a2c;
+  --color-primary-hover: #86211f;
+  --color-primary-contrast: #fff;
+  --color-primary-deep: #7d1d1f;
+  --color-accent: #c9a227;
+  --color-accent-contrast: #2b1714;
+
+  // ---------------------------------------------------------------------------
+  // Lines and focus
+  // ---------------------------------------------------------------------------
+  --color-border: #f0dcd5;
+  --color-border-strong: rgb(158 42 44 / 24%);
+  --color-focus: #9e2a2c;
+
+  // ---------------------------------------------------------------------------
+  // Feedback
+  // ---------------------------------------------------------------------------
+  --color-success: #2f6f4f;
+  --color-warning: #96701d;
+  --color-danger: #a32b2b;
+  --color-danger-surface: #fbeaea;
+
+  // ---------------------------------------------------------------------------
+  // Elevation
+  //
+  // Restrained on purpose — luxury layouts separate with space and hairlines
+  // far more than with drop shadows.
+  // ---------------------------------------------------------------------------
+  --shadow-sm: 0 1px 2px rgb(20 20 20 / 6%);
+  --shadow-md: 0 4px 16px rgb(20 20 20 / 8%);
+  --shadow-lg: 0 16px 48px rgb(20 20 20 / 12%);
+
+  // ---------------------------------------------------------------------------
+  // Component-level tokens
+  //
+  // Derived from the roles above. A component reads these so a single override
+  // retunes every instance without touching the component stylesheet.
+  // ---------------------------------------------------------------------------
+  // Consumed by the `container()` mixin. Override it on a section to widen or
+  // tighten the gutter for one region without touching the mixin.
+  --container-gutter: #{fluid($container-gutter-min, $container-gutter-max)};
+
+  --control-height: 3rem;
+  --control-height-sm: 2.375rem;
+  --control-height-lg: 3.5rem;
+  --control-radius: #{radius('sm')};
+  --control-border: #{border-width('hairline')} solid var(--color-border);
+
+  color-scheme: light;
+}

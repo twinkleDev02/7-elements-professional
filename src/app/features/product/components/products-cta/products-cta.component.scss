@@ -1,0 +1,138 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Closing call to action
+//
+// Copy on a blush field with the model anchored to the trailing edge.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.products-cta {
+  padding-block: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.products-cta__panel {
+  @include container('wide');
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  min-block-size: clamp(9rem, 16vw, 12rem);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background: url('/assets/images/brand/product4.png') center/cover no-repeat;
+}
+
+/// The photograph is bright, busy and warm, which left dark copy sitting in the
+/// candlelight with nothing behind it. This deepens the whole frame so the copy
+/// can be set in white and read anywhere the crop happens to land.
+.products-cta__panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgb(43 23 20 / 52%) 0%, rgb(43 23 20 / 64%) 100%);
+}
+
+.products-cta__image {
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  inset-inline-end: 0;
+  block-size: 100%;
+  inline-size: 46%;
+  object-fit: cover;
+  object-position: center top;
+  will-change: transform;
+  // Dissolves the leading edge into the blush field behind it.
+  mask-image: linear-gradient(90deg, transparent 0%, #000 34%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 34%);
+}
+
+.products-cta__content {
+  position: relative;
+  max-inline-size: 30rem;
+  // The photograph fills the whole panel now rather than sitting in one half,
+  // so the copy belongs in the middle of it.
+  margin-inline: auto;
+  text-align: center;
+}
+
+.products-cta__title {
+  color: #fff;
+  text-shadow: 0 1px 14px rgb(43 23 20 / 55%);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+  font-weight: weight('regular');
+  line-height: leading('tight');
+  letter-spacing: tracking('tight');
+  text-wrap: balance;
+}
+
+.products-cta__body {
+  margin-block: 0.5rem clamp(0.875rem, 1.8vw, 1.25rem);
+  color: rgb(255 255 255 / 90%);
+  font-size: clamp(0.78rem, 0.95vw, 0.875rem);
+  line-height: leading('relaxed');
+  text-shadow: 0 1px 10px rgb(43 23 20 / 50%);
+}
+
+.products-cta__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.5rem;
+  padding-inline: clamp(1.1rem, 2.2vw, 1.625rem);
+  border-radius: radius('md');
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  // Lifts the button off a dark, textured ground it would otherwise sink into.
+  box-shadow: 0 8px 22px rgb(43 23 20 / 38%);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  line-height: leading('none');
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  @include transition((background-color, transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgb(158 42 44 / 26%);
+  }
+
+  &:hover .products-cta__button-icon {
+    transform: translateX(3px);
+  }
+}
+
+.products-cta__button-icon {
+  inline-size: 1.05em;
+  block-size: 1.05em;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  @include transition(transform);
+}
+
+@include reduced-motion {
+  .products-cta__image {
+    will-change: auto;
+  }
+
+  .products-cta__button:hover,
+  .products-cta__button:hover .products-cta__button-icon {
+    transform: none;
+  }
+}

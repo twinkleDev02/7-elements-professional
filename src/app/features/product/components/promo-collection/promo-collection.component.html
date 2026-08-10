@@ -1,0 +1,41 @@
+<section class="promo-collection" aria-labelledby="promo-collection-title">
+  <div class="promo-collection__panel">
+    <div class="promo-collection__content">
+      <p class="promo-collection__eyebrow promo-collection__reveal">{{ content.eyebrow }}</p>
+
+      <h2 class="promo-collection__title promo-collection__reveal" id="promo-collection-title">
+        @for (line of content.titleLines; track line) {
+          <span class="promo-collection__title-line">{{ line }}</span>
+        }
+      </h2>
+
+      <p class="promo-collection__body promo-collection__reveal">{{ content.body }}</p>
+
+      <a class="promo-collection__cta promo-collection__reveal" [routerLink]="ctaLink">
+        <span>{{ content.ctaLabel }}</span>
+        <svg class="promo-collection__cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 12h15M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+
+    <ul class="promo-collection__features" role="list">
+      @for (feature of features(); track feature.id) {
+        <li class="promo-collection__feature">
+          <span class="promo-collection__feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              @for (path of feature.iconPaths; track $index) {
+                <path [attr.d]="path" />
+              }
+            </svg>
+          </span>
+
+          <span class="promo-collection__feature-text">
+            <span class="promo-collection__feature-title">{{ feature.title }}</span>
+            <span class="promo-collection__feature-subtitle">{{ feature.subtitle }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+// =============================================================================
+// Abstracts — the only entry point a component stylesheet needs.
+//
+//   @use 'abstracts' as *;
+//
+// `src/styles` is on the Sass load path (`stylePreprocessorOptions.includePaths`
+// in angular.json), so that line works from any component, at any depth.
+//
+// This file emits ZERO CSS. That is the whole point: it is pulled into every
+// component stylesheet, so anything that emitted a rule here would be
+// duplicated once per component. Never `@forward` a CSS-emitting layer from
+// this file — those belong to `src/styles.scss` and are loaded exactly once.
+// =============================================================================
+
+@forward 'variables';
+@forward 'functions';
+@forward 'mixins';

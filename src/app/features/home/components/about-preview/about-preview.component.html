@@ -1,0 +1,67 @@
+<section class="about-preview" aria-labelledby="about-preview-title">
+  <div class="about-preview__inner">
+    <figure class="about-preview__media about-preview__reveal">
+      <!--
+        PLACEHOLDER ASSET. Replace with the real photograph and update this src:
+        public/assets/images/brand/about-preview.jpg
+        Reference shows a model from behind, hand in wavy hair, warm salon bokeh.
+      -->
+      <img
+        class="about-preview__image"
+        src="assets/images/brand/home_.png"
+        alt="Model with long, healthy waves after a salon treatment"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <figcaption class="about-preview__badge">
+        <span class="about-preview__badge-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M12 3.5c3.4 4 5.5 6.7 5.5 9.4a5.5 5.5 0 0 1-11 0c0-2.7 2.1-5.4 5.5-9.4z" />
+          </svg>
+        </span>
+        <span class="about-preview__badge-label">{{ badgeLabel() }}</span>
+      </figcaption>
+    </figure>
+
+    <div class="about-preview__content">
+      <p class="about-preview__eyebrow about-preview__reveal">{{ eyebrow() }}</p>
+
+      <h2 class="about-preview__title about-preview__reveal" id="about-preview-title">
+        {{ heading() }}
+      </h2>
+
+      <p class="about-preview__body about-preview__reveal">{{ body() }}</p>
+
+      <a class="about-preview__signature about-preview__reveal" [routerLink]="aboutLink">
+        {{ signature() }}
+        <span class="about-preview__signature-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path
+              d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9z"
+            />
+          </svg>
+        </span>
+      </a>
+    </div>
+
+    <ul class="about-preview__panel" role="list">
+      @for (highlight of highlights(); track highlight.id) {
+        <li class="about-preview__highlight">
+          <span class="about-preview__highlight-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              @for (path of highlight.iconPaths; track $index) {
+                <path [attr.d]="path" />
+              }
+            </svg>
+          </span>
+
+          <span class="about-preview__highlight-text">
+            <span class="about-preview__highlight-title">{{ highlight.title }}</span>
+            <span class="about-preview__highlight-subtitle">{{ highlight.subtitle }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

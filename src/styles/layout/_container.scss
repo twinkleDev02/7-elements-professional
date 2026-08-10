@@ -1,0 +1,78 @@
+// =============================================================================
+// Container — the horizontal frame every page sits inside.
+//
+// Layout primitives only: they control measure and rhythm, never appearance.
+// A page composes these; it does not restyle them.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.container {
+  @include container;
+}
+
+.container--narrow {
+  @include container('narrow');
+}
+
+.container--wide {
+  @include container('wide');
+}
+
+/// Full-bleed: no max width, gutters kept.
+.container--full {
+  @include container('full');
+}
+
+// -----------------------------------------------------------------------------
+// Section — the vertical counterpart.
+//
+// Generous block spacing is most of what separates a premium layout from a
+// cramped one, so the default is deliberately large and scales with viewport.
+// -----------------------------------------------------------------------------
+
+.section {
+  padding-block: space('2xl');
+
+  @include up('md') {
+    padding-block: space('3xl');
+  }
+
+  @include up('lg') {
+    padding-block: space('4xl');
+  }
+}
+
+.section--tight {
+  padding-block: space('xl');
+
+  @include up('lg') {
+    padding-block: space('2xl');
+  }
+}
+
+.section--loose {
+  padding-block: space('3xl');
+
+  @include up('lg') {
+    padding-block: space('5xl');
+  }
+}
+
+/// Removes the block padding on one side, for stacking two sections that
+/// should read as a single field.
+.section--flush-start {
+  padding-block-start: 0;
+}
+
+.section--flush-end {
+  padding-block-end: 0;
+}
+
+/// Breaks an element out of its container to the full viewport width while
+/// keeping it in normal document flow — for edge-to-edge imagery inside an
+/// otherwise contained page.
+.full-bleed {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}

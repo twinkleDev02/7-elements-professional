@@ -1,0 +1,39 @@
+@if (href(); as externalUrl) {
+  <a
+    [class]="classes()"
+    [attr.href]="isDisabled() ? null : externalUrl"
+    [attr.aria-disabled]="isDisabled() ? 'true' : null"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-busy]="loading()"
+    [attr.data-loading]="loading() ? 'true' : null"
+    target="_blank"
+    rel="noopener noreferrer"
+    (click)="onClick($event)"
+  >
+    <ng-content />
+  </a>
+} @else if (routerLink(); as route) {
+  <a
+    [class]="classes()"
+    [routerLink]="isDisabled() ? null : route"
+    [attr.aria-disabled]="isDisabled() ? 'true' : null"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-busy]="loading()"
+    [attr.data-loading]="loading() ? 'true' : null"
+    (click)="onClick($event)"
+  >
+    <ng-content />
+  </a>
+} @else {
+  <button
+    [class]="classes()"
+    [type]="type()"
+    [disabled]="isDisabled()"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-busy]="loading()"
+    [attr.data-loading]="loading() ? 'true' : null"
+    (click)="onClick($event)"
+  >
+    <ng-content />
+  </button>
+}

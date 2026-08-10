@@ -1,0 +1,299 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Product grid
+//
+// Four columns at desktop, reflowing to two and then one. Card entrances are
+// CSS animations rather than GSAP: cards appended by "Load More" animate on
+// insert for free, where a timeline would have to be re-run against only the
+// new nodes each time the list grew.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.75rem, 1.6vw, 1.125rem);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include up('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up('lg') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.product-grid__card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.375rem, 0.8vw, 0.625rem);
+  background-color: var(--color-surface);
+
+  // Held until the grid scrolls into view, then released. Cards inserted after
+  // that point animate immediately, because the animation starts on creation.
+  animation: fade-in-up duration('base') ease('entrance') both;
+  animation-play-state: paused;
+
+  @include transition((transform, box-shadow, border-color));
+
+  .product-grid.is-revealed & {
+    animation-play-state: running;
+  }
+
+  // Column-position stagger, so it holds for any number of rows.
+  &:nth-child(4n + 2) {
+    animation-delay: 70ms;
+  }
+
+  &:nth-child(4n + 3) {
+    animation-delay: 140ms;
+  }
+
+  &:nth-child(4n + 4) {
+    animation-delay: 210ms;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: var(--color-border-strong);
+    box-shadow:
+      0 16px 34px rgb(43 23 20 / 13%),
+      0 20px 54px rgb(158 42 44 / 11%);
+  }
+}
+
+.product-grid__link {
+  display: flex;
+  flex-direction: column;
+
+  @include focus-ring(3px);
+}
+
+// -----------------------------------------------------------------------------
+// Media
+// -----------------------------------------------------------------------------
+
+.product-grid__media {
+  display: block;
+  overflow: hidden;
+  // Portrait, because the products are: a square frame cropped the tops off
+  // the taller bottles.
+  aspect-ratio: 3 / 4;
+  padding: clamp(0.5rem, 1.5vw, 0.875rem);
+  background-color: var(--color-surface-tint);
+}
+
+.product-grid__image {
+  inline-size: 100%;
+  block-size: 100%;
+  // `contain` over `cover`: the whole bottle matters more than filling the
+  // frame edge to edge, and the tinted panel behind it reads as intentional.
+  object-fit: contain;
+  will-change: transform;
+
+  @include transition(transform, $speed: 'base');
+
+  .product-grid__card:hover & {
+    transform: scale(1.05);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Copy
+// -----------------------------------------------------------------------------
+
+.product-grid__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: clamp(0.625rem, 1.2vw, 0.875rem) clamp(0.625rem, 1.2vw, 0.875rem) 0;
+}
+
+.product-grid__category {
+  color: var(--color-primary);
+  font-size: clamp(0.55rem, 0.72vw, 0.625rem);
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.product-grid__name {
+  margin-block-start: 0.15rem;
+  color: var(--color-text);
+  font-size: clamp(0.82rem, 1vw, 0.9375rem);
+  font-weight: weight('medium');
+  line-height: leading('snug');
+  text-wrap: balance;
+}
+
+.product-grid__size {
+  color: var(--color-text-subtle);
+  font-size: font-size('3xs');
+}
+
+// -----------------------------------------------------------------------------
+// Rating
+// -----------------------------------------------------------------------------
+
+.product-grid__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-block-start: 0.25rem;
+}
+
+/// Two rows in one box; the filled one is clipped to the score.
+.product-grid__stars {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+.product-grid__stars-row {
+  display: flex;
+  gap: 1px;
+  white-space: nowrap;
+
+  svg {
+    inline-size: 0.8rem;
+    block-size: 0.8rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+}
+
+.product-grid__stars-row--filled {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  overflow: hidden;
+
+  svg {
+    fill: var(--color-accent);
+    stroke: var(--color-accent);
+  }
+}
+
+.product-grid__rating-value {
+  color: var(--color-text-muted);
+  font-size: font-size('3xs');
+}
+
+.product-grid__price {
+  margin-block-start: 0.35rem;
+  color: var(--color-primary);
+  font-size: clamp(0.95rem, 1.2vw, 1.0625rem);
+  font-weight: weight('semibold');
+  letter-spacing: tracking('tight');
+}
+
+// -----------------------------------------------------------------------------
+// Actions
+// -----------------------------------------------------------------------------
+
+.product-grid__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.625rem, 1.2vw, 0.875rem)
+    clamp(0.625rem, 1.2vw, 0.875rem);
+}
+
+.product-grid__cart {
+  flex: 1 1 auto;
+  min-block-size: 2.25rem;
+  padding-inline: 0.5rem;
+  border: 0;
+  border-radius: radius('sm');
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-size: clamp(0.6rem, 0.78vw, 0.6875rem);
+  font-weight: weight('semibold');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @include transition((background-color, transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 8px 18px rgb(158 42 44 / 26%);
+  }
+}
+
+.product-grid__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  flex: 0 0 auto;
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('circle');
+  background-color: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+
+  @include transition((background-color, color, transform));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    transform: scale(1.08);
+  }
+
+  svg {
+    inline-size: 0.95rem;
+    block-size: 0.95rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Empty state
+// -----------------------------------------------------------------------------
+
+.product-grid__empty {
+  grid-column: 1 / -1;
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+  color: var(--color-text-muted);
+  font-size: clamp(0.85rem, 1.05vw, 0.95rem);
+  text-align: center;
+}
+
+@include reduced-motion {
+  .product-grid__card {
+    animation: none;
+    opacity: 1;
+  }
+
+  .product-grid__image {
+    will-change: auto;
+  }
+
+  .product-grid__card:hover,
+  .product-grid__card:hover .product-grid__image,
+  .product-grid__icon-button:hover {
+    transform: none;
+  }
+}

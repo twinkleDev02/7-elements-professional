@@ -1,0 +1,30 @@
+@use 'abstracts' as *;
+
+// Sticky-footer shell: the routed content takes all the space the navbar and
+// footer do not, so short pages still push the footer to the bottom.
+:host {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+}
+
+.layout__main {
+  flex: 1 1 auto;
+
+  // The skip link focuses this element; suppress the default outline since the
+  // focus target is the whole page region, not an interactive control.
+  &:focus {
+    outline: none;
+  }
+}
+
+.layout__loader {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: layer('toast');
+}
+
+.layout__loader-label {
+  @include visually-hidden;
+}

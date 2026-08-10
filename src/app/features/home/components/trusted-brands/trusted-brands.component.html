@@ -1,0 +1,14 @@
+<section class="trusted-brands" aria-labelledby="trusted-brands-title">
+  <h2 class="trusted-brands__title trusted-brands__reveal" id="trusted-brands-title">
+    {{ heading() }}
+  </h2>
+
+  <ul class="trusted-brands__list" role="list">
+    @for (partner of partners(); track partner.id) {
+      <li class="trusted-brands__item" [class.trusted-brands__item--serif]="partner.serif">
+        <span class="trusted-brands__lead">{{ partner.lead }}</span>
+        <span class="trusted-brands__trail">{{ partner.trail }}</span>
+      </li>
+    }
+  </ul>
+</section>

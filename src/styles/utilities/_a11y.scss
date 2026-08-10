@@ -1,0 +1,58 @@
+// =============================================================================
+// Accessibility utilities.
+//
+// The class-based counterparts to the a11y mixins, for cases where the element
+// is in a template rather than a stylesheet.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+/// Removed from view, still announced. For labels and live-region text that a
+/// sighted visitor infers from the design.
+.visually-hidden {
+  @include visually-hidden;
+}
+
+/// As above, but revealed on focus — the pattern for skip links.
+.visually-hidden-focusable {
+  @include visually-hidden;
+
+  &:focus,
+  &:focus-within {
+    @include visually-shown;
+  }
+}
+
+/// The navbar's skip link: off-screen until tabbed to, then pinned top-start.
+.skip-link {
+  @include visually-hidden;
+
+  &:focus-visible {
+    @include visually-shown;
+
+    position: fixed;
+    inset-block-start: space('2xs');
+    inset-inline-start: space('2xs');
+    z-index: layer('toast');
+
+    padding: space('2xs') space('sm');
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border: border-width('hairline') solid var(--color-focus);
+  }
+}
+
+/// Purely decorative elements. Pair with `aria-hidden="true"` — this only
+/// stops the pointer, the attribute is what removes it from the a11y tree.
+.decorative {
+  pointer-events: none;
+  user-select: none;
+}
+
+/// Locks background scrolling behind a drawer or modal. Toggled from the
+/// component that owns the overlay.
+.is-scroll-locked {
+  overflow: hidden;
+  // Prevents the layout shift when the scrollbar disappears.
+  padding-inline-end: var(--scrollbar-width, 0);
+}

@@ -1,0 +1,138 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Promotional banner
+//
+// A red field with the range still drifting behind the copy.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.promo-banner {
+  padding-block: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.promo-banner__panel {
+  @include container('wide');
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  min-block-size: clamp(9rem, 16vw, 12rem);
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background: linear-gradient(
+    100deg,
+    var(--color-primary-deep) 0%,
+    var(--color-primary) 58%,
+    var(--color-primary-hover) 100%
+  );
+  color: var(--color-primary-contrast);
+}
+
+.promo-banner__image {
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  inset-inline-end: 0;
+  block-size: 100%;
+  inline-size: 46%;
+  object-fit: cover;
+  object-position: center;
+  will-change: transform;
+  // Dissolves the leading edge into the red field.
+  mask-image: linear-gradient(90deg, transparent 0%, #000 38%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 38%);
+}
+
+.promo-banner__content {
+  position: relative;
+  max-inline-size: 26rem;
+}
+
+.promo-banner__eyebrow {
+  margin-block-end: 0.4rem;
+  color: rgb(255 255 255 / 84%);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.promo-banner__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.6vw, 1.875rem);
+  font-weight: weight('regular');
+  line-height: leading('tight');
+  letter-spacing: tracking('tight');
+}
+
+.promo-banner__title-line {
+  display: block;
+}
+
+.promo-banner__body {
+  max-inline-size: 22rem;
+  margin-block: 0.5rem clamp(0.875rem, 1.8vw, 1.25rem);
+  color: rgb(255 255 255 / 86%);
+  font-size: clamp(0.78rem, 0.95vw, 0.875rem);
+  line-height: leading('relaxed');
+}
+
+.promo-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.5rem;
+  padding-inline: clamp(1.1rem, 2.2vw, 1.625rem);
+  border-radius: radius('md');
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  line-height: leading('none');
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  @include transition((transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow:
+      0 0 0 4px rgb(255 255 255 / 18%),
+      0 12px 28px rgb(0 0 0 / 22%);
+  }
+
+  &:hover .promo-banner__cta-icon {
+    transform: translateX(3px);
+  }
+}
+
+.promo-banner__cta-icon {
+  inline-size: 1.05em;
+  block-size: 1.05em;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  @include transition(transform);
+}
+
+@include reduced-motion {
+  .promo-banner__image {
+    will-change: auto;
+  }
+
+  .promo-banner__cta:hover,
+  .promo-banner__cta:hover .promo-banner__cta-icon {
+    transform: none;
+  }
+}

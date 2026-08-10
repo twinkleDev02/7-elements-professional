@@ -1,0 +1,48 @@
+// =============================================================================
+// Dark theme — opt-in override of the default token values.
+//
+// Deliberately gated behind an explicit `data-theme="dark"` attribute rather
+// than `prefers-color-scheme`, so a visitor's OS setting cannot silently
+// override art-directed brand imagery. Enable it by setting the attribute:
+//
+//   document.documentElement.dataset['theme'] = 'dark';
+//
+// Only tokens that actually change are redeclared — everything else is
+// inherited from `_default.scss`.
+//
+// !! PLACEHOLDER VALUES !! — see the note in `_default.scss`.
+// =============================================================================
+
+:root[data-theme='dark'] {
+  --color-bg: #0d0d0d;
+  --color-surface: #161616;
+  --color-surface-raised: #1e1e1e;
+  --color-overlay: rgb(0 0 0 / 70%);
+
+  --color-text: #f2f2f0;
+  --color-text-muted: #a8a8a4;
+  --color-text-subtle: #7a7a76;
+  --color-text-inverse: #0d0d0d;
+
+  --color-primary: #f2f2f0;
+  --color-primary-hover: #ffffff;
+  --color-primary-contrast: #0d0d0d;
+  --color-accent: #c2a06a;
+  --color-accent-contrast: #0d0d0d;
+
+  --color-border: #2c2c2c;
+  --color-border-strong: #444442;
+  --color-focus: #f2f2f0;
+
+  --color-success: #6fbf8f;
+  --color-warning: #d8ae4d;
+  --color-danger: #e57373;
+  --color-danger-surface: #2a1616;
+
+  // Shadows read as noise on dark surfaces; separation comes from the borders.
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 45%);
+  --shadow-lg: 0 16px 48px rgb(0 0 0 / 55%);
+
+  color-scheme: dark;
+}

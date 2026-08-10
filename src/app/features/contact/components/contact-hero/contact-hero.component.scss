@@ -1,0 +1,101 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Contact hero
+//
+// Same treatment as the About and Products heroes: copy on a blush field with
+// the artwork fitted whole and anchored to the trailing edge.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.contact-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow-x: clip;
+  isolation: isolate;
+  min-block-size: clamp(16rem, 30vw, 22rem);
+  background: url('/assets/images/brand/contact_banner.png') center/cover no-repeat;
+}
+
+.contact-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  
+}
+
+.contact-hero__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgb(253 246 243 / 94%) 0%,
+    rgb(253 246 243 / 66%) 34%,
+    rgb(253 246 243 / 0%) 62%
+  );
+}
+
+.contact-hero__inner {
+  @include container('wide');
+
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+}
+
+.contact-hero__content {
+  max-inline-size: 34rem;
+
+  @include up('lg') {
+    max-inline-size: min(50%, 34rem);
+  }
+}
+
+.contact-hero__eyebrow {
+  margin-block-end: 0.625rem;
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.contact-hero__title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-weight: weight('regular');
+  line-height: 1.08;
+  letter-spacing: tracking('tight');
+}
+
+/// Clipping window each title line wipes up through.
+.contact-hero__title-mask {
+  display: block;
+  overflow: hidden;
+  padding-block-end: 0.08em;
+  margin-block-end: -0.08em;
+}
+
+.contact-hero__title-line {
+  display: block;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  will-change: transform, opacity;
+}
+
+.contact-hero__body {
+  max-inline-size: 28rem;
+  margin-block-start: clamp(0.75rem, 1.6vw, 1.125rem);
+  color: var(--color-text-muted);
+  font-size: clamp(0.85rem, 1.05vw, 0.95rem);
+  line-height: leading('relaxed');
+}
+
+@include reduced-motion {
+  .contact-hero__title-line {
+    will-change: auto;
+  }
+}

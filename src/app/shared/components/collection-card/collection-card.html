@@ -1,0 +1,30 @@
+<article class="collection-card" [class.collection-card--featured]="featured()">
+  <a class="collection-card__link" [routerLink]="link()">
+    <img
+      class="collection-card__image"
+      [src]="collection().image.url"
+      [alt]="collection().image.alt"
+      [width]="collection().image.width"
+      [height]="collection().image.height"
+      [attr.loading]="eager() ? 'eager' : 'lazy'"
+      [attr.fetchpriority]="eager() ? 'high' : 'auto'"
+      decoding="async"
+    />
+
+    <h3 class="collection-card__title">{{ collection().title }}</h3>
+  </a>
+
+  @if (collection().description; as description) {
+    <p class="collection-card__description">{{ description }}</p>
+  }
+
+  @if (countLabel(); as label) {
+    <p class="collection-card__count">{{ label }}</p>
+  }
+
+  <!--
+    Decorative: the whole tile is already linked, so a second focusable link to
+    the same place would only add a redundant tab stop.
+  -->
+  <span class="collection-card__cta" aria-hidden="true">{{ ctaLabel() }}</span>
+</article>

@@ -1,0 +1,62 @@
+<section class="related-products" aria-labelledby="related-products-title">
+  <div class="related-products__inner">
+    <header class="related-products__header">
+      <h2 class="related-products__title related-products__reveal" id="related-products-title">
+        {{ heading() }}
+      </h2>
+
+      <div class="related-products__nav-group related-products__reveal">
+        <button
+          class="related-products__nav related-products__nav--prev"
+          type="button"
+          aria-label="Previous products"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15 5l-7 7 7 7" />
+          </svg>
+        </button>
+
+        <button
+          class="related-products__nav related-products__nav--next"
+          type="button"
+          aria-label="Next products"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!--
+      `init="false"`: params are assigned in TypeScript because breakpoint maps
+      cannot be written as HTML attributes.
+    -->
+    <swiper-container class="related-products__carousel" #carousel init="false">
+      @for (product of products(); track product.id) {
+        <swiper-slide>
+          <article class="related-products__card">
+            <a class="related-products__card-link" [routerLink]="productLink(product)">
+              <span class="related-products__card-media">
+                <img
+                  class="related-products__card-image"
+                  [src]="product.image"
+                  [alt]="product.imageAlt"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+
+              <span class="related-products__card-body">
+                <span class="related-products__card-category">{{ product.categoryLabel }}</span>
+                <span class="related-products__card-name">{{ product.name }}</span>
+                <span class="related-products__card-size">{{ product.size }}</span>
+                <span class="related-products__card-price">{{ displayPrice(product) }}</span>
+              </span>
+            </a>
+          </article>
+        </swiper-slide>
+      }
+    </swiper-container>
+  </div>
+</section>

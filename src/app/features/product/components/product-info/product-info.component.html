@@ -1,0 +1,159 @@
+<div class="product-info">
+  <p class="product-info__category product-info__reveal">{{ product().categoryLabel }}</p>
+
+  <h1 class="product-info__name product-info__reveal">{{ product().name }}</h1>
+
+  <p class="product-info__tagline product-info__reveal">{{ product().tagline }}</p>
+
+  <div class="product-info__rating product-info__reveal">
+    <!--
+      Two stacked rows of five stars: the lower hollow, the upper solid and
+      clipped to the score, so a 4.8 renders exactly without a half-star asset.
+    -->
+    <span class="product-info__stars" aria-hidden="true">
+      <span class="product-info__stars-row">
+        @for (slot of stars; track slot) {
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.9l6-.8z" />
+          </svg>
+        }
+      </span>
+
+      <span
+        class="product-info__stars-row product-info__stars-row--filled"
+        [style.width.%]="ratingWidth()"
+      >
+        @for (slot of stars; track slot) {
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M12 3.5l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.9l6-.8z" />
+          </svg>
+        }
+      </span>
+    </span>
+
+    <span class="product-info__rating-value" aria-hidden="true">{{ product().rating }}</span>
+    <span class="product-info__rating-count">
+      ({{ product().reviewCount }} reviews)
+      <span class="visually-hidden">
+        Rated {{ product().rating }} out of 5 from {{ product().reviewCount }} reviews
+      </span>
+    </span>
+  </div>
+
+  <p class="product-info__price product-info__reveal">{{ displayPrice() }}</p>
+
+  <p class="product-info__description product-info__reveal">{{ product().shortDescription }}</p>
+
+  <ul class="product-info__claims" role="list">
+    @for (claim of product().claims; track claim.id) {
+      <li class="product-info__claim">
+        <span class="product-info__claim-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            @for (path of claim.iconPaths; track $index) {
+              <path [attr.d]="path" />
+            }
+          </svg>
+        </span>
+        <span class="product-info__claim-label">{{ claim.title }} {{ claim.subtitle }}</span>
+      </li>
+    }
+  </ul>
+
+  <!--
+    Size is a single choice from a set, so it is a radio group. `aria-pressed`
+    on each option would announce three independent toggles instead of one.
+  -->
+  <div class="product-info__field">
+    <p class="product-info__field-label" id="size-label">Size</p>
+
+    <div class="product-info__sizes" role="radiogroup" aria-labelledby="size-label">
+      @for (size of product().sizes; track size.id; let i = $index) {
+        <button
+          class="product-info__size"
+          type="button"
+          role="radio"
+          [class.is-active]="i === selectedSizeIndex()"
+          [attr.aria-checked]="i === selectedSizeIndex()"
+          [disabled]="!size.inStock"
+          (click)="selectSize(i)"
+        >
+          {{ size.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="product-info__field">
+    <p class="product-info__field-label" id="quantity-label">Quantity</p>
+
+    <div class="product-info__quantity" role="group" aria-labelledby="quantity-label">
+      <button
+        class="product-info__step"
+        type="button"
+        aria-label="Decrease quantity"
+        [disabled]="!canDecrease()"
+        (click)="decrease()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 12h12" />
+        </svg>
+      </button>
+
+      <!-- `aria-live` so the new figure is announced after each step. -->
+      <span class="product-info__quantity-value" aria-live="polite">{{ quantity() }}</span>
+
+      <button
+        class="product-info__step"
+        type="button"
+        aria-label="Increase quantity"
+        [disabled]="!canIncrease()"
+        (click)="increase()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 6v12M6 12h12" />
+        </svg>
+      </button>
+
+      <span class="product-info__total">Total {{ displayTotal() }}</span>
+    </div>
+  </div>
+
+  <div class="product-info__actions">
+    <button class="product-info__cta product-info__cta--primary" type="button" (click)="onAddToCart()">
+      <span>Add to Cart</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3 5h2.2l2 10.2a2 2 0 0 0 2 1.6h7.3a2 2 0 0 0 2-1.5L20 8H6" />
+        <circle cx="10" cy="20" r="1.3" />
+        <circle cx="17" cy="20" r="1.3" />
+      </svg>
+    </button>
+
+    <button class="product-info__cta product-info__cta--ghost" type="button" (click)="onBuyNow()">
+      <span>Buy Now</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 12h15M13 6l6 6-6 6" />
+      </svg>
+    </button>
+  </div>
+
+  @if (trustBadges().length) {
+    <ul class="product-info__trust" role="list">
+      @for (badge of trustBadges(); track badge.id) {
+        <li class="product-info__trust-item">
+          <span class="product-info__trust-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              @for (path of badge.iconPaths; track $index) {
+                <path [attr.d]="path" />
+              }
+            </svg>
+          </span>
+
+          <span class="product-info__trust-text">
+            <span class="product-info__trust-title">{{ badge.title }}</span>
+            <span class="product-info__trust-subtitle">{{ badge.subtitle }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  }
+</div>

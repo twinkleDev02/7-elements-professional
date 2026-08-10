@@ -1,0 +1,10 @@
+// Component layer: global, reusable UI contracts shared across features.
+//
+// Only genuinely cross-cutting components belong here. Anything used by a
+// single feature belongs in that component's own stylesheet, and anything
+// reusable with markup of its own belongs in `app/shared/components/`.
+//
+// Loaded after `layout`, before `utilities`.
+
+@forward 'buttons';
+@forward 'forms';

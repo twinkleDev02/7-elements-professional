@@ -1,0 +1,175 @@
+// =============================================================================
+// Animations — global keyframes and the classes that drive them.
+//
+// Scope note: GSAP owns *choreography* (scroll-linked reveals, hero sequences,
+// anything staggered) via `shared/animations/gsap-context.ts`. CSS owns
+// everything that must run without JavaScript: loading indicators, skeletons,
+// and simple entrance fades. Do not reimplement one in the other.
+//
+// Every animation here is suppressed by the reduced-motion block in
+// `_reset.scss`, and the elements they apply to are legible unanimated.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// -----------------------------------------------------------------------------
+// Keyframes
+// -----------------------------------------------------------------------------
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.5rem, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -1.5rem, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/// Skeleton sweep. Paired with `--skeleton-*` custom properties so the
+/// placeholder can be tuned per surface.
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Animation utilities
+//
+// Only for the CSS-only cases described above. Anything scroll-linked belongs
+// in a GSAP timeline.
+// -----------------------------------------------------------------------------
+
+.animate-fade-in {
+  animation: fade-in duration('base') ease('entrance') both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up duration('base') ease('entrance') both;
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down duration('base') ease('entrance') both;
+}
+
+.animate-scale-in {
+  animation: scale-in duration('fast') ease('entrance') both;
+}
+
+.animate-spin {
+  animation: spin duration('cinematic') linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse duration('cinematic') ease('standard') infinite;
+}
+
+/// Delay modifiers, for hand-staggering a short run of siblings.
+@for $i from 1 through 6 {
+  .animate-delay-#{$i} {
+    animation-delay: #{$i * 80}ms;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Loading placeholder
+// -----------------------------------------------------------------------------
+
+.skeleton {
+  --skeleton-base: var(--color-surface);
+  --skeleton-sheen: var(--color-bg);
+
+  border-radius: var(--control-radius);
+  background-image: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-sheen) 50%,
+    var(--skeleton-base) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease('standard') infinite;
+
+  // Placeholders carry no meaning; keep them out of the accessibility tree.
+  color: transparent;
+  user-select: none;
+
+  @include reduced-motion {
+    // The sweep is the whole affordance, so hold a static tint instead.
+    background-image: none;
+    background-color: var(--skeleton-base);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Route transitions
+//
+// `withViewTransitions()` is enabled in app.config.ts. These name the default
+// cross-fade; per-element morphs are opted into with `view-transition-name`
+// on the specific elements that should persist across a navigation.
+// -----------------------------------------------------------------------------
+
+::view-transition-old(root) {
+  animation: fade-in duration('fast') ease('exit') reverse both;
+}
+
+::view-transition-new(root) {
+  animation: fade-in duration('base') ease('entrance') both;
+}

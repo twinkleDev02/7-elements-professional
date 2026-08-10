@@ -1,0 +1,172 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Mission & vision
+//
+// Two columns of copy with a product still centred between them. The still is
+// ordered last in the DOM — it is decorative, so it should come after the
+// content a screen reader actually needs.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.mission-vision {
+  padding-block: clamp(1rem, 2.5vw, 1.75rem);
+  background-color: var(--color-surface);
+}
+
+.mission-vision__panel {
+  @include container('wide');
+
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.5rem, 3.5vw, 2.25rem) clamp(1rem, 2.5vw, 1.75rem);
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface-tint);
+  isolation: isolate;
+  // A floor, not a fixed height: at narrow widths the two pillars stack, and a
+  // hard 325px would cut the second one off.
+  min-block-size: 325px;
+
+  @include up('lg') {
+    // Mission, still, vision — with the still ordered into the middle track
+    // while staying last in source order.
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+}
+
+/// The photograph, thrown out of focus behind the copy.
+///
+/// On a pseudo-element because `filter` on the panel would blur the text with
+/// it. The negative inset overscans the blur radius — sampled at the exact edge
+/// it fades to transparent and leaves a halo inside the corners. Root-absolute
+/// URL because the bundler resolves a bare `url()` relative to this stylesheet,
+/// which never finds `public/`.
+.mission-vision__panel::before {
+  content: '';
+  position: absolute;
+  inset: -1rem;
+  z-index: -2;
+  background: url('/assets/images/brand/about_vission_mission_bg.png') center/cover no-repeat;
+  // Just enough to take the edge off the detail. The photograph is meant to
+  // still read as itself.
+  filter: blur(3px);
+}
+
+/// A light knock-back rather than a wash: blur alone cannot rescue the copy,
+/// since a blurred dark patch is still dark, but this is kept weak enough that
+/// the photograph stays plainly legible. The contrast work is finished by the
+/// ink colours and haloes on the type itself.
+.mission-vision__panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(115deg, rgb(255 251 249 / 38%) 0%, rgb(255 246 243 / 30%) 55%, rgb(253 240 236 / 38%) 100%);
+}
+
+.mission-vision__pillar {
+  min-inline-size: 0;
+  padding-inline: clamp(0.75rem, 2vw, 1.5rem);
+  will-change: transform;
+
+  @include up('lg') {
+    &--mission {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    &--vision {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+}
+
+.mission-vision__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-block-end: 0.625rem;
+}
+
+.mission-vision__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(2rem, 3vw, 2.5rem);
+  block-size: clamp(2rem, 3vw, 2.5rem);
+  flex: 0 0 auto;
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('circle');
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+
+  svg {
+    inline-size: 50%;
+    block-size: 50%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.mission-vision__heading-text {
+  // The deep maroon rather than the brand primary: over the photograph's burnt
+  // patches the lighter red drops under 3:1.
+  color: var(--color-primary-deep, #7d1d1f);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.7vw, 1.25rem);
+  font-weight: weight('medium');
+  letter-spacing: tracking('wide');
+  text-transform: uppercase;
+  // A halo, not a drop shadow — it separates the letterforms from whatever
+  // detail survives the blur without reading as an effect.
+  text-shadow: 0 0 12px rgb(255 255 255 / 85%);
+}
+
+.mission-vision__body {
+  max-inline-size: 24rem;
+  // Full-strength rather than the house muted body tone: over a photographic
+  // ground the muted brown lands around 3:1, while this holds ~5:1 even on the
+  // darkest part of the crop.
+  color: var(--color-text);
+  text-shadow: 0 0 10px rgb(255 255 255 / 80%);
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  line-height: leading('relaxed');
+}
+
+.mission-vision__media {
+  margin: 0;
+
+  @include up('lg') {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+.mission-vision__image {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 18rem;
+  margin-inline: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  will-change: transform;
+}
+
+@include reduced-motion {
+  .mission-vision__pillar,
+  .mission-vision__image {
+    will-change: auto;
+  }
+}

@@ -1,0 +1,35 @@
+@use 'abstracts' as *;
+
+// Page shell. Section spacing belongs to each section's own stylesheet; only
+// the enquiry band is composed here.
+
+:host {
+  display: block;
+  // Guards against any section's decorative overflow widening the document.
+  overflow-x: clip;
+  background-color: var(--color-bg);
+}
+
+.contact__enquiry {
+  padding-block: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.contact__enquiry-inner {
+  @include container('wide');
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  align-items: start;
+
+  @include up('lg') {
+    // Form takes the larger share; the office panel is supporting detail.
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+}
+
+.contact__form,
+.contact__office {
+  display: block;
+  min-inline-size: 0;
+}

@@ -1,0 +1,38 @@
+<article class="product-card" [class.product-card--sold-out]="isSoldOut()">
+  <a class="product-card__link" [routerLink]="link()">
+    @if (image(); as cover) {
+      <img
+        class="product-card__image"
+        [src]="cover.url"
+        [alt]="cover.alt"
+        [width]="cover.width"
+        [height]="cover.height"
+        [attr.loading]="eager() ? 'eager' : 'lazy'"
+        [attr.fetchpriority]="eager() ? 'high' : 'auto'"
+        decoding="async"
+      />
+    }
+
+    <!-- The anchor wraps the name, so the link text is the product itself. -->
+    <h3 class="product-card__name">{{ product().name }}</h3>
+  </a>
+
+  <p class="product-card__tagline">{{ product().tagline }}</p>
+
+  @if (price(); as displayPrice) {
+    <p class="product-card__price">{{ displayPrice }}</p>
+  }
+
+  @if (isSoldOut()) {
+    <p class="product-card__status">Out of stock</p>
+  } @else if (showQuickAdd()) {
+    <button
+      class="product-card__quick-add btn btn--secondary btn--sm"
+      type="button"
+      [attr.aria-label]="'Add ' + product().name + ' to bag'"
+      (click)="onQuickAdd($event)"
+    >
+      Add to bag
+    </button>
+  }
+</article>

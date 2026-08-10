@@ -1,0 +1,26 @@
+<section class="mission-vision" aria-label="Our mission and vision">
+  <div class="mission-vision__panel">
+    @for (pillar of pillars(); track pillar.id) {
+      <article
+        class="mission-vision__pillar"
+        [class.mission-vision__pillar--mission]="pillar.id === 'mission'"
+        [class.mission-vision__pillar--vision]="pillar.id === 'vision'"
+      >
+        <h2 class="mission-vision__heading">
+          <span class="mission-vision__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              @for (path of pillar.iconPaths; track $index) {
+                <path [attr.d]="path" />
+              }
+            </svg>
+          </span>
+          <span class="mission-vision__heading-text">{{ pillar.title }}</span>
+        </h2>
+
+        <p class="mission-vision__body">{{ pillar.body }}</p>
+      </article>
+    }
+
+    
+  </div>
+</section>

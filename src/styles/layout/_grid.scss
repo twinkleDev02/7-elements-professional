@@ -1,0 +1,125 @@
+// =============================================================================
+// Grid — composable layout primitives.
+//
+// These solve arrangement, not appearance. Between `.stack`, `.cluster` and
+// `.grid`, most page layouts need no bespoke flexbox at all.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// -----------------------------------------------------------------------------
+// Grid
+// -----------------------------------------------------------------------------
+
+.grid {
+  display: grid;
+  gap: var(--grid-gap, #{space('lg')});
+}
+
+/// Responsive column counts. Each steps up one breakpoint at a time so a
+/// 4-column grid never jumps straight from 1 to 4.
+.grid--2 {
+  @include up('md') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.grid--3 {
+  @include up('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up('lg') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.grid--4 {
+  @include up('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up('lg') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/// Column count driven by available width rather than breakpoints. Override the
+/// minimum per instance with `--grid-min`.
+.grid--auto {
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min, 18rem), 100%), 1fr));
+}
+
+/// The 12-column track, for layouts that need explicit spans.
+.grid--12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+@for $span from 1 through 12 {
+  .col-#{$span} {
+    grid-column: span #{$span} / span #{$span};
+  }
+}
+
+@each $name in ('md', 'lg') {
+  @include up($name) {
+    @for $span from 1 through 12 {
+      .col-#{$name}-#{$span} {
+        grid-column: span #{$span} / span #{$span};
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Stack — vertical rhythm via the owl selector.
+//
+// Spaces children without adding a margin to the first or last, so a stack
+// never leaks spacing into its parent.
+// -----------------------------------------------------------------------------
+
+.stack > * + * {
+  margin-block-start: var(--stack-gap, #{space('md')});
+}
+
+@each $name, $value in $spacing {
+  .stack--#{$name} {
+    --stack-gap: #{$value};
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Cluster — horizontal group that wraps rather than overflows.
+// -----------------------------------------------------------------------------
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cluster-gap, #{space('sm')});
+}
+
+.cluster--between {
+  justify-content: space-between;
+}
+
+.cluster--center {
+  justify-content: center;
+}
+
+.cluster--end {
+  justify-content: flex-end;
+}
+
+// -----------------------------------------------------------------------------
+// Centre — constrains measure without touching the parent's width.
+// -----------------------------------------------------------------------------
+
+.center {
+  margin-inline: auto;
+  max-width: var(--center-measure, 65ch);
+}
+
+.center--text {
+  text-align: center;
+}

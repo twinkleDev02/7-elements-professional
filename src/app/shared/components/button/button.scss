@@ -1,0 +1,8 @@
+@use 'abstracts' as *;
+
+// The button's appearance lives in `styles/components/_buttons.scss` so plain
+// `.btn` markup outside this component stays consistent with it. Only add
+// rules here that are specific to the component wrapper itself.
+:host {
+  display: contents;
+}

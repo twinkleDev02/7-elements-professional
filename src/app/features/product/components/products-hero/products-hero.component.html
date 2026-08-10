@@ -1,0 +1,43 @@
+<section class="products-hero" aria-labelledby="products-hero-title">
+  <!--
+    The artwork is the section's CSS background now, so this layer carries only
+    the scrim that holds the copy legible over it.
+  -->
+  <div class="products-hero__media" aria-hidden="true"></div>
+
+  <div class="products-hero__inner">
+    <nav class="products-hero__breadcrumb" aria-label="Breadcrumb">
+      <ol class="products-hero__crumbs" role="list">
+        <li><a class="products-hero__crumb-link" [routerLink]="homeLink">Home</a></li>
+        <li class="products-hero__crumb-sep" aria-hidden="true">&rsaquo;</li>
+        <!-- Current page: a link here would navigate nowhere. -->
+        <li><span class="products-hero__crumb-current" aria-current="page">Products</span></li>
+      </ol>
+    </nav>
+
+    <div class="products-hero__content">
+      <p class="products-hero__eyebrow">{{ content.eyebrow }}</p>
+
+      <h1 class="products-hero__title" id="products-hero-title">
+        <span class="products-hero__title-mask">
+          <span class="products-hero__title-line">{{ content.titleLead }}</span>
+        </span>
+        <span class="products-hero__title-mask">
+          <span class="products-hero__title-line">
+            {{ content.titleRest
+            }}<span class="products-hero__title-accent">{{ content.titleAccent }}</span>
+          </span>
+        </span>
+      </h1>
+
+      <p class="products-hero__body">{{ content.body }}</p>
+
+      <a class="products-hero__cta" [routerLink]="productsLink">
+        <span>{{ content.ctaLabel }}</span>
+        <svg class="products-hero__cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 12h15M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

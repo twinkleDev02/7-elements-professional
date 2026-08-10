@@ -1,1 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
+// =============================================================================
+// Global stylesheet — the ONLY file that emits the shared CSS layers.
+//
+// Loaded once, via the `styles` array in angular.json. Component stylesheets
+// must never `@use` these layers; they `@use 'abstracts' as *` instead, which
+// emits nothing. Getting that backwards duplicates the entire reset into every
+// component bundle.
+//
+// Layer order is load-bearing. Each layer may only override the ones above it,
+// so specificity stays flat and `!important` is never needed:
+//
+//   1. themes      — custom property declarations everything else reads
+//   2. base        — element defaults: reset, typography, keyframes
+//   3. layout      — structural primitives: container, section, grid
+//   4. components  — global UI contracts: buttons, forms
+//   5. utilities   — single-purpose overrides, so they win
+//
+// Abstracts (variables, functions, mixins) are not listed: they emit no CSS
+// and are pulled in by each layer that needs them.
+// =============================================================================
+
+@use 'themes';
+@use 'base';
+@use 'layout';
+@use 'components';
+@use 'utilities';
+
+// -----------------------------------------------------------------------------
+// Third-party CSS
+//
+// Uncomment as each library is wired up — importing them before they are used
+// only inflates the initial bundle. Keep them here rather than in a component,
+// so vendor rules stay ahead of the utility layer.
+// -----------------------------------------------------------------------------
+
+// @use 'swiper/css';
+// @use 'aos/dist/aos.css';

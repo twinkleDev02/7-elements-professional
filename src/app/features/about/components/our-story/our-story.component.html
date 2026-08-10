@@ -1,0 +1,47 @@
+<section class="our-story" aria-labelledby="our-story-title">
+  <div class="our-story__inner">
+    <figure class="our-story__media our-story__reveal">
+      <img
+        class="our-story__image"
+        [src]="content.image"
+        [alt]="content.imageAlt"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <figcaption class="our-story__badge">
+        <span class="our-story__badge-value">{{ content.badgeValue }}</span>
+        <span class="our-story__badge-label">{{ content.badgeLabel }}</span>
+      </figcaption>
+    </figure>
+
+    <div class="our-story__content">
+      <p class="our-story__eyebrow our-story__reveal">{{ content.eyebrow }}</p>
+
+      <h2 class="our-story__title our-story__reveal" id="our-story-title">{{ content.title }}</h2>
+
+      @for (paragraph of content.paragraphs; track paragraph) {
+        <p class="our-story__paragraph our-story__reveal">{{ paragraph }}</p>
+      }
+
+      <ul class="our-story__features" role="list">
+        @for (feature of features(); track feature.id) {
+          <li class="our-story__feature">
+            <span class="our-story__feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                @for (path of feature.iconPaths; track $index) {
+                  <path [attr.d]="path" />
+                }
+              </svg>
+            </span>
+
+            <span class="our-story__feature-text">
+              <span class="our-story__feature-title">{{ feature.title }}</span>
+              <span class="our-story__feature-subtitle">{{ feature.subtitle }}</span>
+            </span>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

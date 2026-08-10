@@ -1,0 +1,142 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Product detail page
+//
+// Composition and the two page-level bands (breadcrumb, gallery/buy split).
+// Everything else belongs to its own section component.
+// =============================================================================
+
+:host {
+  display: block;
+  // Guards against any section's decorative overflow widening the document.
+  overflow-x: clip;
+  background-color: var(--color-bg);
+}
+
+// -----------------------------------------------------------------------------
+// Breadcrumb
+// -----------------------------------------------------------------------------
+
+.product-detail__breadcrumb {
+  padding-block: clamp(0.75rem, 1.8vw, 1.125rem);
+  background-color: var(--color-surface-tint);
+}
+
+.product-detail__breadcrumb-inner {
+  @include container('wide');
+}
+
+.product-detail__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: font-size('3xs');
+}
+
+.product-detail__crumb-link {
+  color: var(--color-primary);
+
+  @include transition(color);
+  @include focus-ring;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+}
+
+.product-detail__crumb-sep {
+  color: var(--color-text-subtle);
+}
+
+.product-detail__crumb-current {
+  color: var(--color-text-muted);
+}
+
+// -----------------------------------------------------------------------------
+// Gallery and buy column
+// -----------------------------------------------------------------------------
+
+.product-detail__main {
+  padding-block: clamp(1.5rem, 3.5vw, 2.75rem);
+}
+
+.product-detail__main-inner {
+  @include container('wide');
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.5rem, 3.5vw, 3rem);
+  align-items: start;
+
+  @include up('lg') {
+    // Gallery slightly narrower than the buy column, as in the reference.
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Unknown slug
+// -----------------------------------------------------------------------------
+
+.product-detail__missing {
+  padding-block: clamp(3rem, 8vw, 6rem);
+}
+
+.product-detail__missing-inner {
+  @include container('narrow');
+
+  text-align: center;
+}
+
+.product-detail__missing-title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: weight('regular');
+  line-height: leading('tight');
+  letter-spacing: tracking('tight');
+}
+
+.product-detail__missing-body {
+  max-inline-size: 34rem;
+  margin: 0.75rem auto clamp(1.25rem, 2.5vw, 1.75rem);
+  color: var(--color-text-muted);
+  font-size: clamp(0.85rem, 1.05vw, 0.95rem);
+  line-height: leading('relaxed');
+}
+
+.product-detail__missing-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 2.75rem;
+  padding-inline: clamp(1.25rem, 2.4vw, 1.75rem);
+  border-radius: radius('md');
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+
+  @include transition((background-color, transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgb(158 42 44 / 26%);
+  }
+}
+
+@include reduced-motion {
+  .product-detail__missing-cta:hover {
+    transform: none;
+  }
+}

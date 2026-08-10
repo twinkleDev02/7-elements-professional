@@ -1,0 +1,5 @@
+// Theme layer. Loaded first by `src/styles.scss` so every later layer can read
+// the custom properties it declares.
+
+@forward 'default';
+@forward 'dark';

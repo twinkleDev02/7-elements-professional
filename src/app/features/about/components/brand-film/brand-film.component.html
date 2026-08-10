@@ -1,0 +1,13 @@
+<section class="brand-film" aria-labelledby="brand-film-title">
+  <div class="brand-film__inner">
+    <app-video-feature
+      class="brand-film__video"
+      id="brand-film-title"
+      [src]="content().src"
+      [eyebrow]="content().eyebrow"
+      [title]="content().title"
+      [description]="content().description"
+      [aspectRatio]="content().aspectRatio"
+    />
+  </div>
+</section>

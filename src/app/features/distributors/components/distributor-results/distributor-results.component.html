@@ -1,0 +1,58 @@
+<section class="distributor-results" aria-label="Distributor results">
+  <header class="distributor-results__head">
+    <!--
+      `aria-live` so the count is announced after a filter or search, which is
+      otherwise a silent change for a screen-reader user.
+    -->
+    <p class="distributor-results__count" aria-live="polite">
+      Showing {{ totalCount() }} {{ totalCount() === 1 ? 'Distributor' : 'Distributors' }}
+    </p>
+
+    <div class="distributor-results__views" role="radiogroup" aria-label="Results layout">
+      @for (option of views; track option.id) {
+        <button
+          class="distributor-results__view"
+          type="button"
+          role="radio"
+          [class.is-active]="view() === option.id"
+          [attr.aria-checked]="view() === option.id"
+          (click)="viewChange.emit(option.id)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+  </header>
+
+  @if (view() === 'map') {
+    <!--
+      MAP CONTAINER — intentionally blank.
+      No mapping provider is configured and no static map asset exists, so the
+      frame holds the reference's proportions and nothing is faked.
+      TODO: mount the map here (provider embed or a static image at
+      assets/images/brand/distributor-map.jpg, 16:9).
+    -->
+    <div class="distributor-results__map" role="img" aria-label="Map of distributor locations"></div>
+  } @else if (distributors().length) {
+    <ul
+      class="distributor-results__list"
+      [class.distributor-results__list--rows]="view() === 'list'"
+      role="list"
+    >
+      @for (distributor of distributors(); track distributor.id) {
+        <li class="distributor-results__item">
+          <app-distributor-card
+            [distributor]="distributor"
+            [layout]="view() === 'list' ? 'list' : 'grid'"
+            (viewDetails)="viewDetails.emit($event)"
+            (directions)="directions.emit($event)"
+          />
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="distributor-results__empty">
+      No distributors match those filters yet. Try widening your search.
+    </p>
+  }
+</section>

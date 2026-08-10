@@ -1,0 +1,421 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Best Sellers
+//
+// Intro column on the left, product carousel on the right. Below `lg` the two
+// stack and the carousel runs full width.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.best-sellers {
+  --bs-columns: 1.25;
+  --bs-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  background-color: var(--color-bg);
+
+  @include up('sm') {
+    --bs-columns: 2.2;
+  }
+
+  @include up('md') {
+    --bs-columns: 3.2;
+  }
+
+  @include up('lg') {
+    --bs-columns: 2.4;
+  }
+
+  @include up('xl') {
+    --bs-columns: 3.15;
+  }
+}
+
+.best-sellers__inner {
+  @include container('wide');
+
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+
+  @include up('lg') {
+    // The intro is a fixed measure; the carousel takes whatever is left.
+    grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 3.5rem);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Intro column
+// -----------------------------------------------------------------------------
+
+.best-sellers__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.best-sellers__eyebrow {
+  margin-block-end: 0.75rem;
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.best-sellers__title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.2vw, 2.375rem);
+  font-weight: weight('regular');
+  line-height: leading('tight');
+  letter-spacing: tracking('tight');
+  text-wrap: balance;
+}
+
+.best-sellers__rule {
+  display: block;
+  inline-size: 3.25rem;
+  block-size: 2px;
+  margin-block: clamp(0.75rem, 1.6vw, 1.125rem);
+  background-color: var(--color-primary);
+}
+
+.best-sellers__description {
+  margin-block-end: clamp(1.25rem, 2.5vw, 1.75rem);
+  color: var(--color-text-muted);
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  line-height: leading('relaxed');
+}
+
+.best-sellers__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 2.875rem;
+  padding-inline: clamp(1.1rem, 2vw, 1.6rem);
+  border-radius: radius('md');
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  line-height: leading('none');
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  @include transition((background-color, transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgb(158 42 44 / 26%);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Carousel
+// -----------------------------------------------------------------------------
+
+.best-sellers__carousel {
+  position: relative;
+  min-inline-size: 0;
+  will-change: transform;
+}
+
+.best-sellers__track {
+  display: flex;
+  gap: var(--bs-gap);
+  margin: 0;
+  // Room for the hover lift and card shadow, which the scroll container's
+  // overflow would otherwise clip.
+  padding: 0.5rem 0 1.25rem;
+  list-style: none;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include focus-ring(4px);
+
+  @include up('lg') {
+    cursor: grab;
+  }
+
+  &.is-dragging {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+    cursor: grabbing;
+    user-select: none;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Product card
+// -----------------------------------------------------------------------------
+
+.best-sellers__card {
+  flex: 0 0 calc((100% - (var(--bs-columns) - 1) * var(--bs-gap)) / var(--bs-columns));
+  scroll-snap-align: start;
+  will-change: transform;
+}
+
+.best-sellers__card-link {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  overflow: hidden;
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.625rem, 1.2vw, 0.875rem);
+  background-color: var(--color-surface);
+  box-shadow: 0 4px 16px rgb(43 23 20 / 6%);
+
+  @include transition((transform, box-shadow, border-color));
+  @include focus-ring(3px);
+
+  &:hover {
+    transform: translateY(-8px);
+    border-color: var(--color-border-strong);
+    box-shadow:
+      0 18px 38px rgb(43 23 20 / 14%),
+      0 22px 60px rgb(158 42 44 / 12%);
+  }
+}
+
+.best-sellers__card-media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-surface-tint);
+}
+
+.best-sellers__card-image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  will-change: transform;
+
+  @include transition(transform, $speed: 'base');
+
+  .best-sellers__card-link:hover & {
+    transform: scale(1.05);
+  }
+}
+
+.best-sellers__card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: clamp(0.75rem, 1.4vw, 1rem);
+}
+
+.best-sellers__card-name {
+  color: var(--color-text);
+  font-size: clamp(0.85rem, 1.05vw, 0.95rem);
+  font-weight: weight('medium');
+  line-height: leading('snug');
+  text-wrap: balance;
+}
+
+.best-sellers__card-size {
+  color: var(--color-text-subtle);
+  font-size: font-size('3xs');
+}
+
+// -----------------------------------------------------------------------------
+// Rating
+// -----------------------------------------------------------------------------
+
+.best-sellers__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-block-start: 0.125rem;
+}
+
+/// Two rows stacked in the same box; the filled one is clipped to the score.
+.best-sellers__stars {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+.best-sellers__stars-row {
+  display: flex;
+  gap: 1px;
+  white-space: nowrap;
+
+  svg {
+    inline-size: 0.8rem;
+    block-size: 0.8rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+}
+
+.best-sellers__stars-row--filled {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  overflow: hidden;
+
+  svg {
+    fill: var(--color-accent);
+    stroke: var(--color-accent);
+  }
+}
+
+.best-sellers__rating-value {
+  color: var(--color-text-muted);
+  font-size: font-size('3xs');
+  font-weight: weight('medium');
+}
+
+// -----------------------------------------------------------------------------
+// Price and bag
+// -----------------------------------------------------------------------------
+
+.best-sellers__card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: space('2xs');
+  margin-block-start: auto;
+  padding-block-start: 0.625rem;
+}
+
+.best-sellers__price {
+  color: var(--color-primary);
+  font-size: clamp(0.95rem, 1.2vw, 1.0625rem);
+  font-weight: weight('semibold');
+  letter-spacing: tracking('tight');
+}
+
+.best-sellers__bag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  flex: 0 0 auto;
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('circle');
+  background-color: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+
+  @include transition((background-color, color, transform));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    transform: scale(1.08);
+  }
+
+  svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Navigation
+//
+// Stacked at the trailing edge on wide screens, as a centred pair below.
+// -----------------------------------------------------------------------------
+
+.best-sellers__nav {
+  display: flex;
+  justify-content: center;
+  gap: space('2xs');
+  margin-block-start: space('xs');
+
+  @include up('lg') {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: clamp(-3rem, -2.2vw, -1.5rem);
+    flex-direction: column;
+    margin-block-start: 0;
+    translate: 0 -50%;
+  }
+}
+
+.best-sellers__nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('circle');
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  cursor: pointer;
+
+  @include transition((background-color, color, box-shadow, opacity));
+  @include focus-ring;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    box-shadow: 0 8px 20px rgb(158 42 44 / 26%);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+@include reduced-motion {
+  .best-sellers__track {
+    scroll-behavior: auto;
+  }
+
+  .best-sellers__carousel,
+  .best-sellers__card,
+  .best-sellers__card-image {
+    will-change: auto;
+  }
+
+  .best-sellers__card-link:hover,
+  .best-sellers__card-link:hover .best-sellers__card-image,
+  .best-sellers__cta:hover,
+  .best-sellers__bag:hover {
+    transform: none;
+  }
+}

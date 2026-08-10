@@ -1,0 +1,118 @@
+// =============================================================================
+// Typography — document-level defaults only.
+//
+// Sets the baseline every page inherits: body copy, heading scale, prose
+// links, small print. Section- and component-level type is set with the
+// `type()` mixin where it is used, not here.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+html {
+  // Left at the browser default so the visitor's own font-size preference is
+  // respected — the whole rem scale keys off this.
+  font-size: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+
+  @include type('base', $line-height: 'normal');
+}
+
+// -----------------------------------------------------------------------------
+// Headings
+//
+// Display type is set on the serif face, tighter and heavier than body copy.
+// Sizes are fluid `clamp()` values, so they scale continuously with the
+// viewport instead of jumping at each breakpoint.
+// -----------------------------------------------------------------------------
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+h1 {
+  @include type('5xl', $line-height: 'tight', $weight: 'regular', $tracking: 'tighter');
+}
+
+h2 {
+  @include type('4xl', $line-height: 'tight', $weight: 'regular', $tracking: 'tighter');
+}
+
+h3 {
+  @include type('3xl', $line-height: 'snug', $weight: 'regular', $tracking: 'tight');
+}
+
+h4 {
+  @include type('2xl', $line-height: 'snug', $weight: 'regular', $tracking: 'tight');
+}
+
+h5 {
+  @include type('xl', $line-height: 'snug', $weight: 'medium');
+}
+
+h6 {
+  @include type('lg', $line-height: 'snug', $weight: 'medium');
+}
+
+// -----------------------------------------------------------------------------
+// Body copy
+// -----------------------------------------------------------------------------
+
+p {
+  // Caps the measure at a readable line length regardless of container width.
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+strong,
+b {
+  font-weight: weight('semibold');
+}
+
+small {
+  @include type('sm');
+}
+
+// -----------------------------------------------------------------------------
+// Prose links
+//
+// Scoped to running text. Navigation, buttons and cards style their own
+// anchors, and should not inherit an underline.
+// -----------------------------------------------------------------------------
+
+p,
+li,
+blockquote,
+dd {
+  a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--color-border-strong);
+
+    @include transition(text-decoration-color);
+
+    &:hover {
+      text-decoration-color: currentcolor;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Selection
+// -----------------------------------------------------------------------------
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+}

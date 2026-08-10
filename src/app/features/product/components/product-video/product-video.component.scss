@@ -1,0 +1,139 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Product video
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.product-video {
+  padding-block: clamp(1.25rem, 3vw, 2rem);
+}
+
+.product-video__inner {
+  @include container('wide');
+}
+
+.product-video__header {
+  margin-block-end: clamp(0.875rem, 2vw, 1.25rem);
+  text-align: center;
+}
+
+.product-video__title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.6vw, 1.875rem);
+  font-weight: weight('regular');
+  line-height: leading('tight');
+  letter-spacing: tracking('tight');
+  text-wrap: balance;
+}
+
+.product-video__description {
+  max-inline-size: 42ch;
+  margin: 0.5rem auto 0;
+  color: var(--color-text-muted);
+  font-size: clamp(0.82rem, 1vw, 0.9rem);
+  line-height: leading('relaxed');
+}
+
+.product-video__frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface-tint);
+  box-shadow: 0 18px 44px rgb(43 23 20 / 14%);
+  will-change: transform;
+}
+
+.product-video__player,
+.product-video__preview {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.product-video__poster {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+
+  @include focus-ring(-4px);
+
+  &::after {
+    // Keeps the play control legible over any frame the clip happens to open on.
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(43 23 20 / 18%) 0%, rgb(43 23 20 / 38%) 100%);
+
+    @include transition(opacity);
+  }
+
+  &:hover::after {
+    opacity: 0.8;
+  }
+}
+
+.product-video__play {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  z-index: layer('raised');
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(3.5rem, 7vw, 5rem);
+  block-size: clamp(3.5rem, 7vw, 5rem);
+  translate: -50% -50%;
+  border-radius: radius('circle');
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: 0 12px 32px rgb(43 23 20 / 32%);
+
+  @include transition(transform);
+
+  /// Slow expanding ring — an invitation, not a demand for attention.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: border-width('thin') solid currentcolor;
+    animation: pulse 2.6s ease('standard') infinite;
+  }
+
+  .product-video__poster:hover & {
+    transform: translateY(-2px) scale(1.06);
+  }
+
+  svg {
+    inline-size: 40%;
+    block-size: 40%;
+    fill: currentcolor;
+    // The glyph's optical centre sits right of its bounding-box centre.
+    margin-inline-start: 8%;
+  }
+}
+
+@include reduced-motion {
+  .product-video__frame {
+    will-change: auto;
+  }
+
+  .product-video__play::before {
+    animation: none;
+  }
+
+  .product-video__poster:hover .product-video__play {
+    transform: none;
+  }
+}

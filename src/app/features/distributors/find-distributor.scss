@@ -1,0 +1,43 @@
+@use 'abstracts' as *;
+
+// Page shell. Section spacing belongs to each section's own stylesheet; only
+// the sidebar/results split is composed here.
+
+:host {
+  display: block;
+  // Guards against any section's decorative overflow widening the document.
+  overflow-x: clip;
+  background-color: var(--color-bg);
+}
+
+.find-distributor__catalogue {
+  padding-block: clamp(1rem, 2.5vw, 1.75rem) clamp(2rem, 5vw, 3.5rem);
+}
+
+.find-distributor__inner {
+  @include container('wide');
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  align-items: start;
+
+  @include up('lg') {
+    // Fixed sidebar measure; the results take everything else.
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  }
+}
+
+.find-distributor__sidebar,
+.find-distributor__results {
+  display: block;
+  min-inline-size: 0;
+}
+
+@include up('lg') {
+  .find-distributor__sidebar {
+    // Follows the results while they scroll, so filters stay reachable.
+    position: sticky;
+    inset-block-start: clamp(6rem, 12vh, 9rem);
+  }
+}

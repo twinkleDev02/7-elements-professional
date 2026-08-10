@@ -1,0 +1,138 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Promotional offer banner
+//
+// A full-bleed photographic field — orange ground, palm shadow, ring-lit
+// product cluster — with the offer copy set over its empty left third.
+//
+// The colours here are literals rather than theme tokens on purpose: they are
+// read off the photograph, which does not change between themes. A token that
+// flips to near-white in dark mode would put white copy on a white chip.
+// =============================================================================
+
+// Sampled from the artwork's flat left field, so the box shows the right colour
+// before the image decodes and behind any transparent edge.
+$field: #f1772f;
+// The ground the left-hand scrim deepens towards.
+$field-shade: #5c2206;
+// Vertical slack for the scroll parallax, which drifts the image by ±6% of its
+// own height. Anything less and the drift would expose a seam at one edge.
+$parallax-overhang: 10%;
+
+:host {
+  display: block;
+}
+
+.offer-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-block-size: clamp(9rem, 16vw, 12rem);
+  overflow: hidden;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  border-radius: clamp(0.75rem, 1.4vw, 1rem);
+  background-color: $field;
+  isolation: isolate;
+}
+
+.offer-banner__image {
+  position: absolute;
+  z-index: -1;
+  inset-block-start: -$parallax-overhang;
+  inset-inline: 0;
+  block-size: 100% + ($parallax-overhang * 2);
+  inline-size: 100%;
+  object-fit: cover;
+  // The photograph is far wider than the banner box, so it is the horizontal
+  // crop that bites first. Anchoring right keeps the ring light and the full
+  // product line-up; what gets cut is the empty field the copy covers anyway.
+  object-position: 100% center;
+  will-change: transform;
+}
+
+/// Deepens the field under the copy. On wide screens it barely registers over
+/// the flat orange; on narrow ones, where the crop walks the bottles in behind
+/// the text, it is what keeps the white type readable.
+.offer-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    95deg,
+    rgba($field-shade, 0.52) 0%,
+    rgba($field-shade, 0.44) 28%,
+    rgba($field-shade, 0) 64%
+  );
+}
+
+.offer-banner__content {
+  position: relative;
+  max-inline-size: 24rem;
+}
+
+.offer-banner__heading {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+  font-weight: weight('medium');
+  line-height: leading('tight');
+  letter-spacing: tracking('tight');
+  text-shadow: 0 1px 10px rgba($field-shade, 0.45);
+}
+
+.offer-banner__subheading {
+  margin-block: 0.35rem clamp(0.875rem, 1.8vw, 1.25rem);
+  color: rgb(255 255 255 / 92%);
+  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  line-height: leading('snug');
+  text-shadow: 0 1px 8px rgba($field-shade, 0.4);
+}
+
+.offer-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 2.5rem;
+  padding-inline: clamp(1.25rem, 2.2vw, 1.75rem);
+  border-radius: radius('md');
+  background-color: #fff;
+  color: #4a2410;
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  line-height: leading('none');
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  @include transition((transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.03);
+    // Standing glow rather than a looping keyframe: it reads as the same
+    // "pulse" on hover without an animation running when nobody is looking.
+    box-shadow:
+      0 0 0 4px rgb(255 255 255 / 30%),
+      0 12px 28px rgba($field-shade, 0.35);
+  }
+
+  &:active {
+    transform: translateY(0) scale(1);
+  }
+
+  &:focus-visible {
+    outline-color: #fff;
+  }
+}
+
+@include reduced-motion {
+  .offer-banner__image {
+    will-change: auto;
+  }
+
+  .offer-banner__cta:hover {
+    transform: none;
+  }
+}

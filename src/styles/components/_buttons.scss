@@ -1,0 +1,212 @@
+// =============================================================================
+// Buttons — the global button contract.
+//
+// Every visual value resolves to a theme token or a `--btn-*` custom property,
+// so the finalised design lands by filling in `themes/_default.scss`, not by
+// editing this file. Variants set the tokens; the base block does the layout.
+//
+// Applies to `<button>` and `<a>` alike — `.btn` never assumes an element.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.btn {
+  // ---------------------------------------------------------------------------
+  // Per-instance knobs. A variant overrides these rather than redeclaring rules.
+  // ---------------------------------------------------------------------------
+  --btn-bg: transparent;
+  --btn-color: var(--color-text);
+  --btn-border-color: transparent;
+  --btn-height: var(--control-height);
+  --btn-padding-inline: #{space('lg')};
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: space('2xs');
+
+  min-height: var(--btn-height);
+  padding-inline: var(--btn-padding-inline);
+
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  border: border-width('hairline') solid var(--btn-border-color);
+  border-radius: var(--control-radius);
+
+  // Buttons are small type set wide — the label reads as a considered mark
+  // rather than running text.
+  @include type('2xs', $line-height: 'none', $weight: 'medium', $tracking: 'widest');
+
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+
+  @include transition((background-color, border-color, color, opacity));
+  @include focus-ring;
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Variants
+// -----------------------------------------------------------------------------
+
+.btn--primary {
+  --btn-bg: var(--color-primary);
+  --btn-color: var(--color-primary-contrast);
+  --btn-border-color: var(--color-primary);
+
+  &:hover {
+    --btn-bg: var(--color-primary-hover);
+    --btn-border-color: var(--color-primary-hover);
+  }
+}
+
+.btn--secondary {
+  --btn-bg: transparent;
+  --btn-color: var(--color-text);
+  --btn-border-color: var(--color-border-strong);
+
+  &:hover {
+    --btn-bg: var(--color-primary);
+    --btn-color: var(--color-primary-contrast);
+    --btn-border-color: var(--color-primary);
+  }
+}
+
+.btn--accent {
+  --btn-bg: var(--color-accent);
+  --btn-color: var(--color-accent-contrast);
+  --btn-border-color: var(--color-accent);
+
+  &:hover {
+    opacity: 0.88;
+  }
+}
+
+/// Text-only. Sheds the horizontal padding so it aligns flush with body copy.
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-color: var(--color-text);
+  --btn-padding-inline: 0;
+
+  &:hover {
+    --btn-color: var(--color-text-muted);
+  }
+}
+
+/// Reads as a link but keeps the button's hit area and label treatment.
+.btn--link {
+  --btn-padding-inline: 0;
+  --btn-height: auto;
+
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  text-decoration-thickness: 1px;
+
+  &:hover {
+    --btn-color: var(--color-text-muted);
+  }
+}
+
+/// For placing on top of imagery or a dark section.
+.btn--inverse {
+  --btn-bg: transparent;
+  --btn-color: var(--color-text-inverse);
+  --btn-border-color: var(--color-text-inverse);
+
+  &:hover {
+    --btn-bg: var(--color-text-inverse);
+    --btn-color: var(--color-text);
+  }
+}
+
+.btn--danger {
+  --btn-bg: var(--color-danger);
+  --btn-color: #fff;
+  --btn-border-color: var(--color-danger);
+}
+
+// -----------------------------------------------------------------------------
+// Sizes
+// -----------------------------------------------------------------------------
+
+.btn--sm {
+  --btn-height: var(--control-height-sm);
+  --btn-padding-inline: #{space('md')};
+
+  font-size: font-size('3xs');
+}
+
+.btn--lg {
+  --btn-height: var(--control-height-lg);
+  --btn-padding-inline: #{space('xl')};
+}
+
+/// Fills its container — the default on narrow viewports for primary actions.
+.btn--block {
+  display: flex;
+  width: 100%;
+}
+
+/// Square, for icon-only buttons. Must still carry an `aria-label`.
+.btn--icon {
+  --btn-padding-inline: 0;
+
+  aspect-ratio: 1;
+  inline-size: var(--btn-height);
+}
+
+.btn--pill {
+  border-radius: radius('pill');
+}
+
+// -----------------------------------------------------------------------------
+// Loading state
+//
+// Set `data-loading` and `aria-busy` together, so the state is announced and
+// not merely drawn.
+// -----------------------------------------------------------------------------
+
+.btn[data-loading='true'] {
+  color: transparent;
+  pointer-events: none;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inline-size: 1em;
+    block-size: 1em;
+    border: border-width('thin') solid currentcolor;
+    border-block-start-color: transparent;
+    border-radius: radius('circle');
+    color: var(--btn-color);
+    animation: spin duration('slow') linear infinite;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Button group
+// -----------------------------------------------------------------------------
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: space('xs');
+
+  @include down('sm') {
+    // Stacked full-width actions beat two cramped buttons on a phone.
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

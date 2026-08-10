@@ -1,0 +1,42 @@
+<article class="feature-card">
+  @if (icon(); as iconKey) {
+    <!-- Decorative: the title already carries the meaning. -->
+    <span class="feature-card__icon" [attr.data-icon]="iconKey" aria-hidden="true"></span>
+  }
+
+  @if (eyebrow(); as label) {
+    <p class="feature-card__eyebrow">{{ label }}</p>
+  }
+
+  @switch (level()) {
+    @case (2) {
+      <h2 class="feature-card__title">{{ title() }}</h2>
+    }
+    @case (4) {
+      <h4 class="feature-card__title">{{ title() }}</h4>
+    }
+    @case (5) {
+      <h5 class="feature-card__title">{{ title() }}</h5>
+    }
+    @case (6) {
+      <h6 class="feature-card__title">{{ title() }}</h6>
+    }
+    @default {
+      <h3 class="feature-card__title">{{ title() }}</h3>
+    }
+  }
+
+  @if (description(); as text) {
+    <p class="feature-card__description">{{ text }}</p>
+  }
+
+  <ng-content />
+
+  @if (link(); as route) {
+    <a class="feature-card__link btn btn--link" [routerLink]="route">
+      {{ linkLabel() }}
+      <!-- Names the destination for anyone hearing links out of context. -->
+      <span class="visually-hidden">about {{ title() }}</span>
+    </a>
+  }
+</article>

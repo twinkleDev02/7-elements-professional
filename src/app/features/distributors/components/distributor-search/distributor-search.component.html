@@ -1,0 +1,57 @@
+<section class="distributor-search" aria-label="Search distributors">
+  <!--
+    State and product category are deliberately absent: the sidebar owns those,
+    and offering them twice lets the two disagree. What is left is what the
+    sidebar has no facet for.
+  -->
+  <form
+    class="distributor-search__panel"
+    (ngSubmit)="onSearch()"
+    role="search"
+  >
+    <div class="distributor-search__field distributor-search__field--select">
+      <label class="visually-hidden" for="search-city">City</label>
+      <select
+        class="distributor-search__control"
+        id="search-city"
+        [ngModel]="city()"
+        name="city"
+        (ngModelChange)="city.set($event)"
+      >
+        <option value="">Select City</option>
+        @for (option of cities(); track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="distributor-search__field">
+      <label class="visually-hidden" for="search-pincode">Pincode</label>
+      <input
+        class="distributor-search__control"
+        id="search-pincode"
+        type="text"
+        name="pincode"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="Enter Pincode"
+        [ngModel]="pincode()"
+        (ngModelChange)="pincode.set($event)"
+      />
+    </div>
+
+    <div class="distributor-search__actions">
+      <button class="distributor-search__submit" type="submit">
+        <span>Search</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="M16 16l4 4" />
+        </svg>
+      </button>
+
+      <button class="distributor-search__reset" type="button" (click)="onReset()">
+        Reset
+      </button>
+    </div>
+  </form>
+</section>

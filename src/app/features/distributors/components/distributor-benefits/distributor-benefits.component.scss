@@ -1,0 +1,120 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Distributor benefits
+// =============================================================================
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.distributor-benefits__title {
+  margin-block-end: clamp(0.75rem, 1.6vw, 1.125rem);
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.distributor-benefits__list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.625rem, 1.4vw, 1rem);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.distributor-benefits__item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-inline-size: 0;
+  will-change: transform;
+}
+
+.distributor-benefits__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(2rem, 2.8vw, 2.375rem);
+  block-size: clamp(2rem, 2.8vw, 2.375rem);
+  flex: 0 0 auto;
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('sm');
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+
+  @include transition((transform, background-color, color));
+
+  .distributor-benefits__item:hover & {
+    transform: rotate(-6deg) scale(1.06);
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+
+  svg {
+    inline-size: 48%;
+    block-size: 48%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.distributor-benefits__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-inline-size: 0;
+}
+
+.distributor-benefits__item-title {
+  color: var(--color-primary);
+  font-size: clamp(0.72rem, 0.9vw, 0.8125rem);
+  font-weight: weight('semibold');
+  line-height: leading('snug');
+}
+
+.distributor-benefits__item-subtitle {
+  color: var(--color-text-muted);
+  font-size: clamp(0.65rem, 0.82vw, 0.75rem);
+  line-height: leading('snug');
+}
+
+// -----------------------------------------------------------------------------
+// Panel variant
+// -----------------------------------------------------------------------------
+
+.distributor-benefits--panel {
+  padding: clamp(1rem, 2.2vw, 1.5rem);
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface-tint);
+
+  .distributor-benefits__title {
+    text-align: center;
+  }
+
+  .distributor-benefits__icon {
+    border-radius: radius('circle');
+  }
+
+  .distributor-benefits__item-title {
+    color: var(--color-text);
+  }
+}
+
+@include reduced-motion {
+  .distributor-benefits__item {
+    will-change: auto;
+  }
+
+  .distributor-benefits__item:hover .distributor-benefits__icon {
+    transform: none;
+  }
+}

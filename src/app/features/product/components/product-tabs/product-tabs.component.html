@@ -1,0 +1,112 @@
+<section class="product-tabs" aria-label="Product details">
+  <div class="product-tabs__panel">
+    <div class="product-tabs__strip" role="tablist" aria-label="Product information">
+      @for (tab of tabs; track tab.id; let i = $index) {
+        <button
+          class="product-tabs__tab"
+          type="button"
+          role="tab"
+          [id]="'tab-' + tab.id"
+          [class.is-active]="activeId() === tab.id"
+          [attr.aria-selected]="activeId() === tab.id"
+          [attr.aria-controls]="'panel-' + tab.id"
+          [attr.tabindex]="activeId() === tab.id ? 0 : -1"
+          (click)="select(tab.id)"
+          (keydown)="onKeydown($event, i)"
+        >
+          {{ tab.label }}
+        </button>
+      }
+
+      <!--
+        One underline that slides between tabs, rather than a border per tab:
+        a single transform animates on the compositor and reads as continuous
+        movement instead of two separate colour changes.
+      -->
+      <span
+        class="product-tabs__underline"
+        aria-hidden="true"
+        [style.width.%]="100 / tabs.length"
+        [style.transform]="'translateX(' + activeIndex() * 100 + '%)'"
+      ></span>
+    </div>
+
+    <div class="product-tabs__content">
+      @switch (activeId()) {
+        @case ('how-to-use') {
+          <div
+            class="product-tabs__pane"
+            role="tabpanel"
+            id="panel-how-to-use"
+            aria-labelledby="tab-how-to-use"
+            tabindex="0"
+          >
+            <ol class="product-tabs__steps">
+              @for (step of product().howToUse; track step) {
+                <li class="product-tabs__step">{{ step }}</li>
+              }
+            </ol>
+          </div>
+        }
+
+        @case ('ingredients') {
+          <div
+            class="product-tabs__pane"
+            role="tabpanel"
+            id="panel-ingredients"
+            aria-labelledby="tab-ingredients"
+            tabindex="0"
+          >
+            <ul class="product-tabs__ingredients" role="list">
+              @for (ingredient of product().ingredients; track ingredient) {
+                <li class="product-tabs__ingredient">{{ ingredient }}</li>
+              }
+            </ul>
+          </div>
+        }
+
+        @case ('faq') {
+          <div
+            class="product-tabs__pane"
+            role="tabpanel"
+            id="panel-faq"
+            aria-labelledby="tab-faq"
+            tabindex="0"
+          >
+            <!--
+              Native disclosure elements: keyboard behaviour, screen-reader
+              semantics and in-page find all come free.
+            -->
+            <div class="product-tabs__faqs">
+              @for (faq of product().faqs; track faq.id) {
+                <details class="product-tabs__faq">
+                  <summary class="product-tabs__faq-question">
+                    <span>{{ faq.question }}</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M6 9.5l6 6 6-6" />
+                    </svg>
+                  </summary>
+                  <p class="product-tabs__faq-answer">{{ faq.answer }}</p>
+                </details>
+              }
+            </div>
+          </div>
+        }
+
+        @default {
+          <div
+            class="product-tabs__pane"
+            role="tabpanel"
+            id="panel-description"
+            aria-labelledby="tab-description"
+            tabindex="0"
+          >
+            @for (paragraph of product().description; track paragraph) {
+              <p class="product-tabs__paragraph">{{ paragraph }}</p>
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+</section>

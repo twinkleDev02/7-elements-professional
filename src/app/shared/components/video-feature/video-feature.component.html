@@ -1,0 +1,70 @@
+<div class="video-feature">
+  @if (eyebrow() || title() || description()) {
+    <header class="video-feature__header">
+      @if (eyebrow(); as label) {
+        <p class="video-feature__eyebrow">{{ label }}</p>
+      }
+
+      @if (title(); as heading) {
+        <h2 class="video-feature__title">{{ heading }}</h2>
+      }
+
+      @if (description(); as text) {
+        <p class="video-feature__description">{{ text }}</p>
+      }
+    </header>
+  }
+
+  <div
+    class="video-feature__frame"
+    [style.aspect-ratio]="aspectRatio()"
+    [style.max-inline-size]="maxWidth()"
+  >
+    @if (isPlaying()) {
+      <!--
+        Autoplays because the visitor just pressed play, and stays muted:
+        controls are on, so unmuting is one click and never a surprise.
+      -->
+      <video
+        class="video-feature__player"
+        [src]="src()"
+        [poster]="poster()"
+        controls
+        autoplay
+        muted
+        playsinline
+        preload="metadata"
+      ></video>
+    } @else {
+      <button
+        class="video-feature__poster"
+        type="button"
+        [attr.aria-label]="title() ? 'Play video: ' + title() : 'Play video'"
+        (click)="play()"
+      >
+        @if (poster(); as posterSrc) {
+          <img class="video-feature__poster-image" [src]="posterSrc" alt="" loading="lazy" decoding="async" />
+        } @else {
+          <!--
+            No poster asset: `preload="metadata"` fetches only the header and
+            first frame, which is the real clip rather than a stand-in.
+          -->
+          <video
+            class="video-feature__preview"
+            [src]="src()"
+            preload="metadata"
+            muted
+            playsinline
+            aria-hidden="true"
+          ></video>
+        }
+
+        <span class="video-feature__play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M9 7.5l8 4.5-8 4.5z" />
+          </svg>
+        </span>
+      </button>
+    }
+  </div>
+</div>

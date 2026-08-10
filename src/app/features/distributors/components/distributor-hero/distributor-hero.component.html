@@ -1,0 +1,82 @@
+<section class="distributor-hero" aria-labelledby="distributor-hero-title">
+  <div class="distributor-hero__media" aria-hidden="true">
+    <span class="distributor-hero__glow"></span>
+
+    @if (image(); as src) {
+      <div class="distributor-hero__figure">
+        <!-- TODO: verify this render matches the reference frame. -->
+        <img
+          class="distributor-hero__image"
+          [src]="src"
+          [alt]="imageAlt()"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    }
+  </div>
+
+  <div class="distributor-hero__inner">
+    <div class="distributor-hero__content">
+      @if (script(); as line) {
+        <p class="distributor-hero__script">{{ line }}</p>
+      }
+
+      <h1 class="distributor-hero__title" id="distributor-hero-title">
+        @for (line of titleLines(); track line; let i = $index) {
+          <span class="distributor-hero__title-mask">
+            <span
+              class="distributor-hero__title-line"
+              [class.distributor-hero__title-line--accent]="i > 0"
+            >
+              {{ line }}
+            </span>
+          </span>
+        }
+      </h1>
+
+      @if (body(); as text) {
+        <p class="distributor-hero__body">{{ text }}</p>
+      }
+
+      @if (primaryCta() || secondaryCta()) {
+        <div class="distributor-hero__actions">
+          @if (primaryCta(); as label) {
+            <button
+              class="distributor-hero__cta distributor-hero__cta--primary"
+              type="button"
+              (click)="primaryAction.emit()"
+            >
+              <span>{{ label }}</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="11" cy="11" r="6.5" />
+                <path d="M16 16l4 4" />
+              </svg>
+            </button>
+          }
+
+          @if (secondaryCta(); as label) {
+            <button
+              class="distributor-hero__cta distributor-hero__cta--ghost"
+              type="button"
+              (click)="secondaryAction.emit()"
+            >
+              <span>{{ label }}</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="8.5" r="3.6" />
+                <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
+              </svg>
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    @if (badgeValue() && badgeLabel()) {
+      <p class="distributor-hero__badge">
+        <span class="distributor-hero__badge-value">{{ badgeValue() }}</span>
+        <span class="distributor-hero__badge-label">{{ badgeLabel() }}</span>
+      </p>
+    }
+  </div>
+</section>

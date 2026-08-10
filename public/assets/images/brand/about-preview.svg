@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="460" viewBox="0 0 640 460" role="img" aria-label="Placeholder">
+  <!--
+    PLACEHOLDER — replace with the real photograph.
+
+    Drop the final asset at: public/assets/images/brand/about-preview.jpg
+    then update the `src` in about-preview.component.html.
+
+    Reference shows: model photographed from behind, hand in wavy hair, warm
+    bokeh salon lighting. Intrinsic size 640x460 (≈1.39:1) to match the frame.
+  -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbeae4" />
+      <stop offset="100%" stop-color="#f0d3c8" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="460" fill="url(#g)" />
+  <g fill="none" stroke="#9e2a2c" stroke-opacity="0.35" stroke-width="2">
+    <circle cx="320" cy="200" r="54" />
+    <path d="M286 222l26-26 22 22 26-30 30 34" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <text x="320" y="300" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#9e2a2c" fill-opacity="0.65">
+    About image placeholder
+  </text>
+  <text x="320" y="330" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#7b625b">
+    640 &#215; 460 &#183; assets/images/brand/about-preview.jpg
+  </text>
+</svg>

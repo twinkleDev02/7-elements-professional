@@ -1,0 +1,37 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Brand film
+//
+// A wide, breathing block between two dense sections. The frame is capped
+// narrower than the page container so it reads as editorial rather than
+// full-bleed.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.brand-film {
+  padding-block: clamp(1.75rem, 4vw, 3rem);
+  background-color: var(--color-surface);
+}
+
+.brand-film__inner {
+  @include container('wide');
+}
+
+.brand-film__video {
+  display: block;
+  // Inset from the container so the film sits as a considered plate rather
+  // than running edge to edge like the hero.
+  max-inline-size: 60rem;
+  margin-inline: auto;
+  will-change: transform;
+}
+
+@include reduced-motion {
+  .brand-film__video {
+    will-change: auto;
+  }
+}

@@ -1,0 +1,222 @@
+// =============================================================================
+// Forms — the global form control contract.
+//
+// Token-driven like `_buttons.scss`: the finalised design lands in the theme,
+// not here.
+//
+// Angular note: validation styling keys off `.ng-invalid.ng-touched` rather
+// than the native `:invalid`, so a control is never marked as failing before
+// the visitor has had a chance to fill it in. `.ng-submitted` on the form
+// surfaces every remaining error at submit time.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// -----------------------------------------------------------------------------
+// Field wrapper
+// -----------------------------------------------------------------------------
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: space('3xs');
+}
+
+.form-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: space('md');
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.form-legend {
+  padding: 0;
+
+  @include type('2xs', $line-height: 'none', $weight: 'medium', $tracking: 'widest');
+
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+// -----------------------------------------------------------------------------
+// Label, hint, error
+// -----------------------------------------------------------------------------
+
+.form-label {
+  @include type('2xs', $line-height: 'snug', $weight: 'medium', $tracking: 'wide');
+
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+/// Marks a required field. Paired with `required` on the control itself — the
+/// asterisk is decoration, the attribute is the semantics.
+.form-label--required::after {
+  content: '*';
+  margin-inline-start: 0.25em;
+  color: var(--color-danger);
+}
+
+.form-hint {
+  @include type('xs', $line-height: 'snug');
+
+  color: var(--color-text-subtle);
+}
+
+/// Wire to the control with `aria-describedby` and give it `role="alert"` so
+/// the message is announced when it appears.
+.form-error {
+  @include type('xs', $line-height: 'snug');
+
+  color: var(--color-danger);
+}
+
+// -----------------------------------------------------------------------------
+// Controls
+// -----------------------------------------------------------------------------
+
+.form-control {
+  --field-border-color: var(--color-border);
+
+  inline-size: 100%;
+  min-block-size: var(--control-height);
+  padding-inline: space('sm');
+  padding-block: space('2xs');
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: border-width('hairline') solid var(--field-border-color);
+  border-radius: var(--control-radius);
+
+  @include type('sm', $line-height: 'snug');
+  @include transition((border-color, background-color));
+  @include focus-ring(0);
+
+  &::placeholder {
+    color: var(--color-text-subtle);
+  }
+
+  &:hover:not(:disabled, :read-only) {
+    --field-border-color: var(--color-border-strong);
+  }
+
+  &:disabled,
+  &[readonly] {
+    background-color: var(--color-surface);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+  }
+
+  // Angular marks a control touched on blur — only then is an error fair.
+  &.ng-invalid.ng-touched,
+  .ng-submitted &.ng-invalid {
+    --field-border-color: var(--color-danger);
+  }
+}
+
+textarea.form-control {
+  min-block-size: 8rem;
+  padding-block: space('xs');
+  resize: vertical;
+}
+
+select.form-control {
+  cursor: pointer;
+  // Leave room for the chevron the design supplies as a background image.
+  padding-inline-end: space('xl');
+  appearance: none;
+}
+
+// -----------------------------------------------------------------------------
+// Checkbox and radio
+//
+// `accent-color` styles the native control, which keeps the platform's
+// keyboard and screen-reader behaviour intact — worth far more than a
+// custom-drawn box.
+// -----------------------------------------------------------------------------
+
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: space('2xs');
+}
+
+.form-check__input {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  margin: 0;
+  flex-shrink: 0;
+  // Nudges the box onto the first line's optical centre.
+  margin-block-start: 0.15em;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+
+  @include focus-ring;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.form-check__label {
+  @include type('sm', $line-height: 'snug');
+
+  cursor: pointer;
+}
+
+// -----------------------------------------------------------------------------
+// Groups
+// -----------------------------------------------------------------------------
+
+.form-row {
+  display: grid;
+  gap: space('md');
+
+  @include up('md') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: space('sm');
+  margin-block-start: space('sm');
+}
+
+// -----------------------------------------------------------------------------
+// Form-level status message
+// -----------------------------------------------------------------------------
+
+.form-status {
+  padding: space('sm') space('md');
+  border-radius: var(--control-radius);
+
+  @include type('sm', $line-height: 'snug');
+}
+
+.form-status--error {
+  background-color: var(--color-danger-surface);
+  color: var(--color-danger);
+}
+
+.form-status--success {
+  background-color: var(--color-surface);
+  color: var(--color-success);
+}
+
+// -----------------------------------------------------------------------------
+// Honeypot
+//
+// A spam trap for the contact form. `visually-hidden` rather than
+// `display: none`, since bots skip fields that are not rendered.
+// -----------------------------------------------------------------------------
+
+.form-honeypot {
+  @include visually-hidden;
+}

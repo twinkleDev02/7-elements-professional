@@ -1,0 +1,602 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Hero
+//
+// Mobile-first: the media stacks above the copy on small screens, and becomes a
+// full-bleed backdrop with the copy overlaid from `lg` up.
+//
+// Palette is declared locally rather than pulled from the theme because the
+// hero's blush/maroon treatment is specific to this section — the global tokens
+// are the brand's black/gold. Promote any of these to `themes/_default.scss` if
+// a second section adopts them.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.hero {
+  --hero-bg-start: #fdf7f4;
+  --hero-bg-mid: #fbeee9;
+  --hero-bg-end: #f4ded6;
+
+  --hero-ink: #2b1714;
+  --hero-accent: #9e2a2c;
+  --hero-accent-strong: #86211f;
+  --hero-muted: #7b625b;
+  --hero-rule: rgb(158 42 44 / 16%);
+  --hero-surface: #fff;
+
+  --hero-font-display: 'Playfair Display', 'Cormorant Garamond', georgia, 'Times New Roman', serif;
+  --hero-font-script: 'Great Vibes', 'Dancing Script', 'Segoe Script', cursive;
+
+  // How far the media layer stops short of the section's bottom edge. The
+  // credentials bar sits in normal flow and straddles that line, which is what
+  // produces the overlap without any absolute positioning.
+  --hero-media-cut: clamp(2.5rem, 5vw, 4.5rem);
+
+  // Focal point of the scroll zoom, in the media layer's own coordinates.
+  //
+  // The hero art is a single flattened composite with no alpha, so the product
+  // cannot be lifted onto its own plane. Scaling the image from this origin
+  // instead pushes the bottle cluster toward the frame as the scale climbs,
+  // which is what reads as the product coming forward.
+  //
+  // Nudge these two numbers to re-aim the zoom — nothing in the TypeScript
+  // needs to change.
+  --hero-zoom-origin-x: 72%;
+  --hero-zoom-origin-y: 66%;
+
+  // Opacity of the copy's legibility scrim. Driven by the scroll timeline so
+  // the veil leaves with the text it exists to support — a pseudo-element
+  // cannot be tweened directly, but the variable it reads can.
+  --hero-scrim-opacity: 1;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  // `clip` rather than `hidden`: it stops any horizontal bleed (and the sliver
+  // of empty page it leaves at the right edge) without turning the section into
+  // a scroll container, so the credentials bar's shadow still shows.
+  overflow-x: clip;
+  padding-block-end: clamp(1rem, 2vw, 2rem);
+  background: linear-gradient(
+    135deg,
+    var(--hero-bg-start) 0%,
+    var(--hero-bg-mid) 45%,
+    var(--hero-bg-end) 100%
+  );
+
+  @include up('lg') {
+    // A comfortable banner height. It no longer has to track the image's 3:2
+    // ratio, because the artwork is fitted with `contain` rather than `cover`
+    // (see `.hero__image`) — so the height is free to be whatever reads best.
+    min-block-size: clamp(36rem, 84vh, 48rem);
+    justify-content: center;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Media
+// -----------------------------------------------------------------------------
+
+.hero__media {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  // Reserves the space before the image decodes, so the copy below never jumps.
+  //
+  // Close to the artwork's own 2.26:1 rather than the old 4:3. `cover` crops
+  // whatever the box does not match, and at 4:3 that meant throwing away 40%
+  // of the width — the model and half the product line-up went with it.
+  aspect-ratio: 16 / 10;
+  will-change: transform;
+
+  @include up('lg') {
+    position: absolute;
+    inset-block: 0 var(--hero-media-cut);
+    inset-inline: 0;
+    aspect-ratio: auto;
+    // Grows downward rather than from the middle, so the scroll timeline's
+    // scale fills the strip the credentials bar vacates when it fades. Without
+    // this there is a bare band of gradient across the bottom of the frame for
+    // the whole reveal.
+    transform-origin: center top;
+  }
+}
+
+.hero__figure {
+  position: absolute;
+  // Slack on every side so the pointer parallax never drags an edge into view
+  // while the image is cropped with `cover`.
+  inset: -3%;
+  will-change: transform;
+
+  @include up('lg') {
+    // With `contain` the artwork already sits inside a larger transparent box,
+    // so the parallax has room to move without exposing an edge — and the
+    // overhang would push the fitted image under the container's clip,
+    // shearing the products off its trailing edge.
+    inset: 0;
+  }
+}
+
+.hero__image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  // The scroll timeline scales this element; the origin decides what the zoom
+  // closes in on. See `--hero-zoom-origin-*` above.
+  transform-origin: var(--hero-zoom-origin-x) var(--hero-zoom-origin-y);
+  // Below `lg` the crop is horizontal and the full height is shown, so only
+  // the x value matters. Pulled back from 70% to keep the model in frame
+  // alongside the bottles.
+  object-position: 62% center;
+  will-change: transform, opacity;
+
+  @include up('lg') {
+    // `contain`, not `cover`. The asset is a finished composite — model, ring
+    // light, product line-up, podium — and cropping it at all costs the face or
+    // the bottles. Fitted whole and anchored to the trailing edge, it is always
+    // fully visible at any window size, and the copy sits on the blush field it
+    // leaves to its left.
+    object-fit: contain;
+    object-position: right bottom;
+
+    // The asset carries its own baked-in background. Feathering its leading
+    // edge dissolves the seam where that meets the section's gradient.
+    mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
+  }
+}
+
+/// Warm halo behind the model. A radial gradient rather than a blurred box —
+/// `filter: blur()` on an element this large costs a repaint every frame the
+/// ambient loop scales it.
+/// Sits ABOVE the photograph, not behind it. The asset is an opaque PNG with
+/// its own background baked in, so a glow underneath would never be seen —
+/// `screen` blending lifts the existing ring light instead of trying to
+/// replace it.
+.hero__glow {
+  position: absolute;
+  z-index: 1;
+  mix-blend-mode: screen;
+  inset-block-start: 38%;
+  inset-inline-start: 62%;
+  inline-size: clamp(20rem, 42vw, 40rem);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: radius('circle');
+  background: radial-gradient(
+    circle,
+    rgb(255 246 238 / 92%) 0%,
+    rgb(253 226 212 / 55%) 42%,
+    rgb(253 226 212 / 0%) 70%
+  );
+  opacity: 0.55;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/// Legibility scrim under the copy column. Desktop only — on mobile the copy
+/// sits on the solid gradient, not on the image.
+.hero__media::after {
+  @include up('lg') {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: var(--hero-scrim-opacity);
+    background: linear-gradient(
+      100deg,
+      rgb(253 247 244 / 96%) 0%,
+      rgb(253 247 244 / 72%) 32%,
+      rgb(253 247 244 / 0%) 58%
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Copy
+// -----------------------------------------------------------------------------
+
+.hero__inner {
+  @include container('wide');
+
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.hero__content {
+  max-inline-size: 34rem;
+  will-change: transform, opacity;
+
+  @include up('lg') {
+    max-inline-size: min(46%, 34rem);
+  }
+}
+
+.hero__eyebrow {
+  margin-block-end: clamp(0.25rem, 1vw, 0.75rem);
+  color: var(--hero-ink);
+  font-family: var(--hero-font-script);
+  font-size: clamp(1.1rem, 2.4vw, 1.65rem);
+  font-weight: weight('regular');
+  line-height: leading('tight');
+  letter-spacing: tracking('wide');
+}
+
+.hero__title {
+  margin-block-end: clamp(1rem, 2.2vw, 1.5rem);
+  font-family: var(--hero-font-display);
+  font-weight: weight('regular');
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+
+/// The clipping window each title line wipes up through. The padding keeps
+/// letterforms from being shaved by the overflow, and the negative margin
+/// gives the space straight back so the line rhythm is unaffected.
+.hero__title-mask {
+  display: block;
+  overflow: hidden;
+  padding-block-end: 0.08em;
+  margin-block-end: -0.08em;
+}
+
+.hero__title-line {
+  display: block;
+  // A wrapped line would render two visual rows inside one clipping mask and
+  // break the wipe, so the type scale is sized to fit and wrapping is off.
+  white-space: nowrap;
+  color: var(--hero-ink);
+  font-size: clamp(2.1rem, 6.2vw, 3.5rem);
+  letter-spacing: tracking('tight');
+  will-change: transform, opacity;
+}
+
+.hero__title-line--accent {
+  color: var(--hero-accent);
+  font-size: clamp(2.9rem, 8.4vw, 4.75rem);
+  letter-spacing: tracking('tighter');
+}
+
+/// Individually transformable word. `inline-block` is the whole point: it lays
+/// out exactly as the bare text did — including the collapsed space between
+/// words — while accepting a transform, which inline text cannot.
+.hero__title-word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/// Word gap in CSS, not markup.
+///
+/// Angular compiles templates with `preserveWhitespaces: false`, which strips
+/// the whitespace-only text node between two element siblings — so splitting
+/// "Session of" into spans rendered it as "SESSIONOF". An explicit margin is
+/// immune to that, and is tunable against the display face's own spacing.
+.hero__title-word + .hero__title-word {
+  margin-inline-start: 0.28em;
+}
+
+.hero__subtitle {
+  max-inline-size: 26rem;
+  margin-block-end: clamp(1.5rem, 3vw, 2.25rem);
+  color: var(--hero-muted);
+  font-size: clamp(0.95rem, 1.15vw, 1.0625rem);
+  line-height: leading('relaxed');
+  will-change: transform, opacity;
+}
+
+// -----------------------------------------------------------------------------
+// Stage 05 tagline
+//
+// Out of flow and invisible at rest, so it cannot shift the hero's resting
+// composition by a pixel. The scroll timeline is the only thing that reveals
+// it. Desktop only — below `lg` the hero is not pinned, so there is no stage
+// for it to appear in.
+// -----------------------------------------------------------------------------
+
+.hero__tagline {
+  display: none;
+
+  @include up('lg') {
+    position: absolute;
+    inset-block-start: 50%;
+    // Pulled in from the edge: at the tighter value "TRANSFORM." ran almost
+    // into the viewport edge at 1440.
+    inset-inline-end: clamp(4rem, 10vw, 11rem);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
+    margin: 0;
+    translate: 0 -50%;
+    // Resting state. The timeline animates toward opacity 1 / y 0.
+    opacity: 0;
+    // Decorative and never interactive, even mid-reveal.
+    pointer-events: none;
+    color: var(--hero-accent);
+    font-family: var(--hero-font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+    line-height: leading('tight');
+    letter-spacing: tracking('tight');
+    text-transform: uppercase;
+  }
+}
+
+.hero__tagline-word {
+  display: block;
+  // GSAP reads this as `yPercent: 45` and animates it to 0.
+  transform: translateY(45%);
+  will-change: transform, opacity;
+}
+
+// -----------------------------------------------------------------------------
+// Calls to action
+// -----------------------------------------------------------------------------
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: space('xs');
+  margin-block-end: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: space('3xs');
+  min-block-size: 2.875rem;
+  padding-inline: clamp(1.1rem, 2vw, 1.6rem);
+  border: border-width('hairline') solid transparent;
+  border-radius: radius('md');
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  line-height: leading('none');
+  text-transform: uppercase;
+  white-space: nowrap;
+  will-change: transform, opacity;
+
+  @include transition((background-color, border-color, color, transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    // Transform-only lift: no layout work, so the hover stays on the compositor.
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.hero__cta-icon {
+  inline-size: 1.05em;
+  block-size: 1.05em;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  @include transition(transform);
+}
+
+.hero__cta--primary {
+  background-color: var(--hero-accent);
+  border-color: var(--hero-accent);
+  color: #fff;
+
+  &:hover {
+    background-color: var(--hero-accent-strong);
+    border-color: var(--hero-accent-strong);
+    box-shadow: 0 10px 24px rgb(158 42 44 / 26%);
+  }
+
+  // The arrow leads the eye out of the button, toward the destination.
+  &:hover .hero__cta-icon {
+    transform: translateX(3px);
+  }
+}
+
+.hero__cta--ghost {
+  background-color: transparent;
+  border-color: var(--hero-rule);
+  color: var(--hero-accent);
+
+  &:hover {
+    border-color: var(--hero-accent);
+    background-color: rgb(158 42 44 / 6%);
+  }
+
+  .hero__cta-icon {
+    fill: none;
+  }
+
+  &:hover .hero__cta-icon {
+    transform: scale(1.08);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Formulation claims
+// -----------------------------------------------------------------------------
+
+.hero__claims {
+  display: flex;
+  flex-wrap: wrap;
+  gap: space('2xs') clamp(0.75rem, 2vw, 1.5rem);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.hero__claim {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--hero-muted);
+  font-size: font-size('3xs');
+  letter-spacing: tracking('wide');
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.hero__claim-icon {
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--hero-accent);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+// -----------------------------------------------------------------------------
+// Credentials bar
+// -----------------------------------------------------------------------------
+
+.hero__features {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 2rem) space('sm');
+
+  // Not the `container()` mixin: this is a panel, so it needs an outer inset
+  // from the viewport *and* its own inner padding. The mixin only gives one.
+  inline-size: min(100% - (var(--container-gutter) * 2), #{container-width('default')});
+  margin-block-start: auto;
+  margin-inline: auto;
+  padding-block: clamp(1.5rem, 3vw, 2rem);
+  padding-inline: clamp(0.5rem, 2vw, 1.75rem);
+  list-style: none;
+  background-color: var(--hero-surface);
+  border-radius: clamp(0.75rem, 1.5vw, 1.25rem);
+  box-shadow: 0 18px 44px rgb(43 23 20 / 8%);
+
+  @include up('sm') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include up('lg') {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+  }
+}
+
+.hero__feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline: space('2xs');
+  text-align: center;
+  will-change: transform, opacity;
+
+  // Hairline separators only once every item is on a single row — at narrower
+  // widths the grid wraps and a left border would land mid-row.
+  @include up('lg') {
+    & + & {
+      border-inline-start: border-width('hairline') solid var(--hero-rule);
+    }
+  }
+}
+
+/// Fixed height across every item so the labels beneath them share one
+/// baseline, whether the mark above is an icon or the `18+` stat.
+.hero__feature-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  block-size: clamp(2.5rem, 3.4vw, 3.125rem);
+  color: var(--hero-accent);
+}
+
+.hero__feature-mark--stat {
+  font-family: var(--hero-font-display);
+  font-size: clamp(1.9rem, 3.2vw, 2.375rem);
+  font-weight: weight('semibold');
+  line-height: leading('none');
+  letter-spacing: tracking('tight');
+}
+
+.hero__feature-icon {
+  inline-size: clamp(2rem, 2.8vw, 2.625rem);
+  block-size: clamp(2rem, 2.8vw, 2.625rem);
+  fill: none;
+  stroke: currentcolor;
+  // Lighter stroke at the larger size — scaling the glyph up without thinning
+  // the line reads as heavy next to the serif type.
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero__feature-label {
+  color: var(--hero-ink);
+  font-size: font-size('3xs');
+  font-weight: weight('medium');
+  line-height: leading('snug');
+  letter-spacing: tracking('wide');
+}
+
+// -----------------------------------------------------------------------------
+// Reduced motion
+//
+// The JavaScript already skips every tween, so this only has to neutralise the
+// hints and hover movement that CSS owns.
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// Mobile
+//
+// Below `lg` nothing animates at all: no entrance, no pin, no smooth-scroll
+// hijack (see `MOTION_QUERY` in the component). So every promotion hint here is
+// a composited layer bought for no motion — real memory pressure on a phone —
+// and the glow's blend layer is the most expensive of them.
+// -----------------------------------------------------------------------------
+
+@include down('lg') {
+  .hero__media,
+  .hero__figure,
+  .hero__image,
+  .hero__content,
+  .hero__title-line,
+  .hero__subtitle,
+  .hero__cta,
+  .hero__claim,
+  .hero__feature,
+  .hero__glow {
+    will-change: auto;
+  }
+}
+
+@include reduced-motion {
+  .hero__media,
+  .hero__figure,
+  .hero__image,
+  .hero__glow,
+  .hero__content,
+  .hero__title-line,
+  .hero__subtitle,
+  .hero__cta,
+  .hero__claim,
+  .hero__feature {
+    will-change: auto;
+  }
+
+  .hero__cta:hover {
+    transform: none;
+  }
+
+  .hero__cta:hover .hero__cta-icon {
+    transform: none;
+  }
+}

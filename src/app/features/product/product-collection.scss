@@ -1,0 +1,79 @@
+@use 'abstracts' as *;
+
+// Page shell. Section spacing belongs to each section's own stylesheet; only
+// the catalogue band — filter, grid and Load More — is composed here.
+
+:host {
+  display: block;
+  // Guards against any section's decorative overflow widening the document.
+  overflow-x: clip;
+  background-color: var(--color-bg);
+}
+
+.products__catalogue {
+  padding-block: clamp(1.5rem, 3.5vw, 2.5rem);
+}
+
+.products__catalogue-inner {
+  @include container('wide');
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.products__load-more {
+  display: flex;
+  justify-content: center;
+}
+
+.products__load-more-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.5rem;
+  padding-inline: clamp(1.1rem, 2.2vw, 1.625rem);
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('sm');
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @include transition((background-color, color, transform, box-shadow));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgb(158 42 44 / 22%);
+  }
+
+  &:hover svg {
+    transform: rotate(90deg);
+  }
+
+  svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    @include transition(transform, $speed: 'base');
+  }
+}
+
+@include reduced-motion {
+  .products__load-more-button:hover,
+  .products__load-more-button:hover svg {
+    transform: none;
+  }
+}

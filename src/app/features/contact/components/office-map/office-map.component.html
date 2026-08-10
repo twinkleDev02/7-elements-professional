@@ -1,0 +1,40 @@
+<div class="office-map">
+  <div class="office-map__panel office-map__reveal">
+    <p class="office-map__eyebrow">{{ content().eyebrow }}</p>
+    <h2 class="office-map__title">{{ content().title }}</h2>
+    <p class="office-map__body">{{ content().body }}</p>
+
+    @if (content().addressLines.length) {
+      <address class="office-map__address">
+        @for (line of content().addressLines; track line) {
+          <span class="office-map__address-line">{{ line }}</span>
+        }
+      </address>
+    }
+  </div>
+
+  <!--
+    MAP CONTAINER — intentionally blank.
+
+    No address is published for Redefining Salon Artistry Private Limited, so
+    there is nothing to centre a map on and no static map image in the assets.
+    The frame holds the reference's aspect ratio, radius and spacing so the
+    layout is final.
+
+    TODO: set `mapEmbedUrl` in CONTACT_OFFICE (contact.data.ts) once the
+    registered address is confirmed — an <iframe> then renders in place of this
+    placeholder. A static map image at assets/images/brand/office-map.jpg
+    (16:10) would also work and costs no third-party request.
+  -->
+  <div class="office-map__frame office-map__reveal">
+    @if (mapUrl(); as url) {
+      <iframe
+        class="office-map__embed"
+        [src]="url"
+        title="Map showing our office location"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    }
+  </div>
+</div>

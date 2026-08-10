@@ -1,0 +1,36 @@
+@use 'abstracts' as *;
+
+// Page-level composition only. Anything that styles a section belongs to that
+// section's own stylesheet, not here.
+
+:host {
+  display: block;
+  background-color: var(--color-bg);
+}
+
+.home__trust-band {
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+}
+
+.home__trust-inner {
+  @include container('wide');
+
+  display: grid;
+  gap: clamp(1.75rem, 3.5vw, 2.5rem);
+  align-items: center;
+
+  @include up('lg') {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+  }
+}
+
+.home__trust-offer {
+  display: block;
+  min-inline-size: 0;
+
+  @include up('lg') {
+    // Runs out through the container's gutter to the page edge, as in the
+    // reference, so the red field is not left floating in white space.
+    margin-inline-end: calc(var(--container-gutter) * -1);
+  }
+}

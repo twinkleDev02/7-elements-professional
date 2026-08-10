@@ -1,0 +1,367 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Footer
+//
+// Three stacked red bands — credentials, sitemap, legal — each a shade deeper
+// than the one above, so the page resolves downward rather than stopping
+// abruptly.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.footer__assurances-band {
+  padding-block: clamp(1.25rem, 2.8vw, 2rem);
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+.footer__assurances {
+  @include container('wide');
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  padding-inline: var(--container-gutter);
+  margin: 0;
+  list-style: none;
+
+  @include up('lg') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.footer__assurance {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-inline-size: 0;
+}
+
+.footer__assurance-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(2.125rem, 3vw, 2.5rem);
+  block-size: clamp(2.125rem, 3vw, 2.5rem);
+  flex: 0 0 auto;
+  border: border-width('hairline') solid rgb(255 255 255 / 40%);
+  border-radius: radius('circle');
+  color: inherit;
+
+  @include transition((transform, background-color, color));
+
+  .footer__assurance:hover & {
+    transform: rotate(-8deg) scale(1.06);
+  }
+
+  svg {
+    inline-size: 50%;
+    block-size: 50%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.footer__assurance-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-inline-size: 0;
+}
+
+.footer__assurance-title {
+  font-size: clamp(0.78rem, 1vw, 0.875rem);
+  font-weight: weight('semibold');
+  line-height: leading('snug');
+}
+
+.footer__assurance-subtitle {
+  color: rgb(255 255 255 / 78%);
+  font-size: font-size('3xs');
+  line-height: leading('snug');
+}
+
+// -----------------------------------------------------------------------------
+// Sitemap
+// -----------------------------------------------------------------------------
+
+.footer__main-band {
+  padding-block: clamp(2rem, 4.5vw, 3.25rem);
+  background-color: var(--color-primary-hover);
+  color: var(--color-primary-contrast);
+}
+
+.footer__main {
+  @include container('wide');
+
+  display: grid;
+  // The brand column is given a wider, bounded track; the rest share what is
+  // left and collapse to a single column on a phone without a breakpoint each.
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: clamp(1.75rem, 3.5vw, 2.75rem);
+
+  @include up('lg') {
+    grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr));
+  }
+}
+
+.footer__col {
+  min-inline-size: 0;
+}
+
+.footer__col-title {
+  margin-block-end: clamp(0.75rem, 1.6vw, 1rem);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.footer__links,
+.footer__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.footer__link {
+  color: rgb(255 255 255 / 82%);
+  font-size: clamp(0.78rem, 0.95vw, 0.875rem);
+  line-height: leading('snug');
+
+  @include transition(color);
+  @include focus-ring;
+
+  &:hover {
+    color: var(--color-primary-contrast);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Brand column
+// -----------------------------------------------------------------------------
+
+.footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: inherit;
+
+  @include focus-ring;
+}
+
+.footer__brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  flex: 0 0 auto;
+  border: border-width('hairline') solid rgb(255 255 255 / 45%);
+  border-radius: radius('circle');
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: leading('none');
+}
+
+.footer__brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: leading('none');
+}
+
+.footer__brand-name {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  letter-spacing: tracking('tight');
+}
+
+.footer__brand-sub {
+  margin-block-start: 0.2rem;
+  color: rgb(255 255 255 / 78%);
+  font-size: font-size('3xs');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.footer__blurb {
+  max-inline-size: 26rem;
+  margin-block: clamp(0.875rem, 1.8vw, 1.125rem) 0;
+  color: rgb(255 255 255 / 80%);
+  font-size: clamp(0.78rem, 0.95vw, 0.875rem);
+  line-height: leading('relaxed');
+}
+
+.footer__social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin-block-start: clamp(0.875rem, 1.8vw, 1.125rem);
+  list-style: none;
+}
+
+.footer__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border: border-width('hairline') solid rgb(255 255 255 / 40%);
+  border-radius: radius('circle');
+  color: inherit;
+
+  @include transition((background-color, transform, border-color));
+  @include focus-ring;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary-contrast);
+    background-color: rgb(255 255 255 / 12%);
+  }
+
+  svg {
+    inline-size: 45%;
+    block-size: 45%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.footer__contact-item {
+  color: rgb(255 255 255 / 82%);
+  font-size: clamp(0.78rem, 0.95vw, 0.875rem);
+  line-height: leading('snug');
+}
+
+.footer__contact-item--muted {
+  color: rgb(255 255 255 / 68%);
+}
+
+// -----------------------------------------------------------------------------
+// Legal bar
+// -----------------------------------------------------------------------------
+
+.footer__legal-band {
+  padding-block: clamp(0.75rem, 1.6vw, 1.125rem);
+  // Falls back to the literal because the dark theme never redefines this
+  // token, which would otherwise leave the band with no background at all.
+  background-color: var(--color-primary-deep, #7d1d1f);
+  color: rgb(255 255 255 / 82%);
+}
+
+.footer__legal {
+  @include container('wide');
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: space('2xs') space('md');
+  font-size: font-size('3xs');
+}
+
+.footer__copyright {
+  margin: 0;
+}
+
+.footer__legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: space('md');
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.footer__legal-link {
+  color: inherit;
+
+  @include transition(color);
+  @include focus-ring;
+
+  &:hover {
+    color: var(--color-primary-contrast);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Entrance
+//
+// `appRevealOnScroll` puts `is-revealed` on the container once it enters the
+// viewport; the stagger is per-child transition delay. Safe to author hidden:
+// this is a client-rendered SPA, so "no JavaScript" means no page at all, and
+// the directive reveals immediately under reduced motion or without
+// IntersectionObserver.
+// -----------------------------------------------------------------------------
+
+.footer__assurance,
+.footer__col,
+.footer__legal-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity duration('base') ease('entrance'),
+    transform duration('base') ease('entrance');
+}
+
+.footer__assurances.is-revealed .footer__assurance,
+.footer__main.is-revealed .footer__col,
+.footer__legal.is-revealed .footer__legal-item {
+  opacity: 1;
+  transform: none;
+}
+
+@for $i from 1 through 4 {
+  .footer__assurance:nth-child(#{$i}) {
+    transition-delay: #{($i - 1) * 90}ms;
+  }
+}
+
+@for $i from 1 through 5 {
+  .footer__col:nth-child(#{$i}) {
+    transition-delay: #{($i - 1) * 80}ms;
+  }
+}
+
+@for $i from 1 through 2 {
+  .footer__legal-item:nth-child(#{$i}) {
+    transition-delay: #{($i - 1) * 90}ms;
+  }
+}
+
+@include reduced-motion {
+  .footer__assurance:hover .footer__assurance-icon {
+    transform: none;
+  }
+
+  .footer__social-link:hover {
+    transform: none;
+  }
+
+  // Never leave content hidden waiting on a transition that will not run.
+  .footer__assurance,
+  .footer__col,
+  .footer__legal-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

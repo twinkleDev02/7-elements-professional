@@ -1,0 +1,114 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Trust strip
+//
+// Five reassurances in a bordered panel, divided by hairlines once they sit on
+// a single row.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.trust-strip {
+  padding-block: clamp(0.5rem, 1.5vw, 1rem);
+}
+
+.trust-strip__panel {
+  @include container('wide');
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  padding-block: clamp(1rem, 2.4vw, 1.5rem);
+  margin-block: 0;
+  list-style: none;
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface);
+
+  @include up('md') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include up('lg') {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+  }
+}
+
+.trust-strip__item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-inline-size: 0;
+  padding-inline: clamp(0.5rem, 1.4vw, 1rem);
+  will-change: transform;
+
+  @include up('lg') {
+    & + & {
+      border-inline-start: border-width('hairline') solid var(--color-border);
+    }
+  }
+}
+
+.trust-strip__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(2rem, 2.8vw, 2.375rem);
+  block-size: clamp(2rem, 2.8vw, 2.375rem);
+  flex: 0 0 auto;
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('circle');
+  color: var(--color-primary);
+
+  @include transition((transform, background-color, color));
+
+  .trust-strip__item:hover & {
+    transform: scale(1.08);
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+
+  svg {
+    inline-size: 46%;
+    block-size: 46%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.trust-strip__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-inline-size: 0;
+}
+
+.trust-strip__title {
+  color: var(--color-text);
+  font-size: clamp(0.7rem, 0.9vw, 0.8125rem);
+  font-weight: weight('semibold');
+  line-height: leading('snug');
+}
+
+.trust-strip__subtitle {
+  color: var(--color-text-muted);
+  font-size: clamp(0.62rem, 0.8vw, 0.7188rem);
+  line-height: leading('snug');
+}
+
+@include reduced-motion {
+  .trust-strip__item {
+    will-change: auto;
+  }
+
+  .trust-strip__item:hover .trust-strip__icon {
+    transform: none;
+  }
+}

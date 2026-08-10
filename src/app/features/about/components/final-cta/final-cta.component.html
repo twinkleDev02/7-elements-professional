@@ -1,0 +1,42 @@
+<section class="final-cta" aria-labelledby="final-cta-title">
+  <!-- Botanical field, drawn in CSS so the band needs no image asset. -->
+  <span class="final-cta__backdrop" aria-hidden="true"></span>
+
+  <div class="final-cta__inner">
+    <div class="final-cta__content">
+      <h2 class="final-cta__title final-cta__reveal" id="final-cta-title">
+        @for (line of content.titleLines; track line) {
+          <span class="final-cta__title-line">{{ line }}</span>
+        }
+      </h2>
+
+      <p class="final-cta__body final-cta__reveal">{{ content.body }}</p>
+    </div>
+
+    <ul class="final-cta__assurances" role="list">
+      @for (assurance of assurances(); track assurance.id) {
+        <li class="final-cta__assurance">
+          <span class="final-cta__assurance-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              @for (path of assurance.iconPaths; track $index) {
+                <path [attr.d]="path" />
+              }
+            </svg>
+          </span>
+
+          <span class="final-cta__assurance-text">
+            <span class="final-cta__assurance-title">{{ assurance.title }}</span>
+            <span class="final-cta__assurance-subtitle">{{ assurance.subtitle }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+
+    <a class="final-cta__button final-cta__reveal" [routerLink]="ctaLink">
+      <span>{{ content.ctaLabel }}</span>
+      <svg class="final-cta__button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 12h15M13 6l6 6-6 6" />
+      </svg>
+    </a>
+  </div>
+</section>

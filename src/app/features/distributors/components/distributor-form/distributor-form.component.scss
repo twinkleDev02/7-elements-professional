@@ -1,0 +1,286 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// Distributor registration form
+//
+// Field styling comes from the global form layer (`styles/components/_forms.scss`)
+// so this matches every other form on the site. Only the panel, the drop zone
+// and the submit button are specific to this section.
+// =============================================================================
+
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.distributor-form {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  background-color: var(--color-surface);
+}
+
+.distributor-form__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-block-end: clamp(1.125rem, 2.4vw, 1.625rem);
+}
+
+.distributor-form__title {
+  color: var(--color-primary);
+  font-size: clamp(0.82rem, 1.05vw, 0.9375rem);
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/// Hairline with a centred diamond, drawn without extra DOM.
+.distributor-form__rule {
+  position: relative;
+  display: block;
+  inline-size: 4rem;
+  block-size: 1px;
+  margin-block-start: 0.625rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-border-strong) 25%,
+    var(--color-border-strong) 75%,
+    transparent
+  );
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-start: 50%;
+    inline-size: 0.35rem;
+    block-size: 0.35rem;
+    translate: -50% -50%;
+    rotate: 45deg;
+    background-color: var(--color-primary);
+  }
+}
+
+.distributor-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.875rem, 1.8vw, 1.25rem);
+}
+
+.distributor-form__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.6vw, 1rem);
+  padding: 0;
+  margin: 0;
+  border: 0;
+  min-inline-size: 0;
+  will-change: transform;
+}
+
+// -----------------------------------------------------------------------------
+// Document upload
+// -----------------------------------------------------------------------------
+
+.distributor-form__drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: border-width('thin') dashed var(--color-border-strong);
+  border-radius: radius('md');
+  background-color: var(--color-surface-tint);
+  text-align: center;
+  cursor: pointer;
+
+  @include transition((border-color, background-color, transform));
+
+  &:hover,
+  &.is-dragging {
+    border-color: var(--color-primary);
+    background-color: rgb(158 42 44 / 5%);
+  }
+
+  &.is-dragging {
+    transform: scale(1.01);
+  }
+
+  // The file input inside is visually hidden, so focus has to show here.
+  &:focus-within {
+    outline: border-width('thin') solid var(--color-focus);
+    outline-offset: 2px;
+  }
+}
+
+.distributor-form__drop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  margin-block-end: 0.25rem;
+  border-radius: radius('circle');
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+
+  svg {
+    inline-size: 52%;
+    block-size: 52%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.distributor-form__drop-title {
+  color: var(--color-text);
+  font-size: clamp(0.75rem, 0.92vw, 0.8125rem);
+  font-weight: weight('medium');
+}
+
+.distributor-form__drop-hint {
+  color: var(--color-text-subtle);
+  font-size: font-size('3xs');
+}
+
+.distributor-form__files {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.distributor-form__file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border: border-width('hairline') solid var(--color-border);
+  border-radius: radius('sm');
+  background-color: var(--color-surface-tint);
+  font-size: font-size('3xs');
+}
+
+.distributor-form__file-name {
+  min-inline-size: 0;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.distributor-form__file-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: radius('circle');
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+
+  @include transition((background-color, color));
+  @include focus-ring;
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+
+  svg {
+    inline-size: 0.7rem;
+    block-size: 0.7rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Terms and submit
+// -----------------------------------------------------------------------------
+
+.distributor-form__link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+
+  @include focus-ring;
+}
+
+.distributor-form__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-block-size: 2.875rem;
+  padding-inline: clamp(1.25rem, 2.4vw, 1.875rem);
+  border: 0;
+  border-radius: radius('sm');
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @include transition((background-color, transform, box-shadow, opacity));
+  @include focus-ring;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgb(158 42 44 / 28%);
+  }
+
+  &:hover:not(:disabled) svg {
+    transform: translateX(3px);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  @include down('sm') {
+    inline-size: 100%;
+  }
+
+  svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    @include transition(transform);
+  }
+}
+
+@include reduced-motion {
+  .distributor-form__fieldset {
+    will-change: auto;
+  }
+
+  .distributor-form__drop.is-dragging,
+  .distributor-form__submit:hover,
+  .distributor-form__submit:hover svg {
+    transform: none;
+  }
+}

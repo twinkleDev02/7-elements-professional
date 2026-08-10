@@ -1,0 +1,134 @@
+@use 'abstracts' as *;
+
+// =============================================================================
+// The 7 Elements Promise
+//
+// Seven items across one row on desktop, reflowing to fewer columns as the
+// viewport narrows. Hairline dividers appear only at the widest layout, where
+// the row is unbroken.
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.promise {
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+  background-color: var(--color-surface);
+}
+
+.promise__inner {
+  @include container('wide');
+}
+
+.promise__header {
+  margin-block-end: clamp(1.25rem, 3vw, 2rem);
+  text-align: center;
+}
+
+.promise__eyebrow {
+  margin-block-end: 0.375rem;
+  color: var(--color-primary);
+  font-size: font-size('3xs');
+  font-weight: weight('semibold');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+}
+
+.promise__title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.2vw, 2.25rem);
+  font-weight: weight('regular');
+  line-height: leading('tight');
+  letter-spacing: tracking('tight');
+  text-wrap: balance;
+}
+
+.promise__items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 1.75rem) 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include up('sm') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @include up('lg') {
+    // All seven on one row, which is the arrangement the dividers assume.
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
+.promise__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding-inline: clamp(0.375rem, 1.2vw, 0.875rem);
+  text-align: center;
+  will-change: transform;
+
+  @include up('lg') {
+    & + & {
+      border-inline-start: border-width('hairline') solid var(--color-border);
+    }
+  }
+}
+
+.promise__item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: clamp(2.5rem, 3.6vw, 3rem);
+  block-size: clamp(2.5rem, 3.6vw, 3rem);
+  border: border-width('hairline') solid var(--color-border-strong);
+  border-radius: radius('circle');
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+
+  @include transition((transform, background-color, color, box-shadow));
+
+  .promise__item:hover & {
+    transform: translateY(-4px) rotate(-8deg);
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    box-shadow: 0 10px 24px rgb(158 42 44 / 24%);
+  }
+
+  svg {
+    inline-size: 48%;
+    block-size: 48%;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.promise__item-title,
+.promise__item-subtitle {
+  color: var(--color-text);
+  font-size: clamp(0.7rem, 0.9vw, 0.8125rem);
+  font-weight: weight('medium');
+  line-height: leading('snug');
+  text-wrap: balance;
+}
+
+.promise__item-title {
+  margin-block-start: 0.25rem;
+}
+
+@include reduced-motion {
+  .promise__item {
+    will-change: auto;
+  }
+
+  .promise__item:hover .promise__item-icon {
+    transform: none;
+  }
+}

@@ -1,0 +1,10 @@
+@use 'abstracts' as *;
+
+// Page shell only. Section spacing belongs to each section's own stylesheet.
+
+:host {
+  display: block;
+  // Guards against any section's decorative overflow widening the document.
+  overflow-x: clip;
+  background-color: var(--color-surface);
+}

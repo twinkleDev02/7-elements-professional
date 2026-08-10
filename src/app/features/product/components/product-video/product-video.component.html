@@ -1,0 +1,58 @@
+<section class="product-video" aria-labelledby="product-video-title">
+  <div class="product-video__inner">
+    <header class="product-video__header">
+      <h2 class="product-video__title product-video__reveal" id="product-video-title">
+        {{ video().title }}
+      </h2>
+      <p class="product-video__description product-video__reveal">{{ video().description }}</p>
+    </header>
+
+    <div class="product-video__frame">
+      @if (isPlaying()) {
+        <!--
+          Autoplays on mount because the visitor just pressed play, and stays
+          muted: sound is never a surprise, and browsers block unmuted autoplay
+          in any case. Controls are on so it can be unmuted immediately.
+        -->
+        <video
+          class="product-video__player"
+          [src]="video().src"
+          [poster]="video().poster"
+          controls
+          autoplay
+          muted
+          playsinline
+          preload="metadata"
+        ></video>
+      } @else {
+        <button
+          class="product-video__poster"
+          type="button"
+          [attr.aria-label]="'Play video: ' + video().title"
+          (click)="play()"
+        >
+          <!--
+            TODO: no poster asset exists. `preload="metadata"` shows the clip's
+            own first frame rather than a stand-in from another product.
+            Add assets/images/brand/shampooing-poster.jpg (16:9) and set
+            `poster` on ProductVideo in product-detail.data.ts.
+          -->
+          <video
+            class="product-video__preview"
+            [src]="video().src"
+            preload="metadata"
+            muted
+            playsinline
+            aria-hidden="true"
+          ></video>
+
+          <span class="product-video__play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M9 7.5l8 4.5-8 4.5z" />
+            </svg>
+          </span>
+        </button>
+      }
+    </div>
+  </div>
+</section>

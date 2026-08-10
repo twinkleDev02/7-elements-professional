@@ -1,0 +1,28 @@
+<section class="products-cta" aria-labelledby="products-cta-title">
+  <div class="products-cta__panel">
+    <div class="products-cta__content">
+      <h2 class="products-cta__title products-cta__reveal" id="products-cta-title">
+        {{ content.title }}
+      </h2>
+
+      <p class="products-cta__body products-cta__reveal">{{ content.body }}</p>
+
+      <a class="products-cta__button products-cta__reveal" [routerLink]="ctaLink">
+        <span>{{ content.ctaLabel }}</span>
+        <svg class="products-cta__button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 12h15M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- Decorative: the copy carries everything this photograph says. -->
+    <!-- <img
+      class="products-cta__image"
+      [src]="content.image"
+      [alt]="''"
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    /> -->
+  </div>
+</section>

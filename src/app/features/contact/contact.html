@@ -1,0 +1,18 @@
+<app-contact-hero />
+
+<app-contact-info-cards />
+
+<!--
+  Form and office panel share one band. They stay separate components — only
+  their arrangement belongs to the page.
+-->
+<section class="contact__enquiry" aria-label="Send an enquiry">
+  <div class="contact__enquiry-inner">
+    <app-contact-form class="contact__form" />
+    <app-office-map class="contact__office" />
+  </div>
+</section>
+
+<app-trust-banner />
+
+<app-newsletter-band />

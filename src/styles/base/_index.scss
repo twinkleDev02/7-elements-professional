@@ -1,0 +1,6 @@
+// Base layer: document-level defaults that every page inherits.
+// Loaded after `themes`, before `layout`.
+
+@forward 'reset';
+@forward 'typography';
+@forward 'animations';

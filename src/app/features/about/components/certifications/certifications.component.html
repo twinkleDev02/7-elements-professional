@@ -1,0 +1,36 @@
+<section class="certifications" aria-labelledby="certifications-title">
+  <div class="certifications__panel">
+    <div class="certifications__marks">
+      <p class="certifications__eyebrow certifications__reveal" id="certifications-title">
+        {{ eyebrow() }}
+      </p>
+
+      <ul class="certifications__badges" role="list">
+        @for (certification of certifications(); track certification.id) {
+          <li class="certifications__badge">
+            <span class="certifications__badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                @for (path of certification.iconPaths; track $index) {
+                  <path [attr.d]="path" />
+                }
+              </svg>
+            </span>
+
+            <span class="certifications__badge-title">{{ certification.title }}</span>
+            <span class="certifications__badge-subtitle">{{ certification.subtitle }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <aside class="certifications__french certifications__reveal">
+      <!-- Flag drawn in CSS rather than shipped as an image: three flat bands. -->
+      <span class="certifications__flag" aria-hidden="true"></span>
+
+      <div class="certifications__french-text">
+        <p class="certifications__french-title">{{ french.title }}</p>
+        <p class="certifications__french-body">{{ french.body }}</p>
+      </div>
+    </aside>
+  </div>
+</section>

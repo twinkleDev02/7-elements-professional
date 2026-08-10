@@ -1,0 +1,36 @@
+<app-products-hero />
+
+<section class="products__catalogue" aria-label="Product catalogue">
+  <div class="products__catalogue-inner">
+    <app-product-filter
+      [activeCategory]="activeCategory()"
+      (categoryChange)="onCategoryChange($event)"
+      (filterOpen)="onFilterOpen()"
+    />
+
+    <app-product-grid
+      [products]="visible()"
+      (addToCart)="onAddToCart($event)"
+      (toggleWishlist)="onToggleWishlist($event)"
+      (quickView)="onQuickView($event)"
+    />
+
+    @if (hasMore()) {
+      <div class="products__load-more">
+        <button class="products__load-more-button" type="button" (click)="loadMore()">
+          <span>Load More Products</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 12a8 8 0 1 1-2.3-5.6" />
+            <path d="M20 4v4.5h-4.5" />
+          </svg>
+        </button>
+      </div>
+    }
+  </div>
+</section>
+
+<app-promo-collection />
+
+<app-trust-strip />
+
+<app-products-cta />

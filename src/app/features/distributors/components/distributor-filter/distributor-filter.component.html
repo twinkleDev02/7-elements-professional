@@ -1,0 +1,99 @@
+<div class="distributor-filter" [class.is-open]="isOpen()">
+  <!-- Drawer trigger. Hidden from `lg` up, where the sidebar is always shown. -->
+  <button
+    class="distributor-filter__toggle"
+    type="button"
+    aria-controls="distributor-filter-body"
+    [attr.aria-expanded]="isOpen()"
+    (click)="toggleDrawer()"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M4 7h16M7 12h10M10 17h4" />
+    </svg>
+    <span>Filters</span>
+  </button>
+
+  <div class="distributor-filter__body" id="distributor-filter-body">
+    <div class="distributor-filter__head">
+      <h2 class="distributor-filter__title">Refine Results</h2>
+      <button class="distributor-filter__clear" type="button" (click)="clearAll.emit()">
+        Clear all
+      </button>
+    </div>
+
+    <details class="distributor-filter__group" open>
+      <summary class="distributor-filter__group-label">
+        <span>State</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 9.5l6 6 6-6" />
+        </svg>
+      </summary>
+
+      <ul class="distributor-filter__options" role="list">
+        @for (option of states(); track option.value) {
+          <li>
+            <label class="distributor-filter__option">
+              <input
+                class="distributor-filter__checkbox"
+                type="checkbox"
+                [checked]="isChecked(selectedStates(), option.value)"
+                (change)="onToggle('states', selectedStates(), option.value)"
+              />
+              <span>{{ option.label }}</span>
+            </label>
+          </li>
+        }
+      </ul>
+    </details>
+
+    <details class="distributor-filter__group" open>
+      <summary class="distributor-filter__group-label">
+        <span>Product Category</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 9.5l6 6 6-6" />
+        </svg>
+      </summary>
+
+      <ul class="distributor-filter__options" role="list">
+        @for (option of categories(); track option.value) {
+          <li>
+            <label class="distributor-filter__option">
+              <input
+                class="distributor-filter__checkbox"
+                type="checkbox"
+                [checked]="isChecked(selectedCategories(), option.value)"
+                (change)="onToggle('categories', selectedCategories(), option.value)"
+              />
+              <span>{{ option.label }}</span>
+            </label>
+          </li>
+        }
+      </ul>
+    </details>
+
+    <details class="distributor-filter__group" open>
+      <summary class="distributor-filter__group-label">
+        <span>Services</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 9.5l6 6 6-6" />
+        </svg>
+      </summary>
+
+      <ul class="distributor-filter__options" role="list">
+        @for (option of services(); track option.value) {
+          <li>
+            <label class="distributor-filter__option">
+              <input
+                class="distributor-filter__checkbox"
+                type="checkbox"
+                [checked]="isChecked(selectedServices(), option.value)"
+                (change)="onToggle('services', selectedServices(), option.value)"
+              />
+              <span>{{ option.label }}</span>
+            </label>
+          </li>
+        }
+      </ul>
+    </details>
+  </div>
+</div>

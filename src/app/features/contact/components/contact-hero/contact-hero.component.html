@@ -1,0 +1,23 @@
+<section class="contact-hero" aria-labelledby="contact-hero-title">
+  <!--
+    The artwork is the section's CSS background now, so this layer carries only
+    the scrim that holds the copy legible over it.
+  -->
+  <div class="contact-hero__media" aria-hidden="true"></div>
+
+  <div class="contact-hero__inner">
+    <div class="contact-hero__content">
+      <p class="contact-hero__eyebrow">{{ content.eyebrow }}</p>
+
+      <h1 class="contact-hero__title" id="contact-hero-title">
+        @for (line of content.titleLines; track line) {
+          <span class="contact-hero__title-mask">
+            <span class="contact-hero__title-line">{{ line }}</span>
+          </span>
+        }
+      </h1>
+
+      <p class="contact-hero__body">{{ content.body }}</p>
+    </div>
+  </div>
+</section>

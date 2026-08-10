@@ -1,0 +1,31 @@
+<section class="promo-banner" aria-labelledby="promo-banner-title">
+  <div class="promo-banner__panel">
+    <img
+      class="promo-banner__image"
+      [src]="content().image"
+      [alt]="''"
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+
+    <div class="promo-banner__content">
+      <p class="promo-banner__eyebrow promo-banner__reveal">{{ content().eyebrow }}</p>
+
+      <h2 class="promo-banner__title promo-banner__reveal" id="promo-banner-title">
+        @for (line of content().titleLines; track line) {
+          <span class="promo-banner__title-line">{{ line }}</span>
+        }
+      </h2>
+
+      <p class="promo-banner__body promo-banner__reveal">{{ content().body }}</p>
+
+      <a class="promo-banner__cta promo-banner__reveal" [routerLink]="ctaLink">
+        <span>{{ content().ctaLabel }}</span>
+        <svg class="promo-banner__cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 12h15M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

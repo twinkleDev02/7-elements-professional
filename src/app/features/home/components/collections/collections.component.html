@@ -1,0 +1,99 @@
+<section class="collections" aria-labelledby="collections-title">
+  <div class="collections__inner">
+    <header class="collections__header">
+      <p class="collections__eyebrow collections__reveal">{{ eyebrow() }}</p>
+
+      <h2 class="collections__title collections__reveal" id="collections-title">
+        {{ heading() }}
+      </h2>
+
+      <!-- Decorative rule: two hairlines flanking a diamond, drawn in CSS. -->
+      <span class="collections__rule collections__reveal" aria-hidden="true"></span>
+    </header>
+
+    <div class="collections__carousel">
+      @if (hasOverflow()) {
+        <button
+          class="collections__nav collections__nav--prev"
+          type="button"
+          aria-label="Previous collections"
+          [disabled]="!canScrollPrev()"
+          (click)="scrollByCard(-1)"
+        >
+          <svg class="collections__nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15 5l-7 7 7 7" />
+          </svg>
+        </button>
+      }
+
+      <!--
+        The scroll container is the list itself. `tabindex="0"` makes it a
+        keyboard scroll target, so arrow keys pan the track without any handler.
+      -->
+      <ul
+        class="collections__track"
+        #track
+        role="list"
+        tabindex="0"
+        aria-label="Product collections"
+        [class.is-dragging]="isDragging()"
+        (scroll)="onScroll()"
+        (wheel)="onWheel($event)"
+        (pointerdown)="onPointerDown($event)"
+        (pointermove)="onPointerMove($event)"
+        (pointerup)="onPointerUp($event)"
+        (pointercancel)="onPointerUp($event)"
+        (click)="onClickCapture($event)"
+      >
+        @for (collection of collections(); track collection.id; let i = $index) {
+          <li class="collections__card" [class.is-active]="i === activeIndex()">
+            <a class="collections__card-link" [routerLink]="collectionLink(collection)">
+              <span class="collections__card-media">
+                <img
+                  class="collections__card-image"
+                  [src]="collection.image"
+                  [alt]="collection.imageAlt"
+                  loading="lazy"
+                  decoding="async"
+                />
+
+                <span class="collections__card-badge" aria-hidden="true">
+                  <svg class="collections__card-icon" viewBox="0 0 24 24" focusable="false">
+                    @for (path of collection.iconPaths; track $index) {
+                      <path [attr.d]="path" />
+                    }
+                  </svg>
+                </span>
+              </span>
+
+              <span class="collections__card-body">
+                <span class="collections__card-title">{{ collection.title }}</span>
+                <span class="collections__card-tagline">{{ collection.tagline }}</span>
+
+                <span class="collections__card-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M4 12h15M13 6l6 6-6 6" />
+                  </svg>
+                </span>
+              </span>
+            </a>
+          </li>
+        }
+      </ul>
+
+      @if (hasOverflow()) {
+        <button
+          class="collections__nav collections__nav--next"
+          type="button"
+          aria-label="Next collections"
+          [disabled]="!canScrollNext()"
+          (click)="scrollByCard(1)"
+        >
+          <svg class="collections__nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      }
+    </div>
+  </div>
+</section>
