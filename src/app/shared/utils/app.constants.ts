@@ -2,13 +2,26 @@ import { NavLink } from '@shared/models/nav-link.model';
 
 export const APP_NAME = '7 Elements Professional';
 
+/**
+ * The brand lockup.
+ *
+ * One constant for every appearance — header, footer, share card — so the mark
+ * can never end up pointing at three different files. The artwork carries the
+ * full lockup, wordmark and all, which is why the places that use it render the
+ * image *instead of* the typeset name rather than beside it.
+ */
+export const BRAND_LOGO = 'assets/images/brand/logo.png';
+
 /** Fallbacks used by `SeoService` whenever a route omits its own metadata. */
 export const DEFAULT_ROUTE_META = {
   title: `${APP_NAME} — Luxury Professional Haircare`,
   description:
     'Salon-grade haircare crafted from seven elemental actives. Discover the ' +
     '7 Elements Professional collection.',
-  image: 'assets/images/og-default.jpg',
+  // Was `assets/images/og-default.jpg`, which is not in the repository — so
+  // every share card asked for a file that 404s. The lockup is a real file and
+  // the right mark for the job.
+  image: BRAND_LOGO,
 } as const;
 
 /** Canonical route paths. Import these instead of typing string literals. */

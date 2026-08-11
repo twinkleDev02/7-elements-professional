@@ -15,7 +15,35 @@
 }
 
 .navbar {
-  background-color: var(--color-bg);
+  // ---------------------------------------------------------------------------
+  // The bar's own palette.
+  //
+  // The header carries the brand red, the same band the footer ends on, so the
+  // page is bookended in it — and so the gold lockup has the dark ground it was
+  // drawn for. On cream it had none: gold on `#fdf6f3` is close to the worst
+  // pairing the mark can be given, which is why it read as washed out.
+  //
+  // These are declared locally because on this surface the global tokens mean
+  // the opposite of what they say: `--color-text` is near-black and
+  // `--color-primary` is now the background itself. Naming the roles once here
+  // keeps every rule below reading plainly.
+  //
+  // `--color-focus` is rebound among them on purpose. The house focus ring is
+  // the brand red, and a brand-red ring on a brand-red bar is no ring at all.
+  //
+  // The three washes are mixed from the ink rather than hard-coded white, so a
+  // theme that flips `--color-primary-contrast` — the dark one does — flips
+  // these with it instead of leaving white smears on a light bar.
+  // ---------------------------------------------------------------------------
+  --navbar-surface: var(--color-primary);
+  --navbar-ink: var(--color-primary-contrast);
+  --navbar-ink-muted: color-mix(in srgb, var(--navbar-ink) 82%, transparent);
+  --navbar-rule: color-mix(in srgb, var(--navbar-ink) 22%, transparent);
+  --navbar-wash: color-mix(in srgb, var(--navbar-ink) 14%, transparent);
+  --color-focus: var(--navbar-ink);
+
+  background-color: var(--navbar-surface);
+  color: var(--navbar-ink);
 
   // One-time entrance, in CSS rather than GSAP: the header renders on every
   // route through `MainLayout`, and importing GSAP here would put the whole
@@ -32,8 +60,10 @@
     transform: none;
   }
 
+  // Deeper than it was: a shadow tuned to sit under a cream bar barely reads
+  // under a dark one.
   &.is-condensed {
-    box-shadow: 0 6px 24px rgb(43 23 20 / 10%);
+    box-shadow: 0 6px 24px rgb(43 23 20 / 24%);
   }
 }
 
@@ -60,61 +90,54 @@
 }
 
 // -----------------------------------------------------------------------------
-// Wordmark
+// Lockup
 // -----------------------------------------------------------------------------
 
 .navbar__brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
   // Takes the row's slack, so the toggle stays pinned to the trailing edge
-  // below `lg` and the navigation starts after the wordmark above it.
+  // below `lg` and the navigation starts after the lockup above it.
   margin-inline-end: auto;
 
   @include focus-ring;
 }
 
-.navbar__brand-mark {
-  color: var(--color-primary);
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.25rem);
-  font-weight: weight('semibold');
-  line-height: leading('none');
-}
+/// The lockup.
+///
+/// Sized by height, with `inline-size: auto`, so the row's rhythm is set by one
+/// number and the aspect ratio is the file's business. Generous on purpose: the
+/// artwork is a full lockup with "Elements" and "Professional" set inside it,
+/// and shrunk to the old wordmark's height that type would be unreadable.
+///
+/// The `width`/`height` attributes on the element reserve the box before the
+/// PNG decodes, so the header does not reflow around it on first paint.
+.navbar__logo {
+  display: block;
+  inline-size: auto;
+  block-size: clamp(2.875rem, 5vw, 4rem);
 
-.navbar__brand-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
+  // Cropped to the artwork, not to the file.
+  //
+  // The PNG is a 1254×1254 square, but the mark inside it measures 1226×933 —
+  // 10.5% of the height is transparent above it and 15.1% below. Sized by
+  // height and fitted with `contain`, a quarter of the logo's slot in the bar
+  // was therefore empty, and the mark rendered a quarter smaller than the space
+  // it was given. Taking the artwork's own ratio and cropping to it recovers
+  // all of that at no cost in bar height.
+  //
+  // `40%` rather than `center` because the padding is not symmetrical: there is
+  // half as much again below the mark as above it, so the crop has to take more
+  // from the bottom to stay centred on the artwork.
+  aspect-ratio: 1226 / 933;
+  object-fit: cover;
+  object-position: center 40%;
 
-.navbar__brand-name {
-  color: var(--color-text);
-  font-family: var(--font-display);
-  font-size: clamp(1.05rem, 2vw, 1.5rem);
-  line-height: leading('none');
-  letter-spacing: tracking('wide');
-  text-transform: uppercase;
-}
+  @include transition(block-size);
 
-/// Rule-flanked subtitle, drawn with borders so it needs no extra elements.
-.navbar__brand-sub {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  margin-block-start: 0.15rem;
-  color: var(--color-text-muted);
-  font-size: clamp(0.4rem, 0.7vw, 0.5rem);
-  letter-spacing: tracking('widest');
-  text-transform: uppercase;
-
-  &::before,
-  &::after {
-    content: '';
-    flex: 1 1 auto;
-    min-inline-size: 0.5rem;
-    block-size: 1px;
-    background-color: var(--color-border-strong);
+  // Tightens with the rest of the bar once the page leaves the top.
+  .is-condensed & {
+    block-size: clamp(2.5rem, 4vw, 3.25rem);
   }
 }
 
@@ -132,15 +155,15 @@
   border: 0;
   border-radius: radius('circle');
   background: transparent;
-  color: var(--color-text);
+  color: var(--navbar-ink);
   cursor: pointer;
 
   @include transition((background-color, color));
   @include focus-ring;
 
   &:hover {
-    background-color: var(--color-surface-tint);
-    color: var(--color-primary);
+    background-color: var(--navbar-wash);
+    color: var(--navbar-ink);
   }
 
   @include up('lg') {
@@ -200,7 +223,7 @@
   // A full-width basis forces the wrap, so the drawer opens beneath the
   // wordmark and toggle rather than squeezing in beside them.
   flex: 1 0 100%;
-  border-block-start: border-width('hairline') solid var(--color-border);
+  border-block-start: border-width('hairline') solid var(--navbar-rule);
 
   // Collapsed by default below `lg`. The `0fr → 1fr` grid track animates to the
   // drawer's natural height without hard-coding a max-height.
@@ -261,13 +284,22 @@
   position: relative;
 }
 
+/// The labels stay white at every state, and so does the rule under them.
+///
+/// Gold was the obvious choice for both — it would echo the lockup — and it
+/// fails the measurement twice. `#c9a227` on `#9e2a2c` is about 2.3:1: under the
+/// 4.5:1 a label this size needs, and under the 3:1 that a state indicator needs
+/// too, which matters more here because that rule is now the only thing marking
+/// which page you are on. White is 7.44:1. The gold stays in the lockup, where
+/// it is ornament and carries no meaning on its own.
 .navbar__link {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.3rem;
   inline-size: 100%;
   padding-block: 0.7rem;
-  color: var(--color-text);
+  color: var(--navbar-ink);
   font-size: font-size('3xs');
   font-weight: weight('medium');
   letter-spacing: tracking('wide');
@@ -275,34 +307,47 @@
   white-space: nowrap;
   cursor: pointer;
 
-  @include transition(color);
+  @include transition((color, background-color));
   @include focus-ring;
 
-  &:hover {
-    color: var(--color-primary);
+  // In the drawer each link is a full-width row, where a wash reads as a
+  // pressed row and an underline would just float in the middle of nowhere.
+  @include down('lg') {
+    padding-inline: 0.5rem;
+    border-radius: radius('md');
+
+    &:hover,
+    &.is-active {
+      background-color: var(--navbar-wash);
+    }
   }
 
   @include up('lg') {
     inline-size: auto;
     padding-block: clamp(0.6rem, 1.4vw, 0.9rem);
-  }
-}
 
-/// Active state: a rule under the label, drawn only where there is a row to
-/// draw it on.
-.navbar__link.is-active {
-  color: var(--color-primary);
-
-  @include up('lg') {
-    position: relative;
-
+    // One rule serving both hover and active, wiped in from the centre. Hover
+    // is the softer of the two, so the page you are actually on still reads as
+    // the firmer mark when the pointer is elsewhere on the row.
     &::after {
       content: '';
       position: absolute;
       inset-block-end: 0.35rem;
       inset-inline: 0;
       block-size: 2px;
-      background-color: var(--color-primary);
+      background-color: var(--navbar-ink-muted);
+      scale: 0 1;
+
+      @include transition((scale, background-color));
+    }
+
+    &:hover::after {
+      scale: 1 1;
+    }
+
+    &.is-active::after {
+      scale: 1 1;
+      background-color: var(--navbar-ink);
     }
   }
 }
@@ -342,6 +387,11 @@
   list-style: none;
 
   @include up('lg') {
+    // The popup is a light card sitting over the page, not part of the red bar,
+    // so the bar's inverted palette has to stop at its edge — including the
+    // focus ring, which is white by now and would vanish on this surface.
+    --color-focus: var(--color-primary);
+
     position: absolute;
     inset-block-start: 100%;
     inset-inline-start: 50%;
@@ -367,10 +417,12 @@
   }
 }
 
+/// Two homes, two palettes: indented inside the red drawer below `lg`, and
+/// inside the light popup card above it.
 .navbar__submenu-link {
   display: block;
   padding: 0.5rem 0 0.5rem 1rem;
-  color: var(--color-text-muted);
+  color: var(--navbar-ink-muted);
   font-size: font-size('3xs');
   letter-spacing: tracking('wide');
   white-space: nowrap;
@@ -379,12 +431,18 @@
   @include focus-ring;
 
   &:hover {
-    color: var(--color-primary);
-    background-color: var(--color-surface-tint);
+    color: var(--navbar-ink);
+    background-color: var(--navbar-wash);
   }
 
   @include up('lg') {
     padding-inline: 1rem;
+    color: var(--color-text-muted);
+
+    &:hover {
+      color: var(--color-primary);
+      background-color: var(--color-surface-tint);
+    }
   }
 }
 
@@ -401,21 +459,25 @@
   margin-block-end: space('2xs');
   padding-inline: clamp(1rem, 2vw, 1.5rem);
   border-radius: radius('md');
-  background-color: var(--color-primary);
-  color: var(--color-primary-contrast);
+  // Inverted. A red button on a red bar is a button nobody can find; filled in
+  // the bar's ink with the red as the label, it is the brightest thing in the
+  // header, which is what the one commercial action there should be.
+  background-color: var(--navbar-ink);
+  color: var(--color-primary);
   font-size: font-size('3xs');
   font-weight: weight('semibold');
   letter-spacing: tracking('widest');
   text-transform: uppercase;
   white-space: nowrap;
 
-  @include transition((background-color, transform, box-shadow));
+  @include transition((background-color, color, transform, box-shadow));
   @include focus-ring;
 
   &:hover {
-    background-color: var(--color-primary-hover);
+    background-color: var(--color-bg);
+    color: var(--color-primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgb(158 42 44 / 26%);
+    box-shadow: 0 10px 24px rgb(43 23 20 / 28%);
   }
 
   @include up('lg') {

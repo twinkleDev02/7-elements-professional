@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
 import { NavLink } from '@shared/models/nav-link.model';
-import { APP_NAME, BRAND_CONTACT, ROUTES } from '@shared/utils/app.constants';
+import { APP_NAME, BRAND_CONTACT, BRAND_LOGO, ROUTES } from '@shared/utils/app.constants';
 
 /** A reassurance shown in the footer's credentials strip. */
 export interface FooterAssurance {
@@ -152,5 +152,6 @@ export class Footer {
   protected readonly brand = APP_NAME;
   protected readonly contact = BRAND_CONTACT;
   protected readonly homeLink = `/${ROUTES.home}`;
+  protected readonly logo = BRAND_LOGO;
   protected readonly currentYear = new Date().getFullYear();
 }

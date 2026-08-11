@@ -155,44 +155,19 @@
 .footer__brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
   color: inherit;
 
   @include focus-ring;
 }
 
-.footer__brand-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 2.5rem;
-  block-size: 2.5rem;
-  flex: 0 0 auto;
-  border: border-width('hairline') solid rgb(255 255 255 / 45%);
-  border-radius: radius('circle');
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  line-height: leading('none');
-}
-
-.footer__brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: leading('none');
-}
-
-.footer__brand-name {
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  letter-spacing: tracking('tight');
-}
-
-.footer__brand-sub {
-  margin-block-start: 0.2rem;
-  color: rgb(255 255 255 / 78%);
-  font-size: font-size('3xs');
-  letter-spacing: tracking('widest');
-  text-transform: uppercase;
+/// The lockup. Larger than the header's — this column has the room, and the
+/// gold sits on the deep red band here rather than on a light bar, which is the
+/// pairing the mark was drawn for.
+.footer__logo {
+  display: block;
+  inline-size: auto;
+  block-size: clamp(4rem, 8vw, 5.5rem);
+  object-fit: contain;
 }
 
 .footer__blurb {

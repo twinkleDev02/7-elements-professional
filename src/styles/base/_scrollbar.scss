@@ -1,0 +1,89 @@
+@use '../abstracts' as *;
+
+// =============================================================================
+// Scrollbar
+//
+// The one piece of browser chrome that sits on the page the whole way down, and
+// the only one left in default grey once everything else is on the palette.
+//
+// Two mechanisms are needed, because no single one is supported everywhere:
+//
+//   `scrollbar-color` / `scrollbar-width`  — the standard, and the only thing
+//       Firefox listens to. Both inherit, so declaring them once on the root
+//       dresses every scroll container in the app.
+//
+//   `::-webkit-scrollbar…`                 — the older pseudo-elements, still
+//       what Safari uses and what Chrome honours in preference to the standard
+//       properties when both are present. These do *not* inherit, which is why
+//       they are declared unscoped rather than on `html`.
+//
+// The two agree on colour because both read the same tokens. Where they differ
+// is detail: only the pseudo-elements can round the thumb and inset it from the
+// track, so Chrome and Safari get the considered version and Firefox gets a
+// thin bar in the right colours, which is all it can render.
+// =============================================================================
+
+/// Overall thickness. Slim enough to read as trim rather than as a control,
+/// wide enough to stay an easy drag target.
+$scrollbar-size: 0.625rem;
+
+/// How far the thumb sits inside the track. Drawn as a transparent border with
+/// the background clipped to the padding box, because scrollbar pseudo-elements
+/// have no margin to give.
+$scrollbar-inset: 2px;
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
+}
+
+// -----------------------------------------------------------------------------
+// WebKit and Blink
+//
+// Deliberately unscoped. These pseudo-elements do not inherit, so anchoring
+// them to `html` would leave every nested scroll container — the mobile drawer,
+// a long select, an overflowing table — in default grey.
+//
+// The carousels that hide their own scrollbars keep doing so: a component
+// stylesheet's `::-webkit-scrollbar { display: none }` carries its scoping
+// attribute, so it outranks these rules on specificity as well as order.
+// -----------------------------------------------------------------------------
+
+::-webkit-scrollbar {
+  // `width`/`height`, not the logical properties used everywhere else in this
+  // codebase: the scrollbar pseudo-elements predate them and ignore them.
+  width: $scrollbar-size;
+  height: $scrollbar-size;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  border: $scrollbar-inset solid transparent;
+  // Keeps the fill off the transparent border, so the track shows through it
+  // and the thumb reads as a floating pill rather than a full-width block.
+  background-clip: padding-box;
+  background-color: var(--color-scrollbar-thumb);
+  border-radius: radius('pill');
+
+  @include transition(background-color);
+
+  &:hover {
+    background-color: var(--color-scrollbar-thumb-hover);
+  }
+
+  // Dragging should feel like it has landed, so the pressed state does not
+  // simply repeat the hover colour.
+  &:active {
+    background-color: var(--color-scrollbar-thumb-hover);
+    background-clip: border-box;
+  }
+}
+
+/// Where a vertical and a horizontal bar meet. Left unstyled it is painted
+/// white, which shows as a bright notch in the bottom corner.
+::-webkit-scrollbar-corner {
+  background-color: var(--color-scrollbar-track);
+}

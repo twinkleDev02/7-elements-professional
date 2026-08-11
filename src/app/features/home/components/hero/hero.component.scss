@@ -31,11 +31,6 @@
   --hero-font-display: 'Playfair Display', 'Cormorant Garamond', georgia, 'Times New Roman', serif;
   --hero-font-script: 'Great Vibes', 'Dancing Script', 'Segoe Script', cursive;
 
-  // How far the media layer stops short of the section's bottom edge. The
-  // credentials bar sits in normal flow and straddles that line, which is what
-  // produces the overlap without any absolute positioning.
-  --hero-media-cut: clamp(2.5rem, 5vw, 4.5rem);
-
   position: relative;
   display: flex;
   flex-direction: column;
@@ -53,12 +48,20 @@
   );
 
   @include up('lg') {
-    // A comfortable banner height. It no longer has to track the image's 3:2
-    // ratio, because the artwork is fitted with `contain` rather than `cover`
-    // (see `.hero__media::before`) — so the height is free to be whatever
-    // reads best.
-    min-block-size: clamp(36rem, 84vh, 48rem);
-    justify-content: center;
+    // Two rows: the film, then the credentials bar.
+    //
+    // The bar used to straddle the film's lower edge, which meant the card sat
+    // on top of the footage and hid the bottom of the frame. Giving each a row
+    // of its own ends the film exactly where the bar begins — no overlap, and
+    // no guessing at the bar's height, which is set by its own type and
+    // padding and is not a number this layout can know.
+    //
+    // Both rows are `auto`: the film's row is sized by the film's own aspect
+    // ratio (see `.hero__media`), and a fixed height here would fight it. That
+    // is what stops the footage being cropped — `cover` only ever crops when
+    // the box it fills is a different shape from the video.
+    display: grid;
+    grid-template-rows: auto auto;
   }
 }
 
@@ -66,51 +69,82 @@
 // Media
 // -----------------------------------------------------------------------------
 
+// .hero__media {
+//   position: relative;
+//   z-index: 0;
+//   overflow: hidden;
+//   // The film's own 16:9, exactly.
+//   //
+//   // Reserves the space before anything decodes, so the copy below never jumps —
+//   // and because it matches the source, `cover` has nothing to crop here: the
+//   // whole composition survives on a phone. A full-bleed portrait crop would
+//   // have shown about a third of the frame's width and thrown the product
+//   // line-up out of shot, which is the one thing the banner exists to show.
+//   aspect-ratio: 16 / 9;
+
+//   @include up('lg') {
+//     // The film's row. Full-bleed because the grid has a single column, and the
+//     // copy shares this cell rather than displacing it.
+//     grid-area: 1 / 1;
+
+//     // Keeps the film's own 16:9 at every width, so `cover` has nothing to crop
+//     // and the whole frame survives — the model's hair, the podium, the arch.
+//     // A wide, short hero was costing about a third of the picture's height at
+//     // 1900px, which is what "the video is cut" was.
+//     //
+//     // The trade is height: at 1900px this row is around 1070px tall. The floor
+//     // keeps the banner from collapsing on a short `lg` window, and because the
+//     // copy shares the cell the row simply grows if the copy ever needs more.
+//     aspect-ratio: 16 / 9;
+//     min-block-size: 30rem;
+//   }
+// }
+
 .hero__media {
   position: relative;
   z-index: 0;
   overflow: hidden;
-  // Reserves the space before the image decodes, so the copy below never jumps.
-  aspect-ratio: 16 / 10;
+
+  height: 400px;
 
   @include up('lg') {
-    position: absolute;
-    inset-block: 0 var(--hero-media-cut);
-    inset-inline: 0;
-    aspect-ratio: auto;
+    grid-area: 1 / 1;
+    height: 750px;
   }
 }
 
-/// The artwork.
+.hero__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/// The film.
 ///
-/// On its own layer rather than on `.hero__media` itself, because the feather
-/// below is a mask — and a mask on the parent would clip the legibility scrim
-/// and the glow with it. The scrim is strongest at exactly the edge the mask
-/// erases, so the copy would lose the ground it sits on.
+/// Replaces the flattened composite this layer used to carry as a CSS
+/// background. `cover` rather than `contain`, so the banner is edge to edge at
+/// every width — `cover` scales one axis to fit and crops the other, so it can
+/// never letterbox and can never distort.
 ///
-/// Below `lg` this sits above the copy in flow, cropped `cover` at close to the
-/// asset's own 2.26:1; the old 4:3 box threw away about 40% of the width, and
-/// the model went with it.
-.hero__media::before {
-  content: '';
+/// The old artwork needed a mask to feather its baked-in background into the
+/// section gradient. The film fills the layer completely, so there is no seam
+/// left to hide and the mask is gone with it.
+.hero__film {
+  // Video is an inline element by default, which would leave a descender's
+  // worth of gap under it below `lg`.
+  display: block;
   position: absolute;
   inset: 0;
-  background: url('/assets/images/brand/Hero_section_img.png') 62% center / cover no-repeat;
-
-  @include up('lg') {
-    // `contain`, not `cover`. The asset is a finished composite — model, ring
-    // light, product line-up, podium — and cropping it at all costs the face or
-    // the bottles. Fitted whole and anchored to the trailing edge, it is always
-    // fully visible at any window size, and the copy sits on the blush field it
-    // leaves to its left.
-    background-size: contain;
-    background-position: right bottom;
-
-    // The asset carries its own baked-in background. Feathering the leading
-    // edge dissolves the seam where that meets the section's gradient.
-    mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
-  }
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  // Only bites from `lg` up, where the layer is full-bleed and no longer the
+  // film's own ratio. Centred is right for all four scenes: the logo card is
+  // centred, and the podium and the model both sit mid-frame.
+  object-position: center;
+  // Painted before the first frame decodes, in place of the black box a video
+  // element shows by default.
+  background-color: var(--hero-bg-mid);
 }
 
 /// Warm halo behind the model. A radial gradient rather than a blurred box —
@@ -167,6 +201,13 @@
   position: relative;
   z-index: 1;
   padding-block: clamp(2.5rem, 5vw, 4rem);
+
+  @include up('lg') {
+    // Shares the film's cell, centred within it, so the copy sits over the
+    // footage exactly as before.
+    grid-area: 1 / 1;
+    align-self: center;
+  }
 }
 
 .hero__content {
@@ -404,6 +445,9 @@
   @include up('lg') {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0;
+    // Its own row, clear of the film, with a little air between the two.
+    grid-row: 2;
+    margin-block-start: clamp(1rem, 2vw, 1.75rem);
   }
 }
 

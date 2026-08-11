@@ -34,6 +34,14 @@
   --color-border-strong: #444442;
   --color-focus: #f2f2f0;
 
+  // The house red is not the primary in this theme — `--color-primary` is a
+  // near-white here, and a white bar down the edge of a dark page reads as a
+  // seam rather than as chrome. The gold is the trim colour in both themes, so
+  // it carries the thumb instead.
+  --color-scrollbar-track: #161616;
+  --color-scrollbar-thumb: #3f3f3d;
+  --color-scrollbar-thumb-hover: var(--color-accent);
+
   --color-success: #6fbf8f;
   --color-warning: #d8ae4d;
   --color-danger: #e57373;

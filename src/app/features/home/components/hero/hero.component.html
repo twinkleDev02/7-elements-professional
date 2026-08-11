@@ -1,10 +1,42 @@
-<section class="hero" aria-labelledby="hero-title">
+<section class="hero" aria-labelledby="hero-title" (mouseenter)="restartFilm()">
   <!--
-    Decorative layer. The artwork is this element's CSS background — it carries
-    no information the copy does not — so nothing here needs describing, and the
-    layer exists only to hold the glow and the legibility scrim.
+    Decorative layer. The film carries no information the copy does not, so the
+    whole layer is hidden from assistive technology and the element needs no
+    accessible name of its own.
   -->
   <div class="hero__media" aria-hidden="true">
+    <!--
+      Silent, three times over, because one is not reliable.
+
+      `muted` as an attribute is what the markup should say; `[muted]` is the
+      binding that actually reaches the DOM property, which is the only thing
+      the browser consults. And there is deliberately no `autoplay` attribute:
+      Chrome blocks unmuted autoplay for a stranger, but relaxes that once a
+      site accumulates media-engagement — the exact position a developer
+      reloading their own page is in — so the attribute could start playback in
+      the gap before script sets the property, and it would start with sound.
+      Playback is therefore begun from `startFilm()`, after muting.
+
+      `playsinline` is not stylistic either: without it, mobile Safari takes the
+      video fullscreen instead of playing it in the banner.
+
+      No `loop` and no `controls` — one pass that stops on the final frame is
+      precisely what a bare video element does.
+    -->
+    <video
+      class="hero__film"
+      #film
+      [poster]="filmPoster"
+      [muted]="true"
+      [attr.preload]="filmPlays() ? 'metadata' : 'none'"
+      muted
+      playsinline
+      disablepictureinpicture
+      tabindex="-1"
+    >
+      <source [src]="filmSrc" type="video/mp4" />
+    </video>
+
     <span class="hero__glow"></span>
   </div>
 

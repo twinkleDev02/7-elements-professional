@@ -12,7 +12,7 @@ import {
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { NavLink } from '@shared/models/nav-link.model';
-import { ROUTES } from '@shared/utils/app.constants';
+import { BRAND_LOGO, ROUTES } from '@shared/utils/app.constants';
 import { isBrowser } from '@shared/utils/platform.util';
 
 /** A top-level nav entry, optionally with a submenu of child links. */
@@ -70,6 +70,7 @@ export class Navbar {
 
   protected readonly homeLink = `/${ROUTES.home}`;
   protected readonly quoteLink = `/${ROUTES.contact}`;
+  protected readonly logo = BRAND_LOGO;
 
   /** Mobile drawer state. */
   protected readonly isMenuOpen = signal(false);

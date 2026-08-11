@@ -24,15 +24,19 @@
     <div class="footer__main" appRevealOnScroll rootMargin="0px 0px -6% 0px">
       <div class="footer__brand-col footer__col">
         <!--
-          Wordmark set in type, matching the navbar: no logo asset exists yet,
-          and text stays crisp at any density.
+          The lockup, matching the navbar. Empty `alt` for the same reason: the
+          link already carries the accessible name.
         -->
         <a class="footer__brand" [routerLink]="homeLink" [attr.aria-label]="brand + ', home'">
-          <span class="footer__brand-mark" aria-hidden="true">7</span>
-          <span class="footer__brand-text">
-            <span class="footer__brand-name">Elements</span>
-            <span class="footer__brand-sub">Professional</span>
-          </span>
+          <img
+            class="footer__logo"
+            [src]="logo"
+            alt=""
+            width="1254"
+            height="1254"
+            loading="lazy"
+            decoding="async"
+          />
         </a>
 
         <p class="footer__blurb">{{ blurb() }}</p>

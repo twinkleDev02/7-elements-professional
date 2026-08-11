@@ -65,6 +65,20 @@
   --color-focus: #9e2a2c;
 
   // ---------------------------------------------------------------------------
+  // Scrollbar
+  //
+  // Roles rather than raw colours, for the same reason as everything else here:
+  // the dark theme redeclares these three and the scrollbar follows, with no
+  // second copy of the rules. The thumb is the house red — the scrollbar is the
+  // one chrome the visitor's eye tracks the whole way down the page, so it is
+  // worth spending the brand colour on — riding a blush track that matches the
+  // page's own tint rather than the browser's grey.
+  // ---------------------------------------------------------------------------
+  --color-scrollbar-track: var(--color-surface-tint);
+  --color-scrollbar-thumb: var(--color-primary);
+  --color-scrollbar-thumb-hover: var(--color-primary-deep);
+
+  // ---------------------------------------------------------------------------
   // Feedback
   // ---------------------------------------------------------------------------
   --color-success: #2f6f4f;

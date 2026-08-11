@@ -13,15 +13,24 @@
   -->
   <div class="navbar__bar">
     <!--
-      Wordmark set in type rather than an image: no logo asset exists yet, and
-      text stays crisp at any density. Swap for an <img> when one lands.
+      The lockup, as artwork. It already contains the wordmark and the
+      "Professional" rule, so it replaces the typeset version rather than
+      joining it.
+
+      `alt` is empty on purpose: the link that wraps it already carries the
+      accessible name, and a described image inside a labelled link makes screen
+      readers announce the brand twice.
     -->
     <a class="navbar__brand" [routerLink]="homeLink" aria-label="7 Elements Professional, home">
-      <span class="navbar__brand-mark" aria-hidden="true">7</span>
-      <span class="navbar__brand-text">
-        <span class="navbar__brand-name">Elements</span>
-        <span class="navbar__brand-sub">Professional</span>
-      </span>
+      <img
+        class="navbar__logo"
+        [src]="logo"
+        alt=""
+        width="1254"
+        height="1254"
+        decoding="async"
+        fetchpriority="high"
+      />
     </a>
 
     <button
