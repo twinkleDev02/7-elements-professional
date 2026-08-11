@@ -62,17 +62,48 @@ export class RevealOnScrollDirective {
 
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          if (entry.intersectionRatio >= this.threshold() || !this.thresholdIsReachable(entry)) {
             this.reveal();
             observer.disconnect();
           }
         },
-        { threshold: this.threshold(), rootMargin: this.rootMargin() },
+        // `0` as well as the requested threshold, so the callback still runs
+        // for an element that can never reach the latter — see below.
+        { threshold: [0, this.threshold()], rootMargin: this.rootMargin() },
       );
 
       observer.observe(this.host.nativeElement);
       destroyRef.onDestroy(() => observer.disconnect());
     });
+  }
+
+  /**
+   * Whether this element could ever be `threshold` visible.
+   *
+   * A threshold is a fraction of the *element*, not of the screen, so an
+   * element taller than the viewport can never reach a high one: the products
+   * grid is a single 5,200px column on a phone, of which at most 16% is on
+   * screen at once, and it sat behind a 20% threshold that could not fire. The
+   * cards stayed at `opacity: 0` for ever and read as though they were still
+   * loading.
+   *
+   * Where the bar is unreachable it is the bar that is wrong, so any
+   * intersection at all counts instead. Elements that *can* satisfy it still
+   * wait for it, which keeps the reveal timing everywhere else unchanged.
+   */
+  private thresholdIsReachable(entry: IntersectionObserverEntry): boolean {
+    const elementHeight = entry.boundingClientRect.height;
+    const viewportHeight = entry.rootBounds?.height ?? window.innerHeight;
+
+    if (elementHeight <= 0) {
+      return true;
+    }
+
+    return viewportHeight / elementHeight >= this.threshold();
   }
 
   private reveal(): void {
