@@ -3,8 +3,15 @@
 // =============================================================================
 // Hero
 //
-// Mobile-first: the media stacks above the copy on small screens, and becomes a
-// full-bleed backdrop with the copy overlaid from `lg` up.
+// A pinned stage holding a scroll-scrubbed frame sequence, with the credentials
+// bar following it in normal flow so it arrives as the pin releases.
+//
+// Two layouts, not one scaled down. From `md` up the film is a full-bleed
+// backdrop and the copy sits over it on a scrim. Below `md` a 16:9 film cropped
+// into a portrait viewport would show about a quarter of its width, so the film
+// takes the upper band of the stage and dissolves into the brand gradient, with
+// the copy beneath it on solid ground — the arrangement this section already
+// used on small screens.
 //
 // Palette is declared locally rather than pulled from the theme because the
 // hero's blush/maroon treatment is specific to this section — the global tokens
@@ -31,20 +38,17 @@
   --hero-font-display: 'Playfair Display', 'Cormorant Garamond', georgia, 'Times New Roman', serif;
   --hero-font-script: 'Great Vibes', 'Dancing Script', 'Segoe Script', cursive;
 
-  // How far the media layer stops short of the section's bottom edge. The
-  // credentials bar sits in normal flow and straddles that line, which is what
-  // produces the overlap without any absolute positioning.
-  --hero-media-cut: clamp(2.5rem, 5vw, 4.5rem);
+  // The film's share of the stage below `md`, where the two stack rather than
+  // overlap. The copy takes the rest.
+  //
+  // That copy is a fixed shopping list — eyebrow, two display lines, a
+  // paragraph, two buttons, four claims — and on a short phone the list plus a
+  // header plus a photograph does not fit in one viewport. The film is the only
+  // one of the three that can give ground, so on short viewports it does.
+  --hero-film-height: 42%;
 
   position: relative;
-  display: flex;
-  flex-direction: column;
   isolation: isolate;
-  // `clip` rather than `hidden`: it stops any horizontal bleed (and the sliver
-  // of empty page it leaves at the right edge) without turning the section into
-  // a scroll container, so the credentials bar's shadow still shows.
-  overflow-x: clip;
-  padding-block-end: clamp(1rem, 2vw, 2rem);
   background: linear-gradient(
     135deg,
     var(--hero-bg-start) 0%,
@@ -52,81 +56,149 @@
     var(--hero-bg-end) 100%
   );
 
-  @include up('lg') {
-    // A comfortable banner height. It no longer has to track the image's 3:2
-    // ratio, because the artwork is fitted with `contain` rather than `cover`
-    // (see `.hero__media::before`) — so the height is free to be whatever
-    // reads best.
-    min-block-size: clamp(36rem, 84vh, 48rem);
-    justify-content: center;
+  // No `overflow` here, deliberately. ScrollTrigger pins with `position: fixed`,
+  // and a clipping ancestor is the classic way to make a pinned section vanish
+  // mid-scroll. The stage clips its own contents instead.
+
+  // Last, after every declaration: Sass is changing the precedence of
+  // declarations that follow a nested rule, and this file should not depend on
+  // which side of that change it is compiled on.
+  @media (max-height: 780px) {
+    --hero-film-height: 23%;
   }
 }
 
 // -----------------------------------------------------------------------------
-// Media
+// Stage — the pinned frame
+// -----------------------------------------------------------------------------
+
+.hero__stage {
+  position: relative;
+  // Two rows below `md` — film, then copy — so the copy centres inside the band
+  // left for it rather than inside the whole stage, where it would land on the
+  // photograph. From `md` up there is one row and the two layers overlap by
+  // design, the copy sitting on the scrim.
+  display: grid;
+  grid-template-rows: var(--hero-film-height) 1fr;
+  overflow: hidden;
+  isolation: isolate;
+  // `svh`, not `vh`: on mobile browsers `vh` is the *large* viewport, so a
+  // pinned section sized in it is taller than the screen whenever the URL bar
+  // is showing — and the pin length is computed from `innerHeight`, which is
+  // not. `svh` is the height that is always visible, so the two agree.
+  block-size: 100svh;
+
+  @include up('md') {
+    grid-template-rows: 1fr;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Film
 // -----------------------------------------------------------------------------
 
 .hero__media {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 0;
   overflow: hidden;
-  // Reserves the space before the image decodes, so the copy below never jumps.
-  aspect-ratio: 16 / 10;
+  // The opening frame, painted from the stylesheet so the hero has an image at
+  // first paint — before the canvas exists, under reduced motion, and in the
+  // gap while frame 0 decodes. Keep in step with `HERO_POSTER` in
+  // `hero.frames.ts`.
+  background: url('/assets/images/banner_images/ezgif-frame-001.jpg') 58% center / cover no-repeat;
 
-  @include up('lg') {
-    position: absolute;
-    inset-block: 0 var(--hero-media-cut);
-    inset-inline: 0;
-    aspect-ratio: auto;
+  @include down('md') {
+    inset-block-end: calc(100% - var(--hero-film-height));
+    // Dissolves the film into the gradient below rather than cutting it off at
+    // a hard line. Takes the glow and scrim with it, which is the intent — on
+    // this layout the copy sits below the image, not on it.
+    mask-image: linear-gradient(180deg, #000 56%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, #000 56%, transparent 100%);
   }
 }
 
-/// The artwork.
+/// The sequence target.
 ///
-/// On its own layer rather than on `.hero__media` itself, because the feather
-/// below is a mask — and a mask on the parent would clip the legibility scrim
-/// and the glow with it. The scrim is strongest at exactly the edge the mask
-/// erases, so the copy would lose the ground it sits on.
-///
-/// Below `lg` this sits above the copy in flow, cropped `cover` at close to the
-/// asset's own 2.26:1; the old 4:3 box threw away about 40% of the width, and
-/// the model went with it.
-.hero__media::before {
-  content: '';
+/// The backing store is the frame's own 1280×720 and the fit is done here, in
+/// the compositor, rather than by recomputing a cover transform in script on
+/// every resize. `object-position` favours the trailing side, where the podium
+/// and the model are: the leading third of the opening frame is empty warm
+/// field, and it is the copy that wants that space, not the crop.
+.hero__canvas {
   position: absolute;
   inset: 0;
-  background: url('/assets/images/brand/Hero_section_img.png') 62% center / cover no-repeat;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 58% center;
+  // Held back until the first frame is painted, so the swap from poster to
+  // canvas is a fade between identical images rather than a flash of nothing.
+  // The crop must match the poster's exactly or the fade becomes a jump.
+  opacity: 0;
+  will-change: transform, opacity;
 
-  @include up('lg') {
-    // `contain`, not `cover`. The asset is a finished composite — model, ring
-    // light, product line-up, podium — and cropping it at all costs the face or
-    // the bottles. Fitted whole and anchored to the trailing edge, it is always
-    // fully visible at any window size, and the copy sits on the blush field it
-    // leaves to its left.
-    background-size: contain;
-    background-position: right bottom;
+  @include transition(opacity, 'slow');
 
-    // The asset carries its own baked-in background. Feathering the leading
-    // edge dissolves the seam where that meets the section's gradient.
-    mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
+  &.is-ready {
+    opacity: 1;
   }
+}
+
+/// Legibility scrim under the copy column. From `md` up only — below that the
+/// copy sits on the gradient, not on the image.
+.hero__scrim {
+  display: none;
+
+  @include up('md') {
+    position: absolute;
+    inset: 0;
+    display: block;
+    // Pulled in from 58% to 54%, and eased off sooner. The opening frame is
+    // empty backdrop out to well past half width, but the closing frame is not,
+    // and this is the edge the podium crosses first.
+    background: linear-gradient(
+      100deg,
+      rgb(253 247 244 / 95%) 0%,
+      rgb(253 247 244 / 68%) 28%,
+      rgb(253 247 244 / 0%) 54%
+    );
+    will-change: opacity;
+  }
+}
+
+/// Arrives late in the pin. The opening frame has room to breathe; the closing
+/// one is wall-to-wall product, and a soft edge is what keeps it from reading
+/// as a photograph pressed against the glass.
+.hero__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 58% 50%,
+    rgb(43 23 20 / 0%) 42%,
+    rgb(43 23 20 / 26%) 78%,
+    rgb(43 23 20 / 46%) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
 }
 
 /// Warm halo behind the model. A radial gradient rather than a blurred box —
 /// `filter: blur()` on an element this large costs a repaint every frame the
-/// ambient loop scales it.
-/// Sits ABOVE the photograph, not behind it. The asset is an opaque PNG with
-/// its own background baked in, so a glow underneath would never be seen —
-/// `screen` blending lifts the existing ring light instead of trying to
-/// replace it.
+/// timeline moves it.
+///
+/// Sits above the film, not behind it: the frames are opaque JPEGs, so a glow
+/// underneath would never be seen. `screen` blending lifts the ring light that
+/// is already in shot instead of trying to replace it.
 .hero__glow {
   position: absolute;
   z-index: 1;
   mix-blend-mode: screen;
-  inset-block-start: 38%;
-  inset-inline-start: 62%;
-  inline-size: clamp(20rem, 42vw, 40rem);
+  inset-block-start: 40%;
+  inset-inline-start: 64%;
+  inline-size: clamp(18rem, 40vw, 38rem);
   aspect-ratio: 1;
   translate: -50% -50%;
   border-radius: radius('circle');
@@ -136,25 +208,9 @@
     rgb(253 226 212 / 55%) 42%,
     rgb(253 226 212 / 0%) 70%
   );
-  opacity: 0.55;
+  opacity: 0.45;
   pointer-events: none;
   will-change: transform, opacity;
-}
-
-/// Legibility scrim under the copy column. Desktop only — on mobile the copy
-/// sits on the solid gradient, not on the image.
-.hero__media::after {
-  @include up('lg') {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      100deg,
-      rgb(253 247 244 / 96%) 0%,
-      rgb(253 247 244 / 72%) 32%,
-      rgb(253 247 244 / 0%) 58%
-    );
-  }
 }
 
 // -----------------------------------------------------------------------------
@@ -166,15 +222,64 @@
 
   position: relative;
   z-index: 1;
-  padding-block: clamp(2.5rem, 5vw, 4rem);
+  // The copy row. Sized by the grid track rather than by `block-size: 100%`,
+  // which would measure the whole stage and centre the copy over the film.
+  grid-row: 2;
+  display: flex;
+  // Centred, not bottom-aligned. Before the pin engages, the stage's last
+  // header's-worth of height is still below the fold — bottom-aligned copy puts
+  // the formulation claims exactly there, where centred copy splits the loss
+  // between two margins that had slack to give.
+  align-items: center;
+  padding-block: clamp(0.75rem, 2.5vh, 1.5rem);
+
+  @include up('md') {
+    grid-row: 1;
+    // Clears the sticky header, which floats over the pinned stage once the
+    // copy moves onto the film. Below `md` the copy is beneath the film, well
+    // clear of the header, and the space is needed for the copy instead.
+    padding-block: clamp(4.5rem, 9vh, 6.5rem) clamp(2rem, 5vh, 3.5rem);
+  }
+
+  // On a short phone there is no slack left to centre within: the copy is
+  // taller than half its row, so centring pushes its foot past the fold. Packed
+  // against the film instead, every pixel of the shortfall lands in one margin
+  // at the bottom, where there is nothing to lose.
+  @include down('md') {
+    @media (max-height: 780px) {
+      align-items: flex-start;
+    }
+  }
+}
+
+/// Every chapter occupies the same cell, so they overlay one another and the
+/// timeline decides which is legible. One grid, no absolute positioning, and
+/// the tallest chapter still sets the height that all of them are centred in.
+.hero__layers {
+  display: grid;
+  align-items: center;
+  inline-size: 100%;
+
+  > * {
+    grid-area: 1 / 1;
+  }
 }
 
 .hero__content {
-  max-inline-size: 34rem;
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
+
+  @include up('md') {
+    max-inline-size: min(54%, 30rem);
+  }
 
   @include up('lg') {
     max-inline-size: min(46%, 34rem);
+  }
+
+  // The exit tween moves these individually, so each needs its own layer rather
+  // than inheriting one from the block.
+  > * {
+    will-change: transform, opacity;
   }
 }
 
@@ -214,7 +319,6 @@
   color: var(--hero-ink);
   font-size: clamp(2.1rem, 6.2vw, 3.5rem);
   letter-spacing: tracking('tight');
-  will-change: transform, opacity;
 }
 
 .hero__title-line--accent {
@@ -228,7 +332,6 @@
 /// words — while accepting a transform, which inline text cannot.
 .hero__title-word {
   display: inline-block;
-  will-change: transform, opacity;
 }
 
 /// Word gap in CSS, not markup.
@@ -247,7 +350,70 @@
   color: var(--hero-muted);
   font-size: clamp(0.95rem, 1.15vw, 1.0625rem);
   line-height: leading('relaxed');
-  will-change: transform, opacity;
+}
+
+// -----------------------------------------------------------------------------
+// Chapters two and three
+//
+// Rendered only when the timeline exists (see `cinematic` in the component), so
+// nothing here needs a hidden resting state — the tween that shows a chapter
+// also authors where it comes from.
+// -----------------------------------------------------------------------------
+
+.hero__chapter {
+  max-inline-size: 32rem;
+  // The stack is `pointer-events: none` throughout: these are captions laid
+  // over the film, and an invisible one must never eat a click meant for the
+  // calls to action underneath it.
+  pointer-events: none;
+  will-change: filter;
+
+  @include up('md') {
+    align-self: center;
+    // Lifted clear of the podium.
+    //
+    // Centred is right for the opening frame, where the leading half is empty
+    // backdrop all the way down. It is wrong by the closing one: the camera has
+    // pushed in, the hair mask has climbed into the lower half, and centred
+    // copy lands on its lid. Now that the scrim no longer hides that collision
+    // the copy has to genuinely avoid it. In `vh` so the lift tracks the frame
+    // it is dodging, which is sized in `vh` too.
+    //
+    // The `translate` property rather than a transform: GSAP owns `transform`
+    // on these lines, and the two compose without either having to know.
+    translate: 0 -10vh;
+  }
+
+  > * {
+    will-change: transform, opacity;
+  }
+}
+
+.hero__chapter-eyebrow {
+  margin-block-end: clamp(0.25rem, 1vw, 0.6rem);
+  color: var(--hero-accent);
+  font-family: var(--hero-font-script);
+  font-size: clamp(1.1rem, 2.4vw, 1.65rem);
+  line-height: leading('tight');
+  letter-spacing: tracking('wide');
+}
+
+.hero__chapter-title {
+  margin-block-end: clamp(0.75rem, 1.8vw, 1.15rem);
+  color: var(--hero-ink);
+  font-family: var(--hero-font-display);
+  font-size: clamp(2rem, 5.4vw, 3.25rem);
+  font-weight: weight('regular');
+  line-height: 1.06;
+  letter-spacing: tracking('tight');
+  text-transform: uppercase;
+}
+
+.hero__chapter-note {
+  max-inline-size: 24rem;
+  color: var(--hero-muted);
+  font-size: clamp(0.95rem, 1.15vw, 1.0625rem);
+  line-height: leading('relaxed');
 }
 
 // -----------------------------------------------------------------------------
@@ -276,7 +442,6 @@
   line-height: leading('none');
   text-transform: uppercase;
   white-space: nowrap;
-  will-change: transform, opacity;
 
   @include transition((background-color, border-color, color, transform, box-shadow));
   @include focus-ring;
@@ -360,7 +525,6 @@
   font-size: font-size('3xs');
   letter-spacing: tracking('wide');
   white-space: nowrap;
-  will-change: transform, opacity;
 }
 
 .hero__claim-icon {
@@ -375,7 +539,77 @@
 }
 
 // -----------------------------------------------------------------------------
+// Scroll cue
+//
+// The pin only makes sense if the visitor scrolls, and a full-height first
+// screen with no visible edge is exactly the situation where they might not.
+// -----------------------------------------------------------------------------
+
+.hero__cue {
+  position: absolute;
+  z-index: 2;
+  // Held well clear of the stage's bottom edge. Before the pin engages the last
+  // header's-worth of the stage is below the fold, and a cue flush to that edge
+  // is a prompt to scroll that cannot itself be seen until you have.
+  inset-block-end: clamp(5.5rem, 11vh, 7.5rem);
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  // Below `md` the copy already runs to the bottom of the stage, so a cue there
+  // would land on top of the formulation claims — and a phone needs less
+  // convincing that a page scrolls.
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--hero-muted);
+  font-size: font-size('3xs');
+  letter-spacing: tracking('widest');
+  text-transform: uppercase;
+  pointer-events: none;
+  will-change: opacity;
+
+  @include up('md') {
+    display: flex;
+  }
+}
+
+.hero__cue-rail {
+  position: relative;
+  display: block;
+  inline-size: border-width('hairline');
+  block-size: 2.25rem;
+  overflow: hidden;
+  background-color: var(--hero-rule);
+}
+
+.hero__cue-bead {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 45%;
+  background-color: var(--hero-accent);
+
+  @include motion-safe {
+    animation: hero-cue-fall 2s ease('standard') infinite;
+  }
+}
+
+@keyframes hero-cue-fall {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  60%,
+  100% {
+    transform: translateY(230%);
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Credentials bar
+//
+// Outside the stage, so it is what the page settles onto as the pin releases.
+// From `md` up it rides a little way back over the film's bottom edge, which is
+// the overlap this section has always had.
 // -----------------------------------------------------------------------------
 
 .hero__features {
@@ -388,7 +622,7 @@
   // Not the `container()` mixin: this is a panel, so it needs an outer inset
   // from the viewport *and* its own inner padding. The mixin only gives one.
   inline-size: min(100% - (var(--container-gutter) * 2), #{container-width('default')});
-  margin-block-start: auto;
+  margin-block: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 2vw, 2rem);
   margin-inline: auto;
   padding-block: clamp(1.5rem, 3vw, 2rem);
   padding-inline: clamp(0.5rem, 2vw, 1.75rem);
@@ -399,6 +633,10 @@
 
   @include up('sm') {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include up('md') {
+    margin-block-start: clamp(-4rem, -4vw, -2rem);
   }
 
   @include up('lg') {
@@ -414,7 +652,6 @@
   gap: 0.5rem;
   padding-inline: space('2xs');
   text-align: center;
-  will-change: transform, opacity;
 
   // Hairline separators only once every item is on a single row — at narrower
   // widths the grid wraps and a left border would land mid-row.
@@ -466,48 +703,26 @@
 // -----------------------------------------------------------------------------
 // Reduced motion
 //
-// The JavaScript already skips every tween, so this only has to neutralise the
-// hints and hover movement that CSS owns.
+// The component already declines to pin, scrub or render the extra chapters, so
+// what is left here is the promotion hints and hover movement CSS owns. Layer
+// promotion bought for motion that will not happen is pure memory pressure.
 // -----------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------
-// Mobile
-//
-// Below `lg` nothing animates at all: no entrance, no pin, no smooth-scroll
-// hijack (see `MOTION_QUERY` in the component). So every promotion hint here is
-// a composited layer bought for no motion — real memory pressure on a phone —
-// and the glow's blend layer is the most expensive of them.
-// -----------------------------------------------------------------------------
-
-@include down('lg') {
-  .hero__media,
-  .hero__content,
-  .hero__title-line,
-  .hero__subtitle,
-  .hero__cta,
-  .hero__claim,
-  .hero__feature,
-  .hero__glow {
-    will-change: auto;
-  }
-}
 
 @include reduced-motion {
-  .hero__media,
+  .hero__canvas,
   .hero__glow,
+  .hero__scrim,
+  .hero__vignette,
   .hero__content,
-  .hero__title-line,
-  .hero__subtitle,
-  .hero__cta,
-  .hero__claim,
-  .hero__feature {
+  .hero__content > * {
     will-change: auto;
   }
 
-  .hero__cta:hover {
-    transform: none;
+  .hero__canvas {
+    transition: none;
   }
 
+  .hero__cta:hover,
   .hero__cta:hover .hero__cta-icon {
     transform: none;
   }

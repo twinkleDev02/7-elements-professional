@@ -1,107 +1,147 @@
 <section class="hero" aria-labelledby="hero-title">
   <!--
-    Decorative layer. The artwork is this element's CSS background — it carries
-    no information the copy does not — so nothing here needs describing, and the
-    layer exists only to hold the glow and the legibility scrim.
+    The pinned frame. Everything cinematic lives inside it; the credentials bar
+    below deliberately does not, so it arrives as the hero releases rather than
+    riding along with it.
   -->
-  <div class="hero__media" aria-hidden="true">
-    <span class="hero__glow"></span>
-  </div>
-
-  <div class="hero__inner">
-    <div class="hero__content">
-      <p class="hero__eyebrow">Pure &middot; Natural &middot; Organic</p>
-
+  <div class="hero__stage" #stage>
+    <!--
+      The film. `role="img"` collapses the canvas, glow and scrim into one
+      described object — the label carries what a sighted visitor gets from the
+      footage, and the decorative children stop being announced individually.
+    -->
+    <div
+      class="hero__media"
+      role="img"
+      aria-label="7 Elements Professional hair care — Argan Hair Mask, Shea Butter shampoo, Keratin conditioner and Argan Oil serum on a marble podium, beside a model with long waved hair."
+    >
       <!--
-        Each line is wrapped in its own overflow-hidden mask so the entrance
-        wipes up from behind the line above. Case is set in CSS, keeping the
-        source text readable for screen readers and search engines.
+        Painted by the frame sequence. It starts transparent and fades in over
+        the poster background, so the swap from still to film is invisible.
       -->
-      <!--
-        Split into words so the scroll timeline can move them apart
-        independently (storyboard stage 02). Purely structural: the words lay
-        out inline exactly as the original single spans did, so the resting
-        composition is unchanged.
-
-        The mask wrappers still own the entrance wipe, and the line spans still
-        own the type scale — only the innermost level is new.
-      -->
-      <h1 class="hero__title" id="hero-title">
-        <span class="hero__title-mask">
-          <span class="hero__title-line">
-            <span class="hero__title-word">Session</span>
-            <span class="hero__title-word">of</span>
-          </span>
-        </span>
-        <span class="hero__title-mask">
-          <span class="hero__title-line hero__title-line--accent">
-            <span class="hero__title-word">Beauty</span>
-          </span>
-        </span>
-      </h1>
-
-      <p class="hero__subtitle">
-        Premium professional hair care, crafted with advanced formulations for healthier,
-        stronger, shinier hair.
-      </p>
-
-      <div class="hero__actions">
-        <a class="hero__cta hero__cta--primary" [routerLink]="collectionLink">
-          <span class="hero__cta-label">Explore Collection</span>
-          <svg class="hero__cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M4 12h15M13 6l6 6-6 6" />
-          </svg>
-        </a>
-
-        <a class="hero__cta hero__cta--ghost" [routerLink]="storyLink">
-          <span class="hero__cta-label">Our Story</span>
-          <svg class="hero__cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M10.5 8.5v7l6-3.5z" />
-          </svg>
-        </a>
-      </div>
-
-      <ul class="hero__claims" role="list">
-        <li class="hero__claim">
-          <svg class="hero__claim-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 3.5c3.4 3.9 5.5 6.6 5.5 9.3a5.5 5.5 0 0 1-11 0c0-2.7 2.1-5.4 5.5-9.3z" />
-            <path d="M5 19 19 5" />
-          </svg>
-          <span>Sulfate Free</span>
-        </li>
-
-        <li class="hero__claim">
-          <svg class="hero__claim-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M20 4c0 8.3-4.2 13-9.5 13A5.5 5.5 0 0 1 5 11.5C5 6.8 11 4 20 4z" />
-            <path d="M4 20c2.5-4.5 6-7.5 11-9.5" />
-          </svg>
-          <span>Paraben Free</span>
-        </li>
-
-        <li class="hero__claim">
-          <svg class="hero__claim-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 3.2 19 6v6c0 4.2-2.9 7.4-7 8.8-4.1-1.4-7-4.6-7-8.8V6z" />
-            <path d="M9 12.2l2.1 2.1L15.5 10" />
-          </svg>
-          <span>Silicone Free</span>
-        </li>
-
-        <li class="hero__claim">
-          <svg class="hero__claim-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M8.5 10.5c-1.2-2.6-1-5.2.6-5.7 1.5-.5 3 1.4 3.4 4" />
-            <path d="M15.5 10.5c1.2-2.6 1-5.2-.6-5.7-1.5-.5-3 1.4-3.4 4" />
-            <path d="M6.5 15.5a5.5 5.5 0 0 1 11 0 4 4 0 0 1-4 4h-3a4 4 0 0 1-4-4z" />
-          </svg>
-          <span>Cruelty Free</span>
-        </li>
-      </ul>
+      <canvas class="hero__canvas" #canvas></canvas>
+      <span class="hero__scrim" #scrim></span>
+      <span class="hero__vignette" #vignette></span>
+      <span class="hero__glow" #glow></span>
     </div>
+
+    <div class="hero__inner">
+      <div class="hero__layers">
+        <!--
+          Chapter one: the hero proper. Authored in its final state — with
+          scripting off, on a phone, or under reduced motion this is simply the
+          hero, unmoved.
+        -->
+        <div class="hero__content" #content>
+          <p class="hero__eyebrow">Pure &middot; Natural &middot; Organic</p>
+
+          <!--
+            Each line is wrapped in its own overflow-hidden mask so the entrance
+            wipes up from behind the line above. Case is set in CSS, keeping the
+            source text readable for screen readers and search engines.
+          -->
+          <h1 class="hero__title" id="hero-title">
+            <span class="hero__title-mask">
+              <span class="hero__title-line">
+                <span class="hero__title-word">Session</span>
+                <span class="hero__title-word">of</span>
+              </span>
+            </span>
+            <span class="hero__title-mask">
+              <span class="hero__title-line hero__title-line--accent">
+                <span class="hero__title-word">Beauty</span>
+              </span>
+            </span>
+          </h1>
+
+          <p class="hero__subtitle">
+            Premium professional hair care, crafted with advanced formulations for healthier,
+            stronger, shinier hair.
+          </p>
+
+          <div class="hero__actions">
+            <a class="hero__cta hero__cta--primary" [routerLink]="collectionLink">
+              <span class="hero__cta-label">Explore Collection</span>
+              <svg class="hero__cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 12h15M13 6l6 6-6 6" />
+              </svg>
+            </a>
+
+            <a class="hero__cta hero__cta--ghost" [routerLink]="storyLink">
+              <span class="hero__cta-label">Our Story</span>
+              <svg class="hero__cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M10.5 8.5v7l6-3.5z" />
+              </svg>
+            </a>
+          </div>
+
+          <ul class="hero__claims" role="list">
+            <li class="hero__claim">
+              <svg class="hero__claim-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3.5c3.4 3.9 5.5 6.6 5.5 9.3a5.5 5.5 0 0 1-11 0c0-2.7 2.1-5.4 5.5-9.3z" />
+                <path d="M5 19 19 5" />
+              </svg>
+              <span>Sulfate Free</span>
+            </li>
+
+            <li class="hero__claim">
+              <svg class="hero__claim-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M20 4c0 8.3-4.2 13-9.5 13A5.5 5.5 0 0 1 5 11.5C5 6.8 11 4 20 4z" />
+                <path d="M4 20c2.5-4.5 6-7.5 11-9.5" />
+              </svg>
+              <span>Paraben Free</span>
+            </li>
+
+            <li class="hero__claim">
+              <svg class="hero__claim-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3.2 19 6v6c0 4.2-2.9 7.4-7 8.8-4.1-1.4-7-4.6-7-8.8V6z" />
+                <path d="M9 12.2l2.1 2.1L15.5 10" />
+              </svg>
+              <span>Silicone Free</span>
+            </li>
+
+            <li class="hero__claim">
+              <svg class="hero__claim-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M8.5 10.5c-1.2-2.6-1-5.2.6-5.7 1.5-.5 3 1.4 3.4 4" />
+                <path d="M15.5 10.5c1.2-2.6 1-5.2-.6-5.7-1.5-.5-3 1.4-3.4 4" />
+                <path d="M6.5 15.5a5.5 5.5 0 0 1 11 0 4 4 0 0 1-4 4h-3a4 4 0 0 1-4-4z" />
+              </svg>
+              <span>Cruelty Free</span>
+            </li>
+          </ul>
+        </div>
+
+        <!--
+          Chapters two and three exist only while the film is scrubbing: they
+          are stacked on top of chapter one and are legible one at a time, which
+          is a state only the scroll timeline can produce. Rendering them when
+          there is no timeline would pile three blocks of copy on top of each
+          other, so they are omitted instead of merely hidden.
+        -->
+        @if (cinematic()) {
+          @for (chapter of chapters; track chapter.title) {
+            <div class="hero__chapter">
+              <p class="hero__chapter-eyebrow">{{ chapter.eyebrow }}</p>
+              <p class="hero__chapter-title">{{ chapter.title }}</p>
+              <p class="hero__chapter-note">{{ chapter.note }}</p>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    @if (cinematic()) {
+      <p class="hero__cue" #cue aria-hidden="true">
+        <span class="hero__cue-label">Scroll</span>
+        <span class="hero__cue-rail"><span class="hero__cue-bead"></span></span>
+      </p>
+    }
   </div>
 
   <!--
-    Credentials bar. Sits in normal flow and straddles the lower edge of the
-    media layer, so no fragile absolute positioning is needed to overlap it.
+    Credentials bar. Sits in normal flow below the pinned stage, so it is what
+    the page settles onto once the film has run its course.
   -->
   <ul class="hero__features" role="list">
     <li class="hero__feature">
