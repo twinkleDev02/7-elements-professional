@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
@@ -33,11 +33,17 @@ const STAR_SLOTS = [1, 2, 3, 4, 5] as const;
 export class ProductGridComponent {
   readonly products = input.required<readonly ProductListing[]>();
 
-  readonly addToCart = output<ProductListing>();
-  readonly toggleWishlist = output<ProductListing>();
-  readonly quickView = output<ProductListing>();
-
   protected readonly stars = STAR_SLOTS;
+
+  /**
+   * Where the card's single action goes.
+   *
+   * The same destination as the navbar's "Find A Distributor". The brand does
+   * not sell direct — see the catalogue's own "no online platform" position —
+   * so a stockist search is the only purchase path there is to offer, and the
+   * grid no longer emits cart, wishlist or quick-view intent at all.
+   */
+  protected readonly distributorsLink = `/${ROUTES.distributors}`;
 
   protected productLink(product: ProductListing): string {
     return `/${ROUTES.products}/${product.slug}`;

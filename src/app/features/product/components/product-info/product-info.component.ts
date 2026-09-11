@@ -1,29 +1,18 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-  output,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
+import { ROUTES } from '@shared/utils/app.constants';
 import { formatPrice } from '@shared/utils/string.util';
 
 import { ProductDetail, ProductSize } from '../../product-detail.data';
 import { ProductFeature } from '../../product.data';
-
-/** Emitted when a visitor commits to a size and quantity. */
-export interface PurchaseIntent {
-  readonly size: ProductSize;
-  readonly quantity: number;
-}
 
 const STAR_SLOTS = [1, 2, 3, 4, 5] as const;
 const MAX_QUANTITY = 10;
 
 @Component({
   selector: 'app-product-info',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './product-info.component.html',
   styleUrl: './product-info.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,10 +21,16 @@ export class ProductInfoComponent {
   readonly product = input.required<ProductDetail>();
   readonly trustBadges = input<readonly ProductFeature[]>([]);
 
-  readonly addToCart = output<PurchaseIntent>();
-  readonly buyNow = output<PurchaseIntent>();
-
   protected readonly stars = STAR_SLOTS;
+
+  /**
+   * Where the single call to action goes.
+   *
+   * The same destination as the navbar's "Find A Distributor". The brand does
+   * not sell direct, so there is no cart to add to and no checkout to enter —
+   * the component emits no purchase intent at all now.
+   */
+  protected readonly distributorsLink = `/${ROUTES.distributors}`;
 
   /** Index into `product().sizes`; the middle size is the house default. */
   protected readonly selectedSizeIndex = signal(1);
@@ -72,26 +67,5 @@ export class ProductInfoComponent {
 
   protected increase(): void {
     this.quantity.update((value) => Math.min(MAX_QUANTITY, value + 1));
-  }
-
-  protected onAddToCart(): void {
-    const intent = this.buildIntent();
-
-    if (intent) {
-      this.addToCart.emit(intent);
-    }
-  }
-
-  protected onBuyNow(): void {
-    const intent = this.buildIntent();
-
-    if (intent) {
-      this.buyNow.emit(intent);
-    }
-  }
-
-  private buildIntent(): PurchaseIntent | null {
-    const size = this.selectedSize();
-    return size ? { size, quantity: this.quantity() } : null;
   }
 }

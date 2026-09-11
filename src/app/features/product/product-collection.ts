@@ -62,20 +62,4 @@ export class ProductCollection {
     // TODO: open the advanced filter panel (price, hair concern, size) once
     // that design exists. The button is in the reference; the panel is not.
   }
-
-  protected onAddToCart(product: ProductListing): void {
-    // TODO: wire to the cart/enquiry service. Left as a no-op rather than
-    // guessing, because the catalogue positions the brand as salon-only.
-    void product;
-  }
-
-  protected onToggleWishlist(product: ProductListing): void {
-    // TODO: persist through StorageService once the wishlist design exists.
-    void product;
-  }
-
-  protected onQuickView(product: ProductListing): void {
-    // TODO: open the quick-view dialog once that design exists.
-    void product;
-  }
 }

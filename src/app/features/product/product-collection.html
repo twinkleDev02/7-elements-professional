@@ -8,12 +8,7 @@
       (filterOpen)="onFilterOpen()"
     />
 
-    <app-product-grid
-      [products]="visible()"
-      (addToCart)="onAddToCart($event)"
-      (toggleWishlist)="onToggleWishlist($event)"
-      (quickView)="onQuickView($event)"
-    />
+    <app-product-grid [products]="visible()" />
 
     @if (hasMore()) {
       <div class="products__load-more">

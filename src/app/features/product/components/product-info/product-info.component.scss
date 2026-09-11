@@ -308,6 +308,7 @@
   letter-spacing: tracking('widest');
   text-transform: uppercase;
   white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
 
   @include transition((background-color, color, border-color, transform, box-shadow));
@@ -347,19 +348,6 @@
     background-color: var(--color-primary-hover);
     border-color: var(--color-primary-hover);
     box-shadow: 0 12px 26px rgb(158 42 44 / 28%);
-  }
-}
-
-/// Fills with the house red on hover rather than merely tinting.
-.product-info__cta--ghost {
-  background-color: transparent;
-  border-color: var(--color-border-strong);
-  color: var(--color-primary);
-
-  &:hover {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    color: var(--color-primary-contrast);
   }
 }
 

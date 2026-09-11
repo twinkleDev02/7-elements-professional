@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { Product, ProductVariant } from '@shared/models/product.model';
@@ -8,8 +8,9 @@ import { formatPrice } from '@shared/utils/string.util';
 /**
  * Product tile for listings, carousels and cross-sells.
  *
- * Presentational only: it derives what it shows from the `product` input and
- * emits intent upward. It never fetches, and it never adds to a cart itself.
+ * Presentational only: it derives everything it shows from the `product` input.
+ * It never fetches, and it offers no cart — the brand sells through authorised
+ * salons, so the one action a tile carries is a link to the stockist search.
  */
 @Component({
   selector: 'app-product-card',
@@ -27,10 +28,11 @@ export class ProductCard {
    */
   readonly eager = input(false);
 
-  /** Hides the quick-add control for contexts where it would be noise. */
-  readonly showQuickAdd = input(true);
+  /** Hides the salon-search control for contexts where it would be noise. */
+  readonly showSalonSearch = input(true);
 
-  readonly quickAdd = output<ProductVariant>();
+  /** The same destination as the navbar's "Find A Distributor". */
+  protected readonly distributorsLink = `/${ROUTES.distributors}`;
 
   protected readonly image = computed(() => this.product().images[0]);
 
@@ -55,16 +57,4 @@ export class ProductCard {
   protected readonly isSoldOut = computed(() =>
     this.product().variants.every((variant) => !variant.inStock),
   );
-
-  protected onQuickAdd(event: Event): void {
-    // The card is wrapped in a link; the control inside it must not navigate.
-    event.preventDefault();
-    event.stopPropagation();
-
-    const variant = this.primaryVariant();
-
-    if (variant?.inStock) {
-      this.quickAdd.emit(variant);
-    }
-  }
 }

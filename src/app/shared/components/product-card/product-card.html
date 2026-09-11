@@ -25,14 +25,18 @@
 
   @if (isSoldOut()) {
     <p class="product-card__status">Out of stock</p>
-  } @else if (showQuickAdd()) {
-    <button
+  } @else if (showSalonSearch()) {
+    <!--
+      A link, not a button: the brand sells through authorised salons only, so
+      the action navigates to the stockist search rather than mutating a cart.
+      It is a sibling of the card's own anchor, never a descendant.
+    -->
+    <a
       class="product-card__quick-add btn btn--secondary btn--sm"
-      type="button"
-      [attr.aria-label]="'Add ' + product().name + ' to bag'"
-      (click)="onQuickAdd($event)"
+      [routerLink]="distributorsLink"
+      [attr.aria-label]="'Search for a salon near you stocking ' + product().name"
     >
-      Add to bag
-    </button>
+      Search Near By Salon
+    </a>
   }
 </article>

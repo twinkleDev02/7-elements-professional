@@ -17,12 +17,7 @@
     <div class="product-detail__main-inner">
       <app-product-gallery [items]="detail.gallery" [productName]="detail.name" />
 
-      <app-product-info
-        [product]="detail"
-        [trustBadges]="trustBadges"
-        (addToCart)="onAddToCart($event)"
-        (buyNow)="onBuyNow($event)"
-      />
+      <app-product-info [product]="detail" [trustBadges]="trustBadges" />
     </div>
   </section>
 

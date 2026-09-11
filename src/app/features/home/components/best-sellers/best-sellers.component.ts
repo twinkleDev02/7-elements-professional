@@ -24,9 +24,6 @@ export class BestSellersComponent {
   readonly heading = input('Our Most Loved Products');
   readonly description = input('Trusted by professionals, loved by thousands.');
 
-  /** Emitted instead of mutating a cart, so the page owns that decision. */
-  readonly addToBag = output<BestSellerData>();
-
   protected readonly stars = STAR_SLOTS;
   protected readonly allProductsLink = `/${ROUTES.products}`;
 
@@ -51,12 +48,5 @@ export class BestSellersComponent {
 
   protected displayPrice(product: BestSellerData): string {
     return formatPrice(product.price, product.currency);
-  }
-
-  protected onAddToBag(event: Event, product: BestSellerData): void {
-    // The card is a link; the control inside it must not navigate.
-    event.preventDefault();
-    event.stopPropagation();
-    this.addToBag.emit(product);
   }
 }

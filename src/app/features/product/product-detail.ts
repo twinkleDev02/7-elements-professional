@@ -18,7 +18,7 @@ import { isBrowser, prefersReducedMotion } from '@shared/utils/platform.util';
 
 import { ProductBenefitsComponent } from './components/product-benefits/product-benefits.component';
 import { ProductGalleryComponent } from './components/product-gallery/product-gallery.component';
-import { ProductInfoComponent, PurchaseIntent } from './components/product-info/product-info.component';
+import { ProductInfoComponent } from './components/product-info/product-info.component';
 import { ProductTabsComponent } from './components/product-tabs/product-tabs.component';
 import { ProductVideoComponent } from './components/product-video/product-video.component';
 import { PromoBannerComponent } from './components/promo-banner/promo-banner.component';
@@ -94,16 +94,5 @@ export class ProductDetail {
 
       this.destroyRef.onDestroy(() => context.revert());
     });
-  }
-
-  protected onAddToCart(intent: PurchaseIntent): void {
-    // TODO: wire to the cart/enquiry service. Left as a no-op rather than
-    // guessing, because the catalogue positions the brand as salon-only.
-    void intent;
-  }
-
-  protected onBuyNow(intent: PurchaseIntent): void {
-    // TODO: route into checkout, or into the salon enquiry flow.
-    void intent;
   }
 }
