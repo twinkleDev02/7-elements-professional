@@ -19,9 +19,18 @@
   gap: clamp(1.75rem, 3.5vw, 2.5rem);
   align-items: center;
 
+  // The two-up row only applies while the offer banner shares it. On its own
+  // the brand row keeps the full single column so its wordmarks stay centred.
   @include up('lg') {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    &:has(.home__trust-offer) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    }
   }
+}
+
+.home__trust-brands {
+  display: block;
+  min-inline-size: 0;
 }
 
 .home__trust-offer {

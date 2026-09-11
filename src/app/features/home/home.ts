@@ -23,7 +23,7 @@ import { TrustedBrandsComponent } from './components/trusted-brands/trusted-bran
     BestSellersComponent,
     AboutPreviewComponent,
     TrustedBrandsComponent,
-    OfferBannerComponent,
+    // OfferBannerComponent,
     NewsletterBandComponent,
   ],
   templateUrl: './home.html',

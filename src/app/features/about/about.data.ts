@@ -116,7 +116,7 @@ export const ABOUT_HERO = {
   ctaLabel: 'Explore Our Collection',
   // TODO: verify this is the podium/peony frame from the reference. If a
   // dedicated About hero render exists, drop it in and update this path.
-  image: 'assets/images/brand/about_banner.png',
+  image: 'assets/images/brand/about-banner.png',
   imageAlt: '7 Elements Professional products arranged on a gold podium with peonies',
 } as const;
 

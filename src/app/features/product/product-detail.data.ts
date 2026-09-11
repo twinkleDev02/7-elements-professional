@@ -182,13 +182,14 @@ const VIDEO: ProductVideo = {
 };
 
 /** Size ladder, priced relative to the listing's headline (500ml) price. */
-function buildSizes(basePrice: number): readonly ProductSize[] {
-  return [
-    { id: '250ml', label: '250ml', price: Math.round((basePrice * 0.6) / 10) * 10, inStock: true },
-    { id: '500ml', label: '500ml', price: basePrice, inStock: true },
-    { id: '1000ml', label: '1000ml', price: Math.round((basePrice * 1.7) / 10) * 10, inStock: true },
-  ];
-}
+// function buildSizes(basePrice: number): readonly ProductSize[] {
+//   return [
+//     { id: '250ml', label: '250ml', price: Math.round((basePrice * 0.6) / 10) * 10, inStock: true },
+//     {id: '300ml', label: '300ml', price: Math.round((basePrice * 0.7) / 10) * 10, inStock: true},
+//     { id: '500ml', label: '500ml', price: basePrice, inStock: true },
+//     { id: '1000ml', label: '1000ml', price: Math.round((basePrice * 1.7) / 10) * 10, inStock: true },
+//   ];
+// }
 
 // -----------------------------------------------------------------------------
 // Per-product overrides
@@ -210,12 +211,12 @@ const OVERRIDES: Readonly<Record<string, DetailOverride>> = {
       'washes, leaving hair stronger, smoother and visibly glossier.',
     description: [
       'Nano Plex Shampoo is the first step of the Nano Plex System — a salon protocol ' +
-        'built around bond repair rather than surface coating.',
+      'built around bond repair rather than surface coating.',
       'The nano-scale complex travels into the cortex to reconnect the disulphide ' +
-        'bonds broken by colour, heat and chemical services, while a gentle ' +
-        'amino-acid cleansing base lifts product residue without stripping.',
+      'bonds broken by colour, heat and chemical services, while a gentle ' +
+      'amino-acid cleansing base lifts product residue without stripping.',
       'Because it carries no sulfates, parabens or silicones, it protects keratin and ' +
-        'nanoplastia treatments and keeps colour true for longer.',
+      'nanoplastia treatments and keeps colour true for longer.',
     ],
     gallery: [
       {
@@ -251,7 +252,22 @@ const OVERRIDES: Readonly<Record<string, DetailOverride>> = {
     ],
   },
 };
-
+const SIZE_OVERRIDES: Readonly<Record<string, readonly ProductSize[]>> = {
+    'nano-plex-shampoo': [
+      {
+        id: '300ml',
+        label: '300ml',
+        price: 950,
+        inStock: true,
+      },
+      {
+        id: '1L',
+        label: '1L',
+        price: 2599,
+        inStock: true,
+      },
+    ],
+  };
 /**
  * Builds the full detail record for a catalogue slug.
  *
@@ -276,19 +292,29 @@ export function resolveProductDetail(slug: string): ProductDetail | undefined {
     rating: listing.rating,
     reviewCount: listing.reviewCount,
     currency: listing.currency,
-    sizes: buildSizes(listing.price),
+    // sizes: buildSizes(listing.price),
+    sizes:
+      SIZE_OVERRIDES[slug] ?? [
+        {
+          id: listing.size,
+          label: listing.size,
+          price: listing.price,
+          inStock: true,
+        },
+      ],
+
     gallery: override.gallery ?? defaultGallery(listing),
     shortDescription:
       override.shortDescription ??
       'Salon-grade care formulated for professional results, free from sulfates, ' +
-        'parabens and silicones.',
+      'parabens and silicones.',
     claims: CLAIMS,
     benefits: BENEFITS,
     description: override.description ?? [
       `${listing.name} is part of the 7 Elements Professional range, developed with ` +
-        'advanced French formulation technology for use in salon and at home.',
+      'advanced French formulation technology for use in salon and at home.',
       'Every formula is free from harsh sulfates, parabens and silicones, so it is ' +
-        'safe on coloured, keratin-treated and chemically processed hair.',
+      'safe on coloured, keratin-treated and chemically processed hair.',
     ],
     howToUse: HOW_TO_USE,
     ingredients: INGREDIENTS,
