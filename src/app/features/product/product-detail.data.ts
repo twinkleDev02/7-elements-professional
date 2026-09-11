@@ -257,7 +257,7 @@ const SIZE_OVERRIDES: Readonly<Record<string, readonly ProductSize[]>> = {
       {
         id: '300ml',
         label: '300ml',
-        price: 950,
+        price: 1150,
         inStock: true,
       },
       {
