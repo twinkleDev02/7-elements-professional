@@ -12,6 +12,15 @@ export const APP_NAME = '7 Elements Professional';
  */
 export const BRAND_LOGO = 'assets/images/brand/logo.png';
 
+/**
+ * The product catalogue, as published to visitors.
+ *
+ * Lives in `public/` so it ships untouched — the bundler never rewrites the
+ * path, which is what lets it be linked with a plain `href`. Named here so the
+ * header and anywhere else that offers it can never drift onto different files.
+ */
+export const CATALOGUE_PDF = 'assets/docs/7-elements-catalogue.pdf';
+
 /** Fallbacks used by `SeoService` whenever a route omits its own metadata. */
 export const DEFAULT_ROUTE_META = {
   title: `${APP_NAME} — Luxury Professional Haircare`,

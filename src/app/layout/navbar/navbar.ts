@@ -12,7 +12,7 @@ import {
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { NavLink } from '@shared/models/nav-link.model';
-import { BRAND_LOGO, ROUTES } from '@shared/utils/app.constants';
+import { BRAND_LOGO, CATALOGUE_PDF, ROUTES } from '@shared/utils/app.constants';
 import { isBrowser } from '@shared/utils/platform.util';
 
 /** A top-level nav entry, optionally with a submenu of child links. */
@@ -69,8 +69,17 @@ export class Navbar {
   readonly quoteLabel = input('Get a Quote');
 
   protected readonly homeLink = `/${ROUTES.home}`;
-  protected readonly quoteLink = `/${ROUTES.contact}`;
   protected readonly logo = BRAND_LOGO;
+
+  /**
+   * The 16-page product catalogue, opened by the header button.
+   *
+   * A static asset rather than a route, so it is served straight from
+   * `public/` and never reaches the router. It is around 9MB, which is why it
+   * opens in the browser's viewer instead of downloading: the visitor sees the
+   * first page while the rest streams, rather than waiting on a silent save.
+   */
+  protected readonly catalogueHref = CATALOGUE_PDF;
 
   /** Mobile drawer state. */
   protected readonly isMenuOpen = signal(false);

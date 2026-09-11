@@ -86,7 +86,24 @@
           }
         </ul>
 
-        <a class="navbar__quote" [routerLink]="quoteLink" (click)="closeMenu()">
+        <!--
+          Opens the product catalogue PDF rather than routing into the app, so
+          it is a plain `href`: `routerLink` would hand the path to the Angular
+          router, which has no route for an asset and would land on Not Found.
+
+          `rel="noopener"` because `target="_blank"` otherwise gives the opened
+          document a handle back to this window via `window.opener`.
+
+          The drawer is still closed on click — on mobile the menu would
+          otherwise stay open behind the new tab when the visitor came back.
+        -->
+        <a
+          class="navbar__quote"
+          [href]="catalogueHref"
+          target="_blank"
+          rel="noopener"
+          (click)="closeMenu()"
+        >
           {{ quoteLabel() }}
         </a>
       </nav>
