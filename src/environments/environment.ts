@@ -6,7 +6,7 @@ import { AppEnvironment } from './environment.model';
  */
 export const environment: AppEnvironment = {
   production: true,
-  apiUrl: '/api',
+  apiUrl: '/api/v1',
   siteUrl: 'https://www.7elementsprofessional.com',
   enableDebugTools: false,
 };

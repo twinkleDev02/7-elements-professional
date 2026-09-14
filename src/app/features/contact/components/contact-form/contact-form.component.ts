@@ -18,6 +18,20 @@ import { CONTACT_FORM, CONTACT_TOPICS } from '../../contact.data';
 
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
+/** The controls that render an inline error under themselves. */
+type ErrorField = 'name' | 'email' | 'message';
+
+/**
+ * Shown when the browser rejects a field before the request is made. The server
+ * may disagree in wording for the same field, and when it does its text wins —
+ * it knows the actual rule that failed.
+ */
+const FALLBACK_ERRORS: Readonly<Record<ErrorField, string>> = {
+  name: 'Please tell us your name.',
+  email: 'Please enter a valid email address.',
+  message: 'Please tell us a little more — at least ten characters.',
+};
+
 /**
  * Enquiry form.
  *
@@ -45,19 +59,30 @@ export class ContactFormComponent {
   protected readonly errorMessage = signal('');
   protected readonly reference = signal('');
 
+  /**
+   * Per-field messages returned by a 400, keyed by control name.
+   *
+   * The API sends camelCase keys that match these controls exactly, so they map
+   * across without translation. Held beside the form rather than pushed into
+   * `setErrors()` so that a server complaint never makes the control itself
+   * invalid — otherwise a field the browser considers fine could not be
+   * resubmitted without being edited first.
+   */
+  protected readonly serverFieldErrors = signal<Readonly<Record<string, string>>>({});
+
   protected readonly isSubmitting = computed(() => this.status() === 'submitting');
   protected readonly isSuccess = computed(() => this.status() === 'success');
 
   protected readonly form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)],
+      validators: [Validators.required, Validators.minLength(2), Validators.maxLength(150)],
     }),
     email: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
-    phone: new FormControl('', { nonNullable: true }),
+    phone: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(32)] }),
     topic: new FormControl<ContactTopic>('salon-partnership', { nonNullable: true }),
     message: new FormControl('', {
       nonNullable: true,
@@ -72,6 +97,14 @@ export class ContactFormComponent {
     useScrollReveal(({ q, revealUp }) => {
       revealUp(q('.contact-form__reveal'), { x: -32, y: 0, stagger: 0.09, duration: 0.85 });
     });
+
+    // A server complaint describes what was sent, so the moment any of it is
+    // edited the complaint is stale and should stop being shown.
+    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      if (Object.keys(this.serverFieldErrors()).length > 0) {
+        this.serverFieldErrors.set({});
+      }
+    });
   }
 
   /**
@@ -82,9 +115,14 @@ export class ContactFormComponent {
     return this.form.dirty && !this.isSuccess();
   }
 
-  protected controlInvalid(name: 'name' | 'email' | 'message'): boolean {
+  protected controlInvalid(name: ErrorField): boolean {
     const control = this.form.controls[name];
-    return control.invalid && control.touched;
+    return (control.invalid && control.touched) || name in this.serverFieldErrors();
+  }
+
+  /** The server's wording for a field when it sent one, else the local copy. */
+  protected errorFor(name: ErrorField): string {
+    return this.serverFieldErrors()[name] ?? FALLBACK_ERRORS[name];
   }
 
   protected onSubmit(): void {
@@ -117,6 +155,7 @@ export class ContactFormComponent {
 
     this.status.set('submitting');
     this.errorMessage.set('');
+    this.serverFieldErrors.set({});
 
     this.contactService
       .submit(request)
@@ -130,6 +169,9 @@ export class ContactFormComponent {
         },
         error: (error: ApiError) => {
           this.errorMessage.set(error.message);
+          // Only a 400 carries these; every other status leaves them empty and
+          // the banner alone explains the failure.
+          this.serverFieldErrors.set(error.fieldErrors ?? {});
           this.status.set('error');
         },
       });
